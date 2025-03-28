@@ -1,0 +1,210 @@
+options:
+	P : &7[&cPhoenix&7]
+
+command /market [<text>] [<text>] [<text>] [<text>]:
+	permission: skript.op
+	trigger:
+		if arg 1 is not set:
+			message "{@P} &7Useful Commands:" to command sender
+			message "{@P} &e/market reset" to command sender
+			message "{@P} &e/market teamprep" to command sender
+			message "{@P} &e/market set [player] [teamnumber(1-8)]" to command sender
+			message "{@P} &e/market auc" to command sender
+			message "{@P} &e/market aucremove [player]" to command sender
+			message "{@P} &e/market remove [player]" to command sender
+			message "{@P} &e/market diamond [give/save/starter]" to command sender
+		if arg 1 is "reset":
+			player command "/team lock"
+			player command "/team reset"
+			delete {bidauc::*}
+			delete {bidable::*}
+			delete {slave::*}
+			delete {cslave}
+			delete {cwinner}
+			set {bid} to -1
+			delete {tstart}
+			delete {oslaveo::*}
+			delete {diamond::*}
+			broadcast "{@P} &eSlave Market &7has been reset!"
+		if arg 1 is "auc":
+			loop all players:
+				if {slave::%loop-player%} is not set:
+					if {bidauc::%loop-player%} is not set:
+						add loop-player to {bidable::*}
+			set {cslave} to (random element out of {bidable::*})
+			broadcast "{@P} &c%{cslave}% &7is now up for &cAuction"
+			console command "/warp auct %{cslave}% "
+			set {tstart} to 10
+			set {bidauc::%{cslave}%} to true	
+			remove {cslave} from {bidable::*}
+			loop all players:
+				console command "/playsound random.pop %loop-player% ~ ~ ~ 10 1 1"
+		if arg 1 is "aucremove":
+			if arg 2 is set:
+				set {bidauc::%arg-2%} to true
+				remove arg 2 from {bidable::*}
+				message "{@P} &7You have &cremoved %arg-2% &7from the &cAuction list" to command sender
+		if arg 1 is "remove":
+			if arg 2 is set:
+				if {slave::%arg-2%} is set:
+					delete {slave::%arg-2%}
+					delete {oslaveo::%arg-2%}
+					console command "/team kick %arg-2%"
+					console command "/ci %arg-2%"
+					message "{@P} &7You have &cremoved %arg-2% &7as an &cowner!" to command sender
+				else:
+					message "{@P} &bThat player is not a slave owner...." to command sender
+								
+		if arg 1 is "set":
+			if arg 2 is set:
+				if arg 3 is "1":
+					if {slave::%arg-2%} is not set:
+						set {oslaveo::%arg-2%} to 1
+						set {slave::%arg-2%} to true
+						console command "/team set %arg-2% 1"
+						broadcast "{@P} &e%arg-2% &7is now the owner for team &e%arg-3%!"
+						console command "/warp o%arg-3% %arg-2%"
+						loop all players:
+							console command "/playsound random.pop %loop-player% ~ ~ ~ 10 1 1"
+				else if arg 3 is "2":
+					if {slave::%arg-2%} is not set:
+						set {oslaveo::%arg-2%} to 2
+						set {slave::%arg-2%} to true
+						console command "/team set %arg-2% 2"
+						broadcast "{@P} &e%arg-2% &7is now the owner for team &e%arg-3%!"
+						console command "/warp o%arg-3% %arg-2%"
+						loop all players:
+							console command "/playsound random.pop %loop-player% ~ ~ ~ 10 1 1"
+				else if arg 3 is "3":
+					if {slave::%arg-2%} is not set:
+						set {oslaveo::%arg-2%} to 3
+						set {slave::%arg-2%} to true
+						console command "/team set %arg-2% 3"
+						broadcast "{@P} &e%arg-2% &7is now the owner for team &e%arg-3%!"
+						console command "/warp o%arg-3% %arg-2%"
+						loop all players:
+							console command "/playsound random.pop %loop-player% ~ ~ ~ 10 1 1"
+				else if arg 3 is "4":
+					if {slave::%arg-2%} is not set:
+						set {oslaveo::%arg-2%} to 4
+						set {slave::%arg-2%} to true
+						console command "/team set %arg-2% 4"
+						broadcast "{@P} &e%arg-2% &7is now the owner for team &e%arg-3%!"
+						console command "/warp o%arg-3% %arg-2%"
+						loop all players:
+							console command "/playsound random.pop %loop-player% ~ ~ ~ 10 1 1"
+				else if arg 3 is "5":
+					if {slave::%arg-2%} is not set:
+						set {oslaveo::%arg-2%} to 5
+						set {slave::%arg-2%} to true
+						console command "/team set %arg-2% 5"
+						broadcast "{@P} &e%arg-2% &7is now the owner for team &e%arg-3%!"
+						console command "/warp o%arg-3% %arg-2%"
+						loop all players:
+							console command "/playsound random.pop %loop-player% ~ ~ ~ 10 1 1"
+				else if arg 3 is "6":
+					if {slave::%arg-2%} is not set:
+						set {oslaveo::%arg-2%} to 6
+						set {slave::%arg-2%} to true
+						console command "/team set %arg-2% 6"
+						broadcast "{@P} &e%arg-2% &7is now the owner for team &e%arg-3%!"
+						console command "/warp o%arg-3% %arg-2%"
+						loop all players:
+							console command "/playsound random.pop %loop-player% ~ ~ ~ 10 1 1"
+				else if arg 3 is "7":
+					if {slave::%arg-2%} is not set:
+						set {oslaveo::%arg-2%} to 7
+						set {slave::%arg-2%} to true
+						console command "/team set %arg-2% 7"
+						broadcast "{@P} &e%arg-2% &7is now the owner for team &e%arg-3%!"
+						console command "/warp o%arg-3% %arg-2%"
+						loop all players:
+							console command "/playsound random.pop %loop-player% ~ ~ ~ 10 1 1"
+				else if arg 3 is "8":
+					if {slave::%arg-2%} is not set:
+						set {oslaveo::%arg-2%} to 8
+						set {slave::%arg-2%} to true
+						console command "/team set %arg-2% 3"
+						broadcast "{@P} &e%arg-2% &7is now the owner for team &e%arg-3%!"
+						console command "/warp o%arg-3% %arg-2%"
+						loop all players:
+							console command "/playsound random.pop %loop-player% ~ ~ ~ 10 1 1"
+		if arg 1 is "diamond":
+			if arg 2 is "save":
+				loop all players:
+					if {slave::%loop-player%} is set:
+						set {diamond::%loop-player%} to amount of diamonds in loop-player's inventory
+						message "{@P} &7Your &ediamond amount &7has been &esaved!" to loop-player
+						remove all diamonds from loop-player's inventory
+				message "{@P} &7Diamonds Saved!" to command sender
+			if arg 2 is "give":
+				loop all players:
+					if {diamond::%loop-player%} is set:
+						give loop-player {diamond::%loop-player%} of diamond
+						message "{@P} &7You have been &egiven &7your &ediamonds!" to loop-player
+				message "{@P} &7Diamonds Given!" to command sender
+				loop all players:
+					console command "/playsound random.pop %loop-player% ~ ~ ~ 10 1 1"
+			if arg 2 is "starter":
+				loop all players:
+					if {slave::%loop-player%} is set:
+						give loop-player 50 diamonds
+				broadcast "{@P} &eDiamonds &7have been &egiven!"
+				loop all players:
+					console command "/playsound random.pop %loop-player% ~ ~ ~ 10 1 1"
+		if arg 1 is "teamprep":
+			player command "/team lock"
+			player command "/team reset"
+			loop 8 times:
+				player command "/team create"
+			broadcast "{@P} &7Teams Created!"
+			loop all players:
+				console command "/playsound random.pop %loop-player% ~ ~ ~ 10 1 1"
+			
+
+command /bid [<int>]:
+	trigger:
+		if arg 1 is set:
+			{tstart} is set
+			if {slave::%command sender%} is true:
+				if arg 1 is greater than {bid}:
+					if command sender does not have arg-1 of diamonds:
+						message "{@P} &7Not enough diamonds!" to command sender
+						console command "/playsound random.pop %command sender% ~ ~ ~ 10 1 1"
+					else:
+						set {cwinner} to command sender
+						set {bid} to arg 1
+						if {tstart} is less than 8:
+							set {tstart} to 8
+						broadcast "{@P} &e%command sender% &7has bid &e%arg-1% &7on &e%{cslave}%"
+						loop all players:
+							console command "/playsound random.pop %loop-player% ~ ~ ~ 10 1 1"
+
+every 1 real second:
+	{tstart} is set
+	remove 1 from {tstart}
+	if {tstart} is 8 or 7 or 6 or 5 or 4 or 3 or 2 or 1:
+		broadcast "{@P} &7Auction for &c%{cslave}% &7ending in &c%{tstart}%"
+	if {tstart} is 0:
+		if {cwinner} is set:
+			broadcast "{@P} &c%{cwinner}% &chas won the bid on &c%{cslave}%"
+			remove {bid} of diamonds from {cwinner}
+			console command "/team set %{cslave}% %{cwinner}%"
+			launch ball large firework colored red at {cslave} timed 1
+			wait 5 ticks
+			console command "/warp s%{oslaveo::%{cwinner}%}% %{cslave}%"
+			delete {cwinner}
+			set {bid} to -1
+			delete {cslave}
+			delete {tstart}
+		else:
+			if {cwinner} is not set:
+				broadcast "{@P} &e%{cslave}% &7was NOT bid on, rebid will occur later!"
+				console command "/spawn %{cslave}%"
+				delete {cwinner}
+				set {bid} to -1
+				delete {cslave}
+				delete {tstart}
+						
+					
+

@@ -1,0 +1,63 @@
+options:
+	P: &8[&4Helpop&8]
+	A: &8&o[&4&oHelpop&8&o]
+	F: &8&O[&4&OReply&8&O]&f&O
+
+command /helpop [<text>]:
+	trigger:
+		if arg 1 is not set:
+			message "{@P} &7Correct Usage:"
+			message "{@P} &e/helpop <text>"
+		if arg 1 is set:
+			loop all players:
+				loop-player has permission "skript.op":
+					{helpop.%loop-player%} is not set:
+						message "{@A} &c&O%command sender% &7&O» &e&O%arg-1%" to loop-player
+						console command "/playsound random.pop %loop-player% ~ ~ ~ 10 1 1"
+			message "{@P} » &cHelpop Sent" to command sender
+			message "{@P} » &c&O%arg-1%" to command sender
+
+command /helpopr [<player>] [<text>]:
+	aliases: /hr
+	permission: skript.op
+	trigger:
+		if arg 1 is not set:
+			if arg 2 is not set:
+				message "{@P} &7Correct Usage:"
+				message "{@P} &e/hr <player> <text>"
+		if arg 1 is set:
+			if arg 2 is set:
+				message "{@F} &c&O%command sender% &7&O» &e&O%arg-2%" to arg-1
+				message "{@P} &eReply sent!" to command sender
+				loop all players:
+					loop-player has permission "skript.op":
+						{helpop.%loop-player%} is not set:
+							message "&7&O%command sender% &7&O» %arg-1% » %arg-2%" to loop-player
+
+command /helpopt:
+	permission: skript.op
+	trigger:
+		if {helpop.%command sender%} is not set:
+			set {helpop.%command sender%} to true
+			message "{@P} » &7You can no longer see helpops" to command sender
+		else:
+			{helpop.%command sender%} is set:
+				delete {helpop.%command sender%}
+				message "{@P} » &7You can now see helpops" to command sender
+
+			
+on damage of player:
+	damage was caused by projectile:
+		victim is a player:
+			projectile is an arrow
+			attacker is a player
+			set {_distt} to the rounded distance between the victim and the attacker
+			if {_distt} is more than 49:
+				broadcast "&7[&cPhoenix&7] &e%attacker% &7got a longshot of &c%{_distt}% &7blocks on &c%victim%&7!"
+command /sethealth:
+	permission: skript.op
+	trigger:
+		loop all players:
+			set max health of loop-player to 10
+		
+			

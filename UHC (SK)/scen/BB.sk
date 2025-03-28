@@ -1,0 +1,47 @@
+variables:
+	{barebones}=false
+options:
+	P : &7[&cPhoenix&7]
+
+command /barebones [<text>]:
+	permission: skript.op
+	trigger:
+		if arg 1 is "on":
+			set {barebones} to true
+			send "{@P} Barebones &eenabled"
+		else if arg 1 is "off":
+			delete {barebones}
+			send "{@P} Barebones &cDisabled"
+
+on mine of gold ore:
+	if {barebones} is true:
+		cancel the event
+		set the block to air
+		drop 1 iron ingot
+
+
+on mine of diamond ore:
+	if {barebones} is true:
+		cancel the event
+		set the block to air
+		drop 1 iron ingot
+
+
+on craft of enchantment table:
+	if {barebones} is true:
+		cancel the event
+
+on craft of anvil:
+	if {barebones} is true:
+		cancel the event
+
+on craft of golden apple:
+	if {barebones} is true:
+		cancel the event
+
+on death of a player:
+	if {barebones} is true:
+		drop 1 golden apple at the player
+		drop 1 diamond at the player
+		drop 32 arrows at the player
+		drop 2 string at the player

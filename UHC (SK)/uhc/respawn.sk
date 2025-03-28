@@ -1,0 +1,77 @@
+options:
+	P: &9&lQHC &8»
+	C: &7
+	FC: &7
+	BC: &8
+	H: &e
+	spawn: uhcspawn
+
+on skript unload:
+	delete {restore::*}
+
+on skript load:
+	delete {restore::*}
+
+on damage of player:
+	if {nodamage::%victim%} is true:
+		cancel event
+
+on death of a player:
+	"%world of victim%" is not "world"
+	set {restore::%victim%::loc} to location of victim
+	set {restore::%victim%::inv} to serialized contents of victim's inventory
+	set {restore::%victim%::helm} to victim's helmet
+	set {restore::%victim%::chest} to victim's chestplate
+	set {restore::%victim%::leg} to victim's leggings
+	set {restore::%victim%::boots} to victim's boots
+	set {restore::%victim%::max} to victim's max health
+	set {restore::%victim%::xp} to victim's level
+	set {restore::%victim%::xpp} to victim's level progress
+
+command /saveinventory <player>:
+	permission: skript.op
+	trigger:
+		set {restore::%arg-1%::loc} to location of arg-1
+		set {restore::%arg-1%::inv} to serialized contents of arg-1's inventory
+		set {restore::%arg-1%::helm} to arg-1's helmet
+		set {restore::%arg-1%::chest} to arg-1's chestplate
+		set {restore::%arg-1%::leg} to arg-1's leggings
+		set {restore::%arg-1%::boots} to arg-1's boots
+		set {restore::%arg-1%::max} to arg-1's max health
+		set {restore::%arg-1%::xp} to arg-1's level
+		set {restore::%arg-1%::xpp} to arg-1's level progress
+
+command /restore <player>:
+	permission: skript.op
+	aliases: /respawn
+	trigger:
+		if {restore::%arg-1%::*} is not set:
+			send "&e&c Error: &a%arg-1%&7 has not died yet!"
+		else:
+			loop all entities:
+				loop-entity is not a player
+				distance between loop-entity and {restore::%arg-1%::loc} is less than 3
+				delete entity from loop-entity
+				delete loop-entity
+			set {nodamage::%arg-1%} to true
+			teleport arg-1 to {restore::%arg-1%::loc}
+			send "&7[&cPhoenix&7] &8» &7You have respawned &e%arg-1%&7!" to command sender
+			send "&7[&cPhoenix&7] &8» &e%sender% &7restored your inventory. You have 30 seconds no-damage!" to arg-1
+			send "&7[&cPhoenix&7] &8» &7This also means, don't hit other players because they can't hit you!" to arg-1
+			restore inventory of arg-1 from {restore::%arg-1%::inv}
+			set arg-1's helmet to {restore::%arg-1%::helm}
+			set arg-1's chestplate to {restore::%arg-1%::chest}
+			set arg-1's boots to {restore::%arg-1%::boots}
+			set arg-1's leggings to {restore::%arg-1%::leg}
+			set arg-1's max health to {restore::%arg-1%::max}
+			set arg-1's level to {restore::%arg-1%::xp}
+			set arg-1's level progress to {restore::%arg-1%::xpp}
+			reveal arg-1 to all players
+			wait 30 seconds
+			delete {nodamage::%arg-1%}
+
+command /restorereset <player>:
+	permission: skript.op
+	trigger:
+		if arg 1 is set:
+			delete {nodamage::%arg-1%}

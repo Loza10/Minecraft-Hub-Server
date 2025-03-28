@@ -1,0 +1,311 @@
+options:
+	P: &7[&cMoles&7]
+	C: &7[&cMCC&7]
+
+command /moles [<text>] [<integer>] [<integer>]:
+	permission: skript.op
+	trigger:
+		if arg 1 is not set:
+			if arg 2 is not set:
+				if arg 3 is not set:
+					message "{@P} &7Correct Usage:"
+					message "{@P} &e/moles set &8» &7Sets 1 Mole Team"
+					message "{@P} &e/moles reset &8» &7Resets everything"
+					message "{@P} &e/moles list &8» &7Lists Teams"
+					message "{@P} &e/moles split <teams(2-4)> <molesperteam> &8» &7Divide the 1 Mole Team into 2-4 Mole Teams"
+		if arg 1 is "list":
+			if {moleloop} is set:
+				message "{@P} &7Mole Team 1: &e%{Spilt.Moles1::*}%"
+				message "{@P} &7Mole Team 2: &e%{Spilt.Moles2::*}%"
+				message "{@P} &7Mole Team 3: &e%{Spilt.Moles3::*}%"
+				message "{@P} &7Mole Team 4: &e%{Spilt.Moles4::*}%"
+			else:
+				if {moleloop} is not set:
+					message "{@P} &7Mole Team: &e%{Mole.Moles::*}%"	
+		if arg-1 is "set":
+			loop {Teams::*}:
+				set {_potMoles::*} to {Team.%loop-value%::*}
+				loop 1 times:
+					set {_Mole} to (random element out of {_potMoles::*})
+					remove {_Mole} from {_potMoles::*}
+					set {Mole.IsMole::%{_Mole}%} to loop-value-2
+					set {Mole.MoleOfTeam::%loop-value-2%} to {_Mole}
+					add {_Mole} to {Mole.Moles::*}
+					set {_MolePlayer} to ("%{_Mole}%" parsed as offlineplayer)
+					set {Moles.Moleset0::%{_Mole}%} to true
+					set {Moles.Molekit::%{_Mole}%} to true
+					if {_MolePlayer} is online:
+						message "{@P} &7You are a Mole!" to {_MolePlayer}
+						message "{@P} &7Do &e/minfo &7for Mole commands!" to {_MolePlayer}
+			broadcast "{@P} &7Moles have been set!"
+			delete {_potMoles::*}
+		if arg 1 is "reset":
+			delete {_potMoles::*}
+			delete {Mole.Moles::*}
+			delete {_MolePlayer}
+			delete {Mole.IsMole::*}
+			delete {Mole.MoleOfTeam::*}
+			delete {Spilt.Moles1::*}
+			delete {Spilt.Moles2::*}
+			delete {Spilt.Moles3::*}
+			delete {Spilt.Moles4::*}
+			delete {moleloop}
+			delete {Moles.Moleset1::*}
+			delete {Moles.Moleset2::*}
+			delete {Moles.Moleset3::*}
+			delete {Moles.Moleset4::*}
+			delete {Moles.Moleset0::*}
+			delete {Moles.Molekit::*}
+			message "{@P} &cReset"
+		if arg 1 is "split":
+			if arg 3 is set:
+				if arg 2 is set:
+					set {moleloop} to arg 2
+					if {moleloop} is 2:
+						loop arg 3 times:
+							set {_molet1} to (random element out of {Mole.Moles::*})
+							remove {_molet1} from {Mole.Moles::*}
+							add {_molet1} to {Spilt.Moles1::*}
+							delete {Moles.Moleset0::%{_molet1}%}
+							set {Moles.Moleset1::%{_molet1}%} to true
+							set {Moles.Molekit::%{_molet1}%} to true
+							message "{@P} &7You have been added to &eMole Team 1&71" to {_molet1}
+							delete {_molet1}
+						loop arg 3 times:
+							set {_molet2} to (random element out of {Mole.Moles::*})
+							remove {_molet2} from {Mole.Moles::*}
+							add {_molet2} to {Spilt.Moles2::*}
+							delete {Moles.Moleset0::%{_molet2}%}
+							set {Moles.Moleset2::%{_molet2}%} to true
+							set {Moles.Molekit::%{_molet2}%} to true
+							message "{@P} &7You have been added to &eMole Team 2&72" to {_molet2}
+							delete {_molet2}
+						broadcast "{@P} &7There are now &e2 &7Mole Teams!"
+					if {moleloop} is 3:
+						loop arg 3 times:
+							set {_molet1} to (random element out of {Mole.Moles::*})
+							remove {_molet1} from {Mole.Moles::*}
+							add {_molet1} to {Spilt.Moles1::*}
+							delete {Moles.Moleset0::%{_molet1}%}
+							set {Moles.Moleset1::%{_molet1}%} to true
+							set {Moles.Molekit::%{_molet1}%} to true
+							message "{@P} &7You have been added to &eMole Team 1&71" to {_molet1}
+							delete {_molet1}
+						loop arg 3 times:
+							set {_molet2} to (random element out of {Mole.Moles::*})
+							remove {_molet2} from {Mole.Moles::*}
+							add {_molet2} to {Spilt.Moles2::*}
+							delete {Moles.Moleset0::%{_molet2}%}
+							set {Moles.Moleset2::%{_molet2}%} to true
+							set {Moles.Molekit::%{_molet2}%} to true
+							message "{@P} &7You have been added to &eMole Team 2&72" to {_molet2}
+							delete {_molet2}
+						loop arg 3 times:
+							set {_molet3} to (random element out of {Mole.Moles::*})
+							remove {_molet3} from {Mole.Moles::*}
+							add {_molet3} to {Spilt.Moles3::*}
+							delete {Moles.Moleset0::%{_molet3}%}
+							set {Moles.Moleset3::%{_molet3}%} to true
+							set {Moles.Molekit::%{_molet3}%} to true
+							message "{@P} &7You have been added to &eMole Team 3&7" to {_molet3}
+							delete {_molet3}
+						broadcast "{@P} &7There are now &e3 &7Mole Teams!"
+					if {moleloop} is 4:
+						loop arg 3 times:
+							set {_molet1} to (random element out of {Mole.Moles::*})
+							remove {_molet1} from {Mole.Moles::*}
+							add {_molet1} to {Spilt.Moles1::*}
+							delete {Moles.Moleset0::%{_molet1}%}
+							set {Moles.Moleset1::%{_molet1}%} to true
+							set {Moles.Molekit::%{_molet1}%} to true
+							message "{@P} &7You have been added to &eMole Team 1&71" to {_molet1}
+							delete {_molet1}
+						loop arg 3 times:
+							set {_molet2} to (random element out of {Mole.Moles::*})
+							remove {_molet2} from {Mole.Moles::*}
+							add {_molet2} to {Spilt.Moles2::*}
+							delete {Moles.Moleset0::%{_molet2}%}
+							set {Moles.Moleset2::%{_molet2}%} to true
+							set {Moles.Molekit::%{_molet2}%} to true
+							message "{@P} &7You have been added to &eMole Team 2&72" to {_molet2}
+							delete {_molet2}
+						loop arg 3 times:
+							set {_molet3} to (random element out of {Mole.Moles::*})
+							remove {_molet3} from {Mole.Moles::*}
+							add {_molet3} to {Spilt.Moles3::*}
+							delete {Moles.Moleset0::%{_molet3}%}
+							set {Moles.Moleset3::%{_molet3}%} to true
+							set {Moles.Molekit::%{_molet3}%} to true
+							message "{@P} &7You have been added to &eMole Team 3&7" to {_molet3}
+							delete {_molet3}
+						loop arg 3 times:
+							set {_molet4} to (random element out of {Mole.Moles::*})
+							remove {_molet4} from {Mole.Moles::*}
+							add {_molet4} to {Spilt.Moles4::*}
+							delete {Moles.Moleset0::%{_molet4}%}
+							set {Moles.Moleset4::%{_molet4}%} to true
+							set {Moles.Molekit::%{_molet4}%} to true
+							message "{@P} &7You have been added to &eMole Team 4&7" to {_molet4}
+							delete {_molet4}
+						broadcast "{@P} &7There are now &e4 &7Mole Teams!"
+
+command /minfo:
+	trigger:
+		message "{@P} &e/mcl &8» &7Send your location to your Mole friends!"
+		message "{@P} &e/mcp &8» &7See who's on your Mole Team!"
+		message "{@P} &e/mcc <message> &8» &7Send a private message to your Mole Team!"
+		message "{@P} &e/molekit &8» &7Choose your kit!"
+command /mcp:
+	trigger:
+		if {Moles.Moleset0::%command sender%} is true:
+			message "{@P} &7Your Mole Team:" to command sender	
+			message "&e%{Mole.Moles::*}%" to command sender
+		if {Moles.Moleset1::%command sender%} is true:
+			message "{@P} &7Your Mole Team:" to command sender	
+			message "&e%{Spilt.Moles1::*}%" to command sender
+		if {Moles.Moleset2::%command sender%} is true:
+			message "{@P} &7Your Mole Team:" to command sender	
+			message "&e%{Spilt.Moles2::*}%" to command sender
+		if {Moles.Moleset3::%command sender%} is true:
+			message "{@P} &7Your Mole Team:" to command sender	
+			message "&e%{Spilt.Moles3::*}%" to command sender
+		if {Moles.Moleset4::%command sender%} is true:
+			message "{@P} &7Your Mole Team:" to command sender	
+			message "&e%{Spilt.Moles4::*}%" to command sender
+		if {Moles.Moleset1::%command sender%} is not set:
+			if {Moles.Moleset2::%command sender%} is not set:
+				if {Moles.Moleset3::%command sender%} is not set:
+					if {Moles.Moleset4::%command sender%} is not set:
+						if {Moles.Moleset0::%command sender%} is not set:
+							message "{@P} &cYou are NOT a Mole!"
+
+command /mcc [<text>]:
+	trigger:
+		if {Moles.Moleset0::%command sender%} is true:
+			loop all players:
+				if {Moles.Moleset0::%loop-player%} is true:
+					message "{@C} &e%command sender% &8» &7%arg-1%" to loop-player
+		if {Moles.Moleset1::%command sender%} is true:
+			loop all players:
+				if {Moles.Moleset1::%loop-player%} is true:
+					message "{@C} &e%command sender% &8» &7%arg-1%" to loop-player
+		if {Moles.Moleset2::%command sender%} is true:
+			loop all players:
+				if {Moles.Moleset2::%loop-player%} is true:
+					message "{@C} &e%command sender% &8» &7%arg-1%" to loop-player
+		if {Moles.Moleset3::%command sender%} is true:
+			loop all players:
+				if {Moles.Moleset3::%loop-player%} is true:
+					message "{@C} &e%command sender% &8» &7%arg-1%" to loop-player
+		if {Moles.Moleset4::%command sender%} is true:
+			loop all players:
+				if {Moles.Moleset4::%loop-player%} is true:
+					message "{@C} &e%command sender% &8» &7%arg-1%" to loop-player
+		if {Moles.Moleset1::%command sender%} is not set:
+			if {Moles.Moleset2::%command sender%} is not set:
+				if {Moles.Moleset3::%command sender%} is not set:
+					if {Moles.Moleset4::%command sender%} is not set:
+						if {Moles.Moleset0::%command sender%} is not set:
+							message "{@P} &cYou are NOT a Mole!"
+command /mcl:
+	trigger:
+		if {Moles.Moleset0::%command sender%} is true:
+			set {_moleLoc} to the command sender's location
+			loop all players:
+				if {Moles.Moleset0::%loop-player%} is true:
+					message "{@C} &e%command sender% &8» &7%{_moleLoc}%" to loop-player
+		if {Moles.Moleset1::%command sender%} is true:
+			set {_moleLoc} to the command sender's location
+			loop all players:
+				if {Moles.Moleset1::%loop-player%} is true:
+					message "{@C} &e%command sender% &8» &7%{_moleLoc}%" to loop-player
+		if {Moles.Moleset2::%command sender%} is true:
+			set {_moleLoc} to the command sender's location
+			loop all players:
+				if {Moles.Moleset2::%loop-player%} is true:
+					message "{@C} &e%command sender% &8» &7%{_moleLoc}%" to loop-player
+		if {Moles.Moleset3::%command sender%} is true:
+			set {_moleLoc} to the command sender's location
+			loop all players:
+				if {Moles.Moleset3::%loop-player%} is true:
+					message "{@C} &e%command sender% &8» &7%{_moleLoc}%" to loop-player
+		if {Moles.Moleset4::%command sender%} is true:
+			set {_moleLoc} to the command sender's location
+			loop all players:
+				if {Moles.Moleset4::%loop-player%} is true:
+					message "{@C} &e%command sender% &8» &7%{_moleLoc}%" to loop-player
+		if {Moles.Moleset1::%command sender%} is not set:
+			if {Moles.Moleset2::%command sender%} is not set:
+				if {Moles.Moleset3::%command sender%} is not set:
+					if {Moles.Moleset4::%command sender%} is not set:
+						if {Moles.Moleset0::%command sender%} is not set:
+							message "{@P} &cYou are NOT a Mole!"
+
+command /molekit:
+	trigger:
+		if {Moles.Molekit::%command sender%} is true:
+			open chest with 1 row named "&7Mole Kits&8:" to player
+			format slot 0 of player with bow named "&7Fighter (4 Inventory Slots)" with lore "&6» &e1 Bow ||&6» &e2 Diamonds ||&6» &e1 Golden Apple ||&6» &e64 Arrow" to run "molekits fighter %player%"
+			format slot 1 of player with ghast tear named "&7Potter (3 Inventory Slots)" with lore "&6» &e1 Splash Potion of Weakness 2 (1:07) ||&6» &e1 Speed Potion (1:30) ||&6» &e1 Splash Potion of Poison 2 (0:16)" to run "molekits potter %player%"
+			format slot 2 of player with 397:4 named "&7Mobber (4 Inventory Slots)" with lore "&6» &e2 Creeper Spawn Eggs ||&6» &e2 Cave Spider Spawn Eggs ||&6» &e1 Witch Spawn Egg ||&6» &e2 Skeleton Spawn Eggs" to run "molekits mobber %player%"
+			format slot 3 of player with tnt named "&7Trapper (4 Inventory Slots)" with lore "&6» &e1 Lava Trap ||&6» &e1 Cobweb Trap ||&6» &e16 TNT ||&6» &e1 Flint and Steel" to run "molekits trapper %player%"
+		else:
+			if {Moles.Molekit::%command sender%} is not set:
+				message "{@P} You have either already selected your kit, or you are NOT a Mole!" to player
+
+
+
+
+command /molekits [<text>] [<player>]:
+	permission: skript.op
+	trigger:
+		if arg 1 is "fighter":
+			if arg 2 is set:
+				give arg-2 2 diamonds
+				give arg-2 1 golden apple
+				give arg-2 1 bow
+				give arg-2 64 arrows
+				delete {Moles.Molekit::%arg-2%}
+				close arg-2's inventory
+				message "{@P} You have selected the &eFighter &7kit!" to arg 2
+		if arg 1 is "potter":
+			if arg 2 is set:
+				give arg-2 1 unextended splash Weakness potion II item
+				give arg-2 1 potion of:8226
+				give arg-2 1 potion of:16420
+				delete {Moles.Molekit::%arg-2%}
+				close arg-2's inventory
+				message "{@P} You have selected the &ePotter &7kit!" to arg 2
+		if arg 1 is "mobber":
+			if arg 2 is set:
+				give arg-2 2 383:50
+				give arg-2 2 383:59
+				give arg-2 1 383:66
+				give arg-2 2 383:51
+				delete {Moles.Molekit::%arg-2%}
+				close arg-2's inventory
+				message "{@P} You have selected the &eMobber &7kit!" to arg 2
+		if arg 1 is "trapper":
+			if arg 2 is set:
+				give arg-2 1 beacon named "&cLava Trap"
+				give arg-2 1 enderchest named "&7Cobweb Trap"
+				give arg-2 16 tnt
+				give arg-2 1 flint and steel of unbreaking 3
+				delete {Moles.Molekit::%arg-2%}
+				close arg-2's inventory
+				message "{@P} You have selected the &eTrapper &7kit!" to arg 2
+
+
+
+on place of beacon:
+	loop blocks in radius 3 of event-block:
+		if loop-block's y-coordinate is less than event-block's y-coordinate:
+			set loop-block to lava
+			set event-block to air
+on place of enderchest:
+	loop blocks in radius 2 of event-block:
+		if loop-block's y-coordinate is less than event-block's y-coordinate:
+			set loop-block to cobweb
+			set event-block to air
+	
+

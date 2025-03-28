@@ -1,0 +1,1756 @@
+options:
+	P: &7[&cPhoenix&7]
+	VariableDrops: true
+
+command /sm [<text>]:
+	permission: skript.op
+	trigger:
+		if arg 1 is not set:
+			open chest with 3 rows named "&8» &eScenario Manager" to player
+			format slot 0 of player with cobweb named "&7Webcage" with lore "&8» %{sm::webc}%" to run "sudo %player% sm webcage"
+			format slot 1 of player with redstone dust named "&7Bleeding Sweets" with lore "&8» %{sm::bleedings}%" to run "sudo %player% sm bs"
+			format slot 2 of player with diamond named "&7Blood Diamonds" with lore "&8» %{sm::bloodd}%" to run "sudo %player% sm bd"
+			format slot 3 of player with arrow named "&7Cupid" with lore "&8» %{sm::cupids}%" to run "sudo %player% sm cupid"
+			format slot 4 of player with iron ingot named "&7Cutclean" with lore "&8» %{sm::cutclean}%" to run "sudo %player% sm cutclean"
+			format slot 5 of player with iron pickaxe named "&7Hastey Boys" with lore "&8» %{sm::hb}%" to run "sudo %player% sm hb"
+			format slot 6 of player with 397:1 named "&7Vengeful Spirits" with lore "&8» %{sm::venge}%" to run "sudo %player% sm vs"
+			format slot 7 of player with chest named "&7Team Inventory" with lore "&8» %{sm::ti}%" to run "sudo %player% sm ti"
+			format slot 8 of player with snow named "&7Skyhigh" with lore "&8» %{sm::sh}% (Turns on at Meetup)" to close then run "sudo %player% sm sh"
+			format slot 9 of player with 17 named "&7Timber" with lore "&8» %{sm::timber}%" to run "sudo %player% sm timber"
+			format slot 10 of player with diamond sword named "&7Assault and Battery" with lore "&8» %{sm::assault}% (Turns on after Final Heal)" to close then run "sudo %player% sm ab"
+			format slot 11 of player with 383:54 named "&7Nightmare" with lore "&8» %{sm::nightm}%" to run "sudo %player% sm nightm"
+			format slot 12 of player with golden apple named "&7Barebones" with lore "&8» %{sm::bare}%" to run "sudo %player% sm bare"
+			format slot 13 of player with 327 named "&7Best PVE" with lore "&8» %{sm::pve}% (Turns on after Final Heal)" to close then run "sudo %player% sm pve"
+			format slot 14 of player with egg named "&7Eggs" with lore "&8» %{sm::eggs}%" to close then run "sudo %player% sm eggs"
+			format slot 15 of player with ender pearl named "&7Player Swap" with lore "&8» %{sm::swap}% (Turns on after Final Heal)" to close then run "sudo %player% sm swap"
+			format slot 16 of player with fishing rod named "&7Rodless" with lore "&8» %{sm::rod}%" to close then run "sudo %player% sm rod"
+			format slot 17 of player with water bottle named "&7SuperHeroes" with lore "&8» &e/superheroes (Manual)" to close then run "sudo %player% superheroes"
+			format slot 18 of player with bow named "&7Rewarding Longshots" with lore "&8» %{sm::rl}%" to close then run "sudo %player% sm rl"
+			format slot 19 of player with diamond boots named "&7Fast Getaway" with lore "&8» %{sm::fg}%" to close then run "sudo %player% sm fg"
+			format slot 20 of player with nether star named "&7Genie" with lore "&8» %{sm::gen}% (Turns on after Final Heal)" to close then run "sudo %player% sm genie"
+		if arg 1 is "bd" or "blooddiamonds":
+			if {bloodd} is not set:
+				set {scen.bd} to true
+				set {bloodd} to true
+				set {sm::bloodd} to "&eEnabled"
+				close player's inventory
+				message "{@P} &7Blood Diamonds (&eEnabled&7)"
+				wait 2 ticks
+				make player execute command "/sm"
+			else:
+				if {bloodd} is true:
+					delete {scen.bd}
+					delete {bloodd}
+					set {sm::bloodd} to "&cDisabled"
+					close player's inventory
+					message "{@P} &7Blood Diamonds (&cDisabled&7)"
+					wait 2 ticks
+					make player execute command "/sm"
+		if arg 1 is "webcage" or "wc":
+			if {webc} is not set:
+				set {scen.wc} to true
+				set {webc} to true
+				set {sm::webc} to "&eEnabled"
+				close player's inventory
+				message "{@P} &7Webcage (&eEnabled&7)"
+				wait 2 ticks
+				make player execute command "/sm"
+			else:
+				if {webc} is true:
+					delete {scen.wc}
+					delete {webc}
+					set {sm::webc} to "&cDisabled"
+					close player's inventory
+					message "{@P} &7Webcage (&cDisabled&7)"
+					wait 2 ticks
+					make player execute command "/sm"
+		if arg 1 is "bleeding" or "bs":
+			if {bleedings} is not set:
+				set {scen.bs} to true
+				set {bleedings} to true
+				set {sm::bleedings} to "&eEnabled"
+				close player's inventory
+				message "{@P} &7Bleeding Sweets (&eEnabled&7)"
+				wait 2 ticks
+				make player execute command "/sm"
+			else:
+				if {bleedings} is true:
+					delete {scen.bs}
+					delete {bleedings}
+					set {sm::bleedings} to "&cDisabled"
+					close player's inventory
+					message "{@P} &7Bleeding Sweets (&cDisabled&7)"
+					wait 2 ticks
+					make player execute command "/sm"
+		if arg 1 is "cupid":
+			if {cupids} is not set:
+				set {scen.cp} to true
+				set {cupids} to true
+				set {sm::cupids} to "&eEnabled"
+				close player's inventory
+				message "{@P} &7Cupid (&eEnabled&7)"
+				wait 2 ticks
+				make player execute command "/sm"
+			else:
+				if {cupids} is true:
+					delete {scen.cp}
+					delete {cupids}
+					set {sm::cupids} to "&cDisabled"
+					close player's inventory
+					message "{@P} &7Cupid (&cDisabled&7)"
+					wait 2 ticks
+					make player execute command "/sm"
+		if arg 1 is "cc" or "cutclean":
+			if {cutclean} is not set:
+				set {scen.cc} to true
+				set {cutclean} to true
+				set {sm::cutclean} to "&eEnabled"
+				close player's inventory
+				message "{@P} &7Cutclean (&eEnabled&7)"
+				wait 2 ticks
+				make player execute command "/sm"
+			else:
+				if {cutclean} is true:
+					delete {scen.cc}
+					delete {cutclean}
+					set {sm::cutclean} to "&cDisabled"
+					close player's inventory
+					message "{@P} &7Cutclean (&cDisabled&7)"
+					wait 2 ticks
+					make player execute command "/sm"
+		if arg 1 is "hb" or "hasteyboys":
+			if {hb} is not set:
+				set {scen.hb} to true
+				set {hb} to true
+				set {sm::hb} to "&eEnabled"
+				close player's inventory
+				message "{@P} &7Hastey Boys (&eEnabled&7)"
+				wait 2 ticks
+				make player execute command "/sm"
+			else:
+				if {hb} is true:
+					delete {scen.hb}
+					delete {hb}
+					set {sm::hb} to "&cDisabled"
+					close player's inventory
+					message "{@P} &7Hastey Boys (&cDisabled&7)"
+					wait 2 ticks
+					make player execute command "/sm"
+		if arg 1 is "ti" or "teaminv":
+			if {ti} is not set:
+				set {scen.ti} to true
+				set {ti} to true
+				set {sm::ti} to "&eEnabled"
+				close player's inventory
+				message "{@P} &7Team Inventory (&eEnabled&7)"
+				console command "/teaminv enable"
+				wait 2 ticks
+				make player execute command "/sm"
+			else:
+				if {ti} is true:
+					delete {scen.ti}
+					delete {ti}
+					set {sm::ti} to "&cDisabled"
+					close player's inventory
+					message "{@P} &7Team Inventory  (&cDisabled&7)"
+					console command "/teaminv disable"
+					wait 2 ticks
+					make player execute command "/sm"
+		if arg 1 is "vs" or "vengeful" or "vengefulspirits":
+			if {VengefulSpirits} is not set:
+				set {scen.vs} to true
+				set {VengefulSpirits} to true
+				set {sm::venge} to "&eEnabled"
+				close player's inventory
+				message "{@P} &7Vengeful Spirits (&eEnabled&7)"
+				wait 2 ticks
+				make player execute command "/sm"
+			else:
+				if {VengefulSpirits} is true:
+					delete {scen.vs}
+					delete {VengefulSpirits}
+					set {sm::venge} to "&cDisabled"
+					close player's inventory
+					message "{@P} &7Vengeful Spirits (&cDisabled&7)"
+					wait 2 ticks
+					make player execute command "/sm"
+		if arg 1 is "timber":
+			if {timber} is not set:
+				set {scen.timber} to true
+				set {timber} to true
+				set {sm::timber} to "&eEnabled"
+				close player's inventory
+				message "{@P} &7Timber (&eEnabled&7)"
+				wait 2 ticks
+				make player execute command "/sm"
+			else:
+				if {timber} is true:
+					delete {scen.timber}
+					delete {timber}
+					set {sm::timber} to "&cDisabled"
+					close player's inventory
+					message "{@P} &7Timber (&cDisabled&7)"
+					wait 2 ticks
+					make player execute command "/sm"
+		if arg 1 is "nightm":
+			if {nightm} is not set:
+				set {scen.night} to true
+				set {nightm} to true
+				set {sm::nightm} to "&eEnabled"
+				close player's inventory
+				message "{@P} &7Nightmare Mode (&eEnabled&7)"
+				wait 2 ticks
+				make player execute command "/sm"
+			else:
+				if {nightm} is true:
+					delete {scen.night}
+					delete {nightm}
+					set {sm::nightm} to "&cDisabled"
+					close player's inventory
+					message "{@P} &7Nightmare Mode (&cDisabled&7)"
+					wait 2 ticks
+					make player execute command "/sm"
+		if arg 1 is "bare":
+			if {barebones} is not set:
+				set {scen.bare} to true
+				set {barebones} to true
+				set {sm::bare} to "&eEnabled"
+				close player's inventory
+				message "{@P} &7Barebones (&eEnabled&7)"
+				wait 2 ticks
+				make player execute command "/sm"
+			else:
+				if {barebones} is true:
+					delete {scen.bare}
+					delete {barebones}
+					set {sm::bare} to "&cDisabled"
+					close player's inventory
+					message "{@P} &7Barebones (&cDisabled&7)"
+					wait 2 ticks
+					make player execute command "/sm"
+		if arg 1 is "eggs":
+			if {eggs} is not set:
+				set {scen.eggs} to true
+				set {eggs} to true
+				set {sm::eggs} to "&eEnabled"
+				close player's inventory
+				message "{@P} &7Eggs (&eEnabled&7)"
+				set {eggnumbers::*} to 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, and 30
+				wait 2 ticks
+				make player execute command "/sm"
+			else:
+				if {eggs} is true:
+					delete {scen.eggs}
+					delete {eggs}
+					set {sm::eggs} to "&cDisabled"
+					close player's inventory
+					message "{@P} &7Eggs (&cDisabled&7)"
+					wait 2 ticks
+					make player execute command "/sm"
+		if arg 1 is "pve":
+			if {scen.pve} is not set:
+				set {scen.pve} to true
+				set {sm::pve} to "&eEnabled"
+				close player's inventory
+				message "{@P} &7Best PvE (&eEnabled&7)"
+				wait 2 ticks
+				make player execute command "/sm"
+			else:
+				if {scen.pve} is true:
+					delete {scen.pve}
+					set {sm::pve} to "&cDisabled"
+					close player's inventory
+					message "{@P} &7Best PvE (&cDisabled&7)"
+					wait 2 ticks
+					make player execute command "/sm"
+		if arg 1 is "swap":
+			if {scen.swap} is not set:
+				set {scen.swap} to true
+				set {sm::swap} to "&eEnabled"
+				close player's inventory
+				message "{@P} &7Player Swap (&eEnabled&7)"
+				wait 2 ticks
+				make player execute command "/sm"
+			else:
+				if {scen.swap} is true:
+					delete {scen.swap}
+					set {sm::swap} to "&cDisabled"
+					close player's inventory
+					message "{@P} &7Player Swap (&cDisabled&7)"
+					wait 2 ticks
+					make player execute command "/sm"
+		if arg 1 is "ab":
+			if {scen.assault} is not set:
+				set {scen.assault} to true
+				set {sm::assault} to "&eEnabled"
+				close player's inventory
+				message "{@P} &7Assault and Battery (&eEnabled&7)"
+				wait 2 ticks
+				make player execute command "/sm"
+			else:
+				if {scen.assault} is true:
+					delete {scen.assault}
+					set {sm::assault} to "&cDisabled"
+					close player's inventory
+					message "{@P} &7Assault and Battery (&cDisabled&7)"
+					wait 2 ticks
+					make player execute command "/sm"
+		if arg 1 is "rod":
+			if {scen.rod} is not set:
+				set {scen.rod} to true
+				set {sm::rod} to "&eEnabled"
+				close player's inventory
+				message "{@P} &7Rodless (&eEnabled&7)"
+				wait 2 ticks
+				make player execute command "/sm"
+			else:
+				if {scen.rod} is true:
+					delete {scen.rod}
+					set {sm::rod} to "&cDisabled"
+					close player's inventory
+					message "{@P} &7Rodless (&cDisabled&7)"
+					wait 2 ticks
+					make player execute command "/sm"
+		if arg 1 is "sh":
+			if {scen.sh} is not set:
+				set {scen.sh} to true
+				set {sm::sh} to "&eEnabled"
+				close player's inventory
+				message "{@P} &7Skyhigh (&eEnabled&7)"
+				wait 2 ticks
+				make player execute command "/sm"
+			else:
+				if {scen.sh} is true:
+					delete {scen.sh}
+					set {sm::sh} to "&cDisabled"
+					close player's inventory
+					message "{@P} &7Skyhigh (&cDisabled&7)"
+					wait 2 ticks
+					make player execute command "/sm"
+		if arg 1 is "rl":
+			if {scen.rl} is not set:
+				set {scen.rl} to true
+				set {sm::rl} to "&eEnabled"
+				close player's inventory
+				message "{@P} &7Rewarding Longshots (&eEnabled&7)"
+				wait 2 ticks
+				make player execute command "/sm"
+			else:
+				if {scen.rl} is true:
+					delete {scen.rl}
+					set {sm::rl} to "&cDisabled"
+					close player's inventory
+					message "{@P} &7Rewarding Longshots (&cDisabled&7)"
+					wait 2 ticks
+					make player execute command "/sm"
+		if arg 1 is "fg":
+			if {scen.fg} is not set:
+				set {scen.fg} to true
+				set {sm::fg} to "&eEnabled"
+				close player's inventory
+				message "{@P} &7Fast Getaway (&eEnabled&7)"
+				wait 2 ticks
+				make player execute command "/sm"
+			else:
+				if {scen.fg} is true:
+					delete {scen.fg}
+					set {sm::fg} to "&cDisabled"
+					close player's inventory
+					message "{@P} &7Fast Getaway (&cDisabled&7)"
+					wait 2 ticks
+					make player execute command "/sm"
+		if arg 1 is "genie":
+			if {scen.gen} is not set:
+				set {scen.gen} to true
+				set {sm::gen} to "&eEnabled"
+				close player's inventory
+				message "{@P} &7Genie (&eEnabled&7)"
+				wait 2 ticks
+				make player execute command "/sm"
+			else:
+				if {scen.gen} is true:
+					delete {scen.gen}
+					set {sm::gen} to "&cDisabled"
+					close player's inventory
+					message "{@P} &7Genie (&cDisabled&7)"
+					wait 2 ticks
+					make player execute command "/sm"
+	
+command /sudo [<player>] [<text>]:
+	permission: skript.op
+	trigger:
+		make arg-1 execute command "%arg 2%"
+
+command /bd [<text>]:
+	permission: skript.op
+	trigger:
+		if arg-1 is "enable":
+			if {bloodd} is not set:
+				set {bloodd} to true
+				broadcast "{@P} &eBlood Diamonds &7has been &eEnabled!"
+			else:
+				if {bloodd} is true:
+					message "{@P} &eBlood Diamonds &7is already &eEnabled"
+		if arg-1 is "disable":
+			if {bloodd} is true:
+				delete {bloodd}
+				broadcast "{@P} &cBlood Diamonds &7has been &cDisabled!"
+			else:
+				if {bloodd} is not set:
+					message "{@P} &cBlood Diamonds &7is already &cDisabled"
+on mine of diamond ore:
+	if {bloodd} is true:
+		damage player by 0.5 hearts
+		message "&cOuch!" to player
+			
+
+command /wc [<text>]:
+	permission: skript.op
+	trigger:
+		if arg-1 is "enable":
+			if {webc} is not set:
+				set {webc} to true
+				broadcast "{@P} &eWebcage &7has been &eEnabled!"
+			else:
+				if {webc} is true:
+					message "{@P} &eWebcage &7is already &eEnabled"
+		if arg-1 is "disable":
+			if {webc} is true:
+				delete {webc}
+				broadcast "{@P} &cWebcage &7has been &cDisabled!"
+			else:
+				if {webc} is not set:
+					message "{@P} &cWebcage &7is already &cDisabled"
+on death of player:
+	if {webc} is true:
+		set {_wcloc} to location of player
+		loop blocks in radius 10 around {_wcloc}:
+			set {_wcdistance} to rounded down distance between {_wcloc} and loop-block
+			{_wcdistance} is 4
+			loop-block is air
+			set block at loop-block to cobweb
+
+on command "/teaminv enable":
+	set {ti} to true
+on command "/teaminv disable":
+	delete {ti}
+
+
+command /bs [<text>]:
+	permission: skript.op
+	trigger:
+		if arg-1 is "enable":
+			if {bleedings} is not set:
+				set {bleedings} to true
+				message "{@P} &eBleeding Sweets &7has been &eEnabled!"
+			else:
+				if {bleedings} is true:
+					message "{@P} &eBleeding Sweets &7is already &eEnabled"
+		if arg-1 is "disable":
+			if {bleedings} is true:
+				delete {bleedings}
+				broadcast "{@P} &cBleeding Sweets &7has been &cDisabled!"
+			else:
+				if {bleedings} is not set:
+					message "{@P} &cBleeding Sweets &7is already &cDisabled"
+on death of player:
+	if {bleedings} is true:
+		drop 1 diamond at the player
+		drop 5 gold ingots at the player
+		drop 16 arrows at the player
+		drop 1 string at the player
+		drop 1 book at the player
+
+command /cupid [<text>]:
+	permission: skript.op
+	trigger:
+		if arg-1 is "enable":
+			if {cupids} is not set:
+				set {cupids} to true
+				message "{@P} &eCupid &7has been &eEnabled!"
+			else:
+				if {cupids} is true:
+					message "{@P} &eCupid &7is already &eEnabled"
+		if arg-1 is "disable":
+			if {cupids} is true:
+				delete {cupids}
+				broadcast "{@P} &cCupid &7has been &cDisabled!"
+			else:
+				if {cupids} is not set:
+					message "{@P} &cCupid &7is already &cDisabled"
+on damage of player:
+	if {cupids} is true:
+		damage was caused by projectile:
+			attacker is a player:
+				projectile is an arrow:
+					heal the attacker by 0.1
+
+
+command /cutclean <text>:
+	permission: skript.op
+	trigger:
+		if arg-1 is "enable" or "on":
+			set {Cutclean} to true
+			broadcast "{@P} &7Cutclean: &eEnabled"
+		if arg-1 is "disable" or "off":
+			delete {Cutclean}
+			broadcast "{@P} &7Cutclean: &cDisabled"
+
+on mine of iron ore:
+	if {CutClean} is true:
+		cancel the event
+		damage player's tool by 1
+		set event-block to air
+		if player has space for (1 of iron ingot):
+			give player (1 of iron ingot)
+		else:
+			place (1 of iron ingot) at event-block
+			message "{@P} Your inventory was full, so the ingot was placed at the block!"
+		drop 1 xp at player
+	
+on mine of gold ore:
+	if {CutClean} is true:
+		cancel the event
+		damage player's tool by 1
+		set event-block to air
+		if player has space for (1 of gold ingot):
+			give player (1 of gold ingot)
+		else:
+			place (1 of gold ingot) at event-block
+			message "{@P} Your inventory was full, so the ingot was placed at the block!"
+		drop 2 xp at player
+
+on death of a pig:
+	if {CutClean} is true:
+		clear drops
+		set {_variable} to {@VariableDrops}
+		if  {_variable} is true:
+			set block at the pig to chest
+			set {_chestloc} to location at the pig
+			set {_cookedporkchop} to a random integer between 1 and 3
+			if {_cookedporkchop} is 1:
+				add 1 cooked porkchop to the block at {_chestloc}
+			if {_cookedporkchop} is 2:
+				add 2 cooked porkchop to the block at {_chestloc}
+			if {_cookedporkchop} is 3:
+				add 3 cooked porkchop to the block at {_chestloc}
+			set the block at {_chestloc} to air
+		else:
+			drop 2 cooked porkchop at the pig
+		drop 1 xp at the pig
+ 
+on death of a cow:
+	if {CutClean} is true:
+		clear drops
+		set {_variable} to {@VariableDrops}
+		if  {_variable} is true:
+			set block at the cow to chest
+			set {_chestloc} to location at the cow
+			set {_steak} to a random integer between 1 and 2
+			if {_steak} is 1:
+				add 1 steak to the block at {_chestloc}
+			if {_steak} is 2:
+				add 2 steak to the block at {_chestloc}
+			set the block at {_chestloc} to air
+		else:
+			drop 2 steak at the cow
+		if  {_variable} is true:
+			set block at the cow to chest
+			set {_chestloc} to location at the cow
+			set {_leather} to a random integer between 1 and 2
+			if {_leather} is 1:
+				add 1 leather to the block at {_chestloc}
+			if {_leather} is 2:
+				add 2 leather to the block at {_chestloc}
+			set the block at {_chestloc} to air
+		else:
+			drop 1 leather at the cow
+		drop 1 xp at the cow
+ 
+on death of a sheep:
+	clear drops
+	if {CutClean} is true:
+		set {_variable} to {@VariableDrops}
+		if  {_variable} is true:
+			set block at the sheep to chest
+			set {_chestloc} to location at the sheep
+			set {_cookedmutton} to a random integer between 1 and 2
+			if {_cookedmutton} is 1:
+				add 1 cooked mutton to the block at {_chestloc}
+			if {_cookedmutton} is 2:
+				add 2 cooked mutton to the block at {_chestloc}
+			set the block at {_chestloc} to air
+		else:
+			drop 2 cooked mutton at the sheep
+		drop 1 xp at the sheep
+	else:
+		set {_variable} to {@VariableDrops}
+		if  {_variable} is true:
+			set block at the sheep to chest
+			set {_chestloc} to location at the sheep
+			set {_rawmutton} to a random integer between 1 and 2
+			if {_rawmutton} is 1:
+				add 1 raw mutton to the block at {_chestloc}
+			if {_rawmutton} is 2:
+				add 2 raw mutton to the block at {_chestloc}
+			set the block at {_chestloc} to air
+		else:
+			drop 2 raw mutton at the sheep
+		drop 1 xp at the sheep
+		stop
+ 
+on death of a chicken:
+	{CutClean} is true
+	clear drops
+	set {_variable} to {@VariableDrops}
+	if  {_variable} is true:
+		set block at the chicken to chest
+		set {_chestloc} to location at the chicken
+		set {_cookedchicken} to a random integer between 1 and 2
+		if {_cookedchicken} is 1:
+			add 1 cooked chicken to the block at {_chestloc}
+		if {_cookedchicken} is 2:
+			add 2 cooked chicken to the block at {_chestloc}
+		set the block at {_chestloc} to air
+	else:
+		drop 2 cooked chicken at the chicken
+	if  {_variable} is true:
+		set block at the chicken to chest
+		set {_chestloc} to location at the chicken
+		set {_feather} to a random integer between 1 and 2
+		if {_feather} is 1:
+			add 1 feather to the block at {_chestloc}
+		if {_feather} is 2:
+			add 2 feather to the block at {_chestloc}
+		set the block at {_chestloc} to air
+	else:
+		drop 2 feather at the chicken
+	drop 1 xp at the chicken
+	chance of 10%:
+		place 1 string at the chicken
+ 
+on death of a spider:
+	{CutClean} is true
+	clear drops
+	set {_variable} to {@VariableDrops}
+	if  {_variable} is true:
+		set block at the spider to chest
+		set {_chestloc} to location at the spider
+		set {_string} to a random integer between 1 and 2
+		if {_string} is 1:
+			add 1 string to the block at {_chestloc}
+		if {_string} is 2:
+			add 2 string to the block at {_chestloc}
+		set the block at {_chestloc} to air
+	else:
+		drop 2 string at the spider
+	chance of 30%:
+		drop 1 spider eye at the spider
+	drop 4 xp at the spider
+on death of wolf:
+	if {CutClean} is true:
+		chance of 95%:
+			place 1 424 at the wolf
+on death of villager:
+	if {CutClean} is true:
+		chance of 90%:
+			place 1 book at the villager 
+			place 1 413 at the villager
+on death of rabbit:
+	if {CutClean} is true:
+		clear the drops
+		place 2 412 at the rabbit
+		drop 1 xp at the rabbit
+
+command /skyhigh [<text>] [<player>]:
+	permission: skript.op
+	aliases: /sh
+	trigger:
+		if arg 1 is not set:
+			if arg 2 is not set:
+				message "{@P} &e/sh enable &7» Enable SkyHigh"
+				message "{@P} &e/sh disable &7» Disable SkyHigh"
+				message "{@P} &e/sh give &7» Give out starter items"
+				message "{@P} &e/sh give <player> &7» Give out starter items to a player"
+		if arg 1 is "enable":
+			if {skyhigh} is not set:
+				set {skyhigh} to true
+				broadcast "{@P} &7Skyhigh: &eEnabled"
+			else:
+				{skyhigh} is true:
+					message "{@P} &7Skyhigh: &eAlready Enabled"
+
+		if arg 1 is "disable":
+			if {skyhigh} is true:
+				delete {skyhigh}
+				broadcast "{@P} &7Skyhigh: &cDisabled"
+			else:
+				{skyhigh} is not set:
+					message "{@P} &7Skyhigh: &cAlready Disabled"
+		if arg 1 is "give":
+			if arg 2 is not set:
+				loop all players:
+					give 4 snow blocks to loop-player
+					give 2 pumpkins to loop-player
+					give 2 string to loop-player
+					give 16 feathers to loop-player
+					give 1 diamond shovel to loop-player
+					give 128 blue clay to loop-player
+					message "{@P} &7Starter items given!" to loop-player
+			else:
+				if arg 2 is set:
+					give 4 snow blocks to arg 2
+					give 2 pumpkins to arg 2
+					give 2 string to arg 2
+					give 16 feathers to arg 2
+					give 1 diamond shovel to arg 2
+					give 128 blue clay to arg 2
+					message "{@P} &7Starter items given by &e%command sender%&7!" to arg 2
+					message "{@P} &7Starter items given to &e%arg-2%&7!" to command sender
+every 30 seconds:
+	loop all players:
+		{skyhigh} is true:
+			loop-player's y-coordinate is below 100
+			damage the loop-player by 0.5 hearts
+			message "&cGet above y100 soon!" to loop-player
+
+command /vs [<text>]:
+	permission: skript.op
+	trigger:
+		if arg-1 is "enable" or "on":
+			if {VengefulSpirits} is not set:
+				set {VengefulSpirits} to true 
+				broadcast "{@P} &7Vengeful Spirits&8: &eEnabled"
+			else:
+				if {VengefulSpirits} is true:
+					message "{@P} &7Vengeful Spirits&8: &eAlready Enabled" to command sender
+		if arg-1 is "disable" or "off":
+			if {VengefulSpirits} is true:
+				delete {VengefulSpirits} 
+				broadcast "{@P} &7Vengeful Spirits&8: &cDisabled"
+			else:
+				if {VengefulSpirits} is not set:
+					message "{@P} &7Vengeful Spirits&8: &cAlready Disabled" to command sender
+			
+on death of player:
+	{VengefulSpirits} is true
+	wait 1 tick
+	if y-coordinate of victim is above 59:
+		spawn 1 ghast at location 1 above (location of event-player)
+	if y-coordinate of victim is below 60:
+		spawn 1 blaze at location 1 above (location of event-player)
+	set max health of last spawned entity to 15
+	heal last spawned entity
+	set name of last spawned entity to "%player%"
+ 
+on death of ghast:
+	{VengefulSpirits} is true
+	set {_Head} to name of victim
+	drop 1 player head named "%{_Head}%" at location 1 above (location of victim)
+
+on death of blaze:
+	{VengefulSpirits} is true
+	set {_Head} to name of victim
+	drop 1 player head named "%{_Head}%" at location 1 above (location of victim)
+ 
+on right click:
+	{VengefulSpirits} is true
+	player's tool is name tag
+	cancel the event
+	message "{@P} &7You cannot name things in this gamemode!"
+
+on mine:
+	event-block is oak wood or birch wood or acacia wood or dark oak wood or spruce wood:
+		{timber} is true:
+			set {_tloc.%player%.1} to location 20 meters below event-block
+			set {_tloc.%player%.2} to location 20 meters above event-block
+			set {_tloc.%player%.3} to location 5 meters above event-block
+			loop blocks within {_tloc.%player%.1} to {_tloc.%player%.2}:
+				block below loop-block is dirt or grass block:
+					block above loop-block is oak wood or birch wood or acacia wood or dark oak wood or spruce wood:
+						set {_tloc.%player%.1} to location 20 meters below event-block
+						set {_tloc.%player%.2} to location 20 meters above loop-block
+						set {_tloc.%player%.3} to location 5 meters above loop-block
+	loop blocks within {_tloc.%player%.1} to {_tloc.%player%.2}:
+		loop-block is oak wood or birch wood or acacia wood or dark oak wood or spruce wood:
+			break loop-block naturally
+			play raw sound "dig.wood" at player with pitch 0.8 volume 5
+			wait 1 ticks
+			loop blocks in radius 3 of loop-block:
+				loop-block-2 is oak wood or birch wood or wood:0 or dark oak wood or spruce wood:
+					break loop-block-2 naturally
+					play raw sound "dig.wood" at player with pitch 0.8 volume 5
+					wait 1 ticks
+
+
+on mine:
+	event-block is jungle wood:
+		block above event-block is jungle wood:
+			block below event-block is dirt or grass block:
+				{timber} is true:
+					set {tloc.%player%.1} to location of event-block
+					set {tloc.%player%.2} to location 40 meters above event-block
+					set {tloc.%player%.3} to location 23 meters above event-block
+	loop blocks within {tloc.%player%.1} to {tloc.%player%.2}:
+		wait 2 ticks
+		loop-block is jungle wood:
+			break loop-block naturally
+			play raw sound "dig.wood" at player with pitch 0.8 volume 5
+	loop blocks in radius 10 around {tloc.%player%.3}:
+		wait 1 ticks
+		loop-block is jungle leaves:
+			break loop-block naturally
+			play raw sound "dig.wood" at player with pitch 0.8 volume 5
+	delete {tloc.%player%.1}
+	delete {tloc.%player%.2}
+	delete {tloc.%player%.3}
+
+on spawn of creeper:
+	{nightm} is true:
+		apply speed 2 to the creeper for 999 days
+
+on explode:
+	{nightm} is true:
+		entity is creeper
+		spawn 5 silverfish at the creeper
+
+on death of creeper:
+	{nightm} is true:
+		chance of 50%:
+			wait 2 ticks
+			spawn a silverfish at the creeper
+
+on spawn of zombie:
+	{nightm} is true:
+		apply strength 2 to the zombie for 999 days
+
+on damage of zombie:
+	{nightm} is true:
+		damage was caused by burning:
+			chance of 50%:
+				cancel the event
+
+on death of zombie:
+	{nightm} is true:
+		spawn a skeleton at the zombie
+		chance of 20%:
+			equip the skeleton with a stone sword
+		apply speed 1 to the skeleton for 999 days
+
+on damage of player:
+	{nightm} is true:
+		damage was caused by projectile:
+			attacker is a skeleton:
+				apply poison 1 to the victim for 3 seconds
+
+on spawn of spider:
+	{nightm} is true
+	apply speed 4 to the spider for 999 days
+
+on death of spider:
+	{nightm} is true
+	set the block west of the spider to cobweb
+	set the block east of the spider to cobweb
+	set the block north of the spider to cobweb
+	set the block south of the spider to cobweb
+	drop 1 redstone dust west of the spider
+	drop 1 redstone dust east of the spider
+	drop 1 redstone dust north of the spider
+	drop 1 redstone dust south of the spider
+	drop 1 redstone dust northwest of the spider
+	drop 1 redstone dust southwest of the spider
+	drop 1 redstone dust northeast of the spider
+	drop 1 redstone dust southeast of the spider
+	wait 5 ticks
+	spawn 1 cave spider at spider
+on spawn of witch:
+	{nightm} is true
+	apply speed 5 to the witch for 999 days
+
+on damage:
+	{nightm} is true:
+		victim is a player:
+			attacker is an enderman:
+				ignite the victim for 3 seconds
+
+on damage of enderman:
+	{nightm} is true:
+		attacker is a player:
+			chance of 30%:
+				spawn a blaze at the victim
+
+command /playerswap [<text>]:
+	permission: skript.op
+	trigger:
+		if arg 1 is not set:
+			message "{@P} &e/playerswap enable &8» &7Starts the Timer!" to command sender
+			message "{@P} &e/playerswap disable &8» &7Stops the Timer!" to command sender
+			message "{@P} &e/pstime &8» &7Time before next swap!" to command sender
+		if arg 1 is "enable":
+			if {playerswap} is not set:
+				set {playerswap} to true
+				set {timeswap} to 300
+				broadcast "{@P} &7Player Swap&8: &eEnabled"
+			else:
+				if {playerswap} is true:
+					message "{@P} &7Player Swap&8: &eAlready Enabled!"
+		if arg 1 is "disable":
+			if {playerswap} is true:
+				delete {playerswap}
+				delete {timeswap}
+				broadcast "{@P} &7Player Swap&8: &cDisabled"
+			else:
+				if {playerswap} is not set:
+					message "{@P} &7Player Swap&8: &cAlready Disabled!"
+command /pstime:
+	trigger:
+		message "{@P} There are &e%{timeswap}% &7seconds left before the next Swap!" to command sender
+every second:
+	if {playerswap} is true:
+		subtract 1 from {timeswap}
+every second:
+	if {playerswap} is true:
+		if {timeswap} is less than 1:
+			set {timeswap} to 300
+			delete {playertp::*}
+			loop all players:
+				if {spec::%loop-player%} is not set:
+					if loop-player is not in "Pheo":
+						add loop-player to {playertp::*}
+			set {_swapp1} to (random element out of {playertp::*})
+			remove {_swapp1} from {playertp::*}
+			set {_x} to {_swapp1}'s x-coordinate
+			set {_y} to {_swapp1}'s y-coordinate
+			set {_z} to {_swapp1}'s z-coordinate
+			set {_world} to {_swapp1}'s world
+			set {playerloc.%{_swapp1}%} to (the location at {_x}, {_y}, {_z} of the world {_world})
+			wait 1 tick
+			set {_swapp2} to (random element out of {playertp::*})
+			remove {_swapp2} from {playertp::*}
+			set {_x2} to {_swapp2}'s x-coordinate
+			set {_y2} to {_swapp2}'s y-coordinate
+			set {_z2} to {_swapp2}'s z-coordinate
+			set {_world2} to {_swapp2}'s world
+			set {playerloc.%{_swapp2}%} to (the location at {_x2}, {_y2}, {_z2} of the world {_world2})
+			wait 1 tick
+			teleport {_swapp2} to {playerloc.%{_swapp1}%}
+			teleport {_swapp1} to {playerloc.%{_swapp2}%}
+			broadcast "{@P} &e%{_swapp1}% &7has been swapped with &e%{_swapp2}%&7!"
+			wait 1 tick
+			delete {_swapp2}
+			delete {_swapp1}
+			delete {playerloc.%{_swapp2}%}
+			delete {playerloc.%{_swapp1}%}
+command /barebones [<text>]:
+	permission: skript.op
+	trigger:
+		if arg 1 is "on":
+			set {barebones} to true
+			send "{@P} Barebones &eenabled"
+		else if arg 1 is "off":
+			delete {barebones}
+			send "{@P} Barebones &cDisabled"
+
+on mine of gold ore:
+	if {barebones} is true:
+		cancel the event
+		wait 2 ticks
+		set the block to air
+		drop 1 iron ingot
+
+
+on mine of diamond ore:
+	if {barebones} is true:
+		cancel the event
+		set the block to air
+		drop 1 iron ingot
+
+
+on craft of enchantment table:
+	if {barebones} is true:
+		cancel the event
+
+on craft of anvil:
+	if {barebones} is true:
+		cancel the event
+
+on craft of golden apple:
+	if {barebones} is true:
+		cancel the event
+
+on death of a player:
+	if {barebones} is true:
+		drop 1 golden apple at the victim
+		drop 1 diamond at the victim
+		drop 32 arrows at the victim
+		drop 2 string at the victim
+	
+
+command /bestpve [<text>] [<player>]:
+	permission: skript.op
+	trigger:
+		if arg 1 is not set:
+			if arg 2 is not set:
+				message "{@P} Correct Usage:" to command sender
+				message "{@P} &e/bestpve start" to command sender
+				message "{@P} &e/bestpve stop" to command sender
+				message "{@P} &e/bestpve add <player>" to command sender
+				message "{@P} &e/bestpve remove <player>" to command sender
+		if arg 1 is "start":
+			delete {pvetimer}
+			set {pvehealth::*} to 0
+			delete {pvelist::*}
+			delete {inpve::*}
+			set {pvetime} to 0
+			set {pvetimer} to true
+			loop all players:
+				if {spec::%loop-player%} is not set:
+					add loop-player to {pvelist::*}
+					set {inpve::%loop-player%} to true
+					set {pvetime} to 600
+					message "{@P} &eBest PvE &7game has started!" to loop-player
+					player command "/playsound random.orb %loop-player% ~ ~ ~ 10 1 1"
+					message "{@P} You have been &eadded &7to the Best PVE list" to loop-player
+		if arg 1 is "stop":
+			delete {pvetimer}
+			set {pvehealth::*} to 0
+			delete {pvelist::*}
+			delete {inpve::*}
+			set {pvetime} to 0
+			message "{@P} Best PVE timer has been stopped!" to command sender
+		if arg 1 is "add":
+			if arg 2 is set:
+				add arg 2 to {pvelist::*}
+				set {inpve::%arg-2%} to true
+				message "{@P} You have been &eadded &7to the PVE list!" to arg 2
+				message "{@P} You have been added &e%arg-2% &7to the PVE list!" to command sender
+		if arg 1 is "remove":
+			if arg 2 is set:
+				remove arg 2 from {pvelist::*}
+				delete {inpve::%arg-2%}
+				message "{@P} You have been &cremoved &7from the PVE list!" to arg 2
+				message "{@P} You have been removed &c%arg-2% &7from the PVE list!" to command sender
+
+
+every second:
+	if {pvetimer} is true:
+		remove 1 from {pvetime}
+every second:
+	if {pvetimer} is true:
+		if {pvetime} is less than 1:
+			broadcast "{@P} Hearts given to &eBest PVE &7players"
+			set {pvetime} to 600
+			loop all players:
+				if {inpve::%loop-player%} is true:
+					add 1 to {pvehealth::%loop-player%}
+					console command "/maxhealth %loop-player% %10+{pvehealth::%loop-player%}%"
+					heal loop-player by 1 heart
+					message "{@P} You have been given a heart!" to loop-player
+on damage of player:
+	if {pvetimer} is true:
+		if {inpve::%victim%} is true:
+			delete {inpve::%victim%}
+			message "{@P} You have been &cremoved &7from the Best PVE list!" to victim
+
+on death of player:
+	if {pvetimer} is true:
+		if {inpve::%attacker%} is not set:
+			set {inpve::%attacker%} to true
+			message "{@P} You have been &eadded &7back to the Best PVE list!" to attacker
+
+command /maxhealth [<player>] [<int>]:
+	permission: skript.op
+	trigger:
+		if arg 1 is set:
+			if arg 2 is set:
+				set the maximum health of the arg 1 to arg 2
+				message "{@P} You set the maxhealth of &e%arg-1% &7to &e%arg-2%"
+
+command /eggs [<text>]:
+	permission: skript.op
+	trigger:
+		if arg 1 is "on":
+			set {eggs} to true
+			send "{@P} Eggs &eEnabled"
+			set {eggnumbers::*} to 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, and 30
+		else if arg 1 is "off":
+			delete {eggs}
+			send "{@P} Eggs &cDisabled"
+on projectile hit:
+	{eggs} is true
+	projectile is egg
+	set {_chosenEggMob} to a random element of {eggnumbers::*}
+	if {_chosenEggMob} is 1:
+		spawn sheep at event-location
+	else if {_chosenEggMob} is 2:
+		spawn cow at event-location
+	else if {_chosenEggMob} is 3:
+		spawn chicken at event-location
+	else if {_chosenEggMob} is 4:
+		spawn zombie at event-location
+	else if {_chosenEggMob} is 5:
+		spawn giant at event-location
+	else if {_chosenEggMob} is 6:
+		spawn wither at event-location
+	else if {_chosenEggMob} is 7:
+		spawn mooshroom at event-location
+	else if {_chosenEggMob} is 8:
+		spawn skeleton at event-location
+	else if {_chosenEggMob} is 9:
+		spawn horse at event-location
+	else if {_chosenEggMob} is 10:
+		spawn donkey at event-location
+	else if {_chosenEggMob} is 11:
+		spawn mule at event-location
+	else if {_chosenEggMob} is 12:
+		spawn enderdragon at event-location
+	else if {_chosenEggMob} is 13:
+		spawn zombie pigman at event-location
+	else if {_chosenEggMob} is 14:
+		spawn wither skeleton at event-location
+	else if {_chosenEggMob} is 15:
+		spawn baby zombie at event-location
+	else if {_chosenEggMob} is 16:
+		spawn wolf at event-location
+	else if {_chosenEggMob} is 17:
+		spawn enderman at event-location
+	else if {_chosenEggMob} is 18:
+		spawn creeper at event-location
+	else if {_chosenEggMob} is 19:
+		spawn pig at event-location
+	else if {_chosenEggMob} is 20:
+		spawn silverfish at event-location
+	else if {_chosenEggMob} is 21:
+		spawn squid at event-location
+	else if {_chosenEggMob} is 22:
+		spawn ocelot at event-location
+	else if {_chosenEggMob} is 23:
+		spawn villager at event-location
+	else if {_chosenEggMob} is 24:
+		spawn witch at event-location
+	else if {_chosenEggMob} is 25:
+		spawn bat at event-location
+	else if {_chosenEggMob} is 26:
+		spawn magma cube at event-location
+	else if {_chosenEggMob} is 27:
+		spawn blaze at event-location
+	else if {_chosenEggMob} is 28:
+		spawn spider at event-location
+	else if {_chosenEggMob} is 29:
+		spawn slime at event-location
+	else if {_chosenEggMob} is 30:
+		spawn cave spider at event-location
+		
+on death of chicken:
+	{eggs} is true
+	chance of 20%:
+		drop 1 egg at victim
+
+on craft of fishing rod:
+	if {scen.rod} is true:
+		cancel the event
+		message "{@P} You are not allowed to craft fishing rods in Rodless!"
+
+command /updatehealth:
+	permission: skript.op
+	trigger:
+		loop all players:
+			damage loop-player by 0.5 hearts
+		wait 3 ticks
+		heal all players
+		loop all players:
+			invoke "updateTab" from loop-player
+
+on damage of player:
+	if {scen.rl} is true:
+		attacker is not in "Arena":
+			projectile exists
+			projectile is an arrow
+			attacker is a player
+			set {_ldist} to the rounded distance between the victim and the attacker
+			{_ldist} is more than 29
+			if {_ldist} is between 30 and 49:
+				give attacker 1 iron ingot
+				broadcast "{@P} &e%attacker% &7got a longshot of &e%{_ldist}% &7blocks on &c%victim%"
+			else if {_ldist} is between 50 and 99:
+				give attacker 1 iron ingot
+				give attacker 1 gold ingot
+			else if {_ldist} is between 100 and 199:
+				give attacker 1 iron ingot
+				give attacker 1 gold ingot
+				give attacker 1 diamond
+			else if {_ldist} is greater than 200:
+				give attacker 2 iron ingot
+				give attacker 3 gold ingot
+				give attacker 5 diamonds
+on death of player:
+	if {scen.fg} is true:
+		attacker is not in "Arena":
+			apply speed 2 to attacker for 1 minute
+			message "{@P} You now have Speed 2 for 1 minute!" to attacker
+
+command /genie [<text>] [<text>]: 
+	trigger:
+		if arg 1 is not set:
+			command sender has permission "skript.op":
+				message "{@P} &e/genie grant <player> &8» &7Gives 3 wishes to a player!"
+			command sender does not has permission "skript.op":
+				message "{@P} &e/genie wish &8» &7Lists all the items!"
+		if arg 1 is "kills":
+			if arg 2 is set:
+				command sender has permission "skript.op":
+					add 1 to {genkills::%arg-2%}
+		if arg 1 is "grant":
+			if arg 2 is set:
+				command sender has permission "skript.op":
+					delete {genkills::%arg-2%}
+					delete {wishes::%arg-2%}
+					set {genkills::%arg-2%} to 0
+					set {wishes::%arg-2%} to 3
+					message "{@P} Wishes given to &e%arg-2%" to command sender
+					message "{@P} Genie has begun!" to arg-2
+					message "{@P} &e/genie wish &7to view wishes!" to arg-2
+		if arg 1 is "start":
+			command sender has permission "skript.op":
+				delete {genkills::*}
+				delete {wishes::*}
+				loop all players:
+					set {genkills::%loop-player%} to 0
+					set {wishes::%loop-player%} to 3
+				broadcast "{@P} Genie has begun!"
+				broadcast "{@P} &e/genie wish &7to view wishes!"
+		if arg 1 is "give":
+			if arg 2 is "gapple":
+				if {genkills::%player%} is greater than -1:
+					if {wishes::%player%} is greater than 0:
+						if player has space for 1 golden apple:
+							give player 1 golden apple
+							remove 1 from {wishes::%player%}
+							message "{@P} You have wished for &7'&eGolden Apple&7'"
+							message "{@P} You have &e%{wishes::%player%}% &7wishes left"
+						else:
+							message "{@P} Make inventory space for that item!"
+			if arg 2 is "dsword":
+				if {genkills::%player%} is greater than -1:
+					if {wishes::%player%} is greater than 0:
+						if player has space for 1 diamond sword:
+							give player 1 diamond sword
+							remove 1 from {wishes::%player%}
+							message "{@P} You have wished for &7'&eDiamond Sword&7'"
+							message "{@P} You have &e%{wishes::%player%}% &7wishes left"
+						else:
+							message "{@P} Make inventory space for that item!"
+			if arg 2 is "anvil":
+				if {genkills::%player%} is greater than -1:
+					if {wishes::%player%} is greater than 0:
+						if player has space for 1 anvil:
+							give player 1 anvil
+							remove 1 from {wishes::%player%}
+							message "{@P} You have wished for &7'&eAnvil&7'"
+							message "{@P} You have &e%{wishes::%player%}% &7wishes left"
+						else:
+							message "{@P} Make inventory space for that item!"
+			if arg 2 is "head":
+				if {genkills::%player%} is greater than 0:
+					if {wishes::%player%} is greater than 0:
+						if player has space for 1 397:3:
+							give player 1 397:3
+							remove 1 from {wishes::%player%}
+							message "{@P} You have wished for &7'&ePlayer Head&7'"
+							message "{@P} You have &e%{wishes::%player%}% &7wishes left"
+						else:
+							message "{@P} Make inventory space for that item!"
+			if arg 2 is "sp1":
+				if {genkills::%player%} is greater than 0:
+					if {wishes::%player%} is greater than 0:
+						if player has space for 1 potion of:8194:
+							give player 1 373:8194
+							remove 1 from {wishes::%player%}
+							message "{@P} You have wished for &7'&eSpeed Potion&7'"
+							message "{@P} You have &e%{wishes::%player%}% &7wishes left"
+						else:
+							message "{@P} Make inventory space for that item!"
+			if arg 2 is "sr1":
+				if {genkills::%player%} is greater than 0:
+					if {wishes::%player%} is greater than 0:
+						if player has space for 1 potion of:8201:
+							give player 1 373:8201
+							remove 1 from {wishes::%player%}
+							message "{@P} You have wished for &7'&eStrength Potion&7'"
+							message "{@P} You have &e%{wishes::%player%}% &7wishes left"
+						else:
+							message "{@P} Make inventory space for that item!"
+			if arg 2 is "table":
+				if {genkills::%player%} is greater than 1:
+					if {wishes::%player%} is greater than 0:
+						if player has space for 1 enchantment table:
+							give player 1 enchantment table
+							remove 1 from {wishes::%player%}
+							message "{@P} You have wished for &7'&eEnchant Table&7'"
+							message "{@P} You have &e%{wishes::%player%}% &7wishes left"
+						else:
+							message "{@P} Make inventory space for that item!"
+			if arg 2 is "stand":
+				if {genkills::%player%} is greater than 1:
+					if {wishes::%player%} is greater than 0:
+						if player has space for 1 brewing stand:
+							give player 1 brewing stand
+							remove 1 from {wishes::%player%}
+							message "{@P} You have wished for &7'&eBrewing Stand&7'"
+							message "{@P} You have &e%{wishes::%player%}% &7wishes left"
+						else:
+							message "{@P} Make inventory space for that item!"
+			if arg 2 is "f3":
+				if {genkills::%player%} is greater than 1:
+					if {wishes::%player%} is greater than 0:
+						if player has space for 1 wooden sword:
+							give player 1 enchanted book of fortune 3
+							remove 1 from {wishes::%player%}
+							message "{@P} You have wished for &7'&eFortune 3&7'"
+							message "{@P} You have &e%{wishes::%player%}% &7wishes left"
+						else:
+							message "{@P} Make inventory space for that item!"
+			if arg 2 is "book":
+				if {genkills::%player%} is greater than 2:
+					if {wishes::%player%} is greater than 0:
+						if player has space for 15 bookshelves:
+							give player 15 bookshelves
+							remove 1 from {wishes::%player%}
+							message "{@P} You have wished for &7'&e15 Bookshelves&7'"
+							message "{@P} You have &e%{wishes::%player%}% &7wishes left"
+						else:
+							message "{@P} Make inventory space for that item!"
+			if arg 2 is "dore":
+				if {genkills::%player%} is greater than 2:
+					if {wishes::%player%} is greater than 0:
+						if player has space for 5 diamond ore:
+							give player 5 diamond ore
+							remove 1 from {wishes::%player%}
+							message "{@P} You have wished for &7'&e5 Diamond Ore&7'"
+							message "{@P} You have &e%{wishes::%player%}% &7wishes left"
+						else:
+							message "{@P} Make inventory space for that item!"
+			if arg 2 is "sp2":
+				if {genkills::%player%} is greater than 2:
+					if {wishes::%player%} is greater than 0:
+						if player has space for 1 potion of:8226:
+							give player 373:8226
+							remove 1 from {wishes::%player%}
+							message "{@P} You have wished for &7'&eSpeed Potion 2&7'"
+							message "{@P} You have &e%{wishes::%player%}% &7wishes left"
+						else:
+							message "{@P} Make inventory space for that item!"
+			if arg 2 is "wart":
+				if {genkills::%player%} is greater than 2:
+					if {wishes::%player%} is greater than 0:
+						if player has space for 8 nether wart:
+							give player 8 nether wart
+							remove 1 from {wishes::%player%}
+							message "{@P} You have wished for &7'&eNether Wart&7'"
+							message "{@P} You have &e%{wishes::%player%}% &7wishes left"
+						else:
+							message "{@P} Make inventory space for that item!"
+			if arg 2 is "health":
+				if {genkills::%player%} is greater than 3:
+					if {wishes::%player%} is greater than 0:
+						if player has space for 1 potion of:8229:
+							give player 373:8229
+							remove 1 from {wishes::%player%}
+							message "{@P} You have wished for &7'&eInstant Health 2&7'"
+							message "{@P} You have &e%{wishes::%player%}% &7wishes left"
+						else:
+							message "{@P} Make inventory space for that item!"
+			if arg 2 is "xp":
+				if {genkills::%player%} is greater than 3:
+					if {wishes::%player%} is greater than 0:
+						if player has space for 128 384:
+							give player 128 384
+							remove 1 from {wishes::%player%}
+							message "{@P} You have wished for &7'&eXP Bottles&7'"
+							message "{@P} You have &e%{wishes::%player%}% &7wishes left"
+						else:
+							message "{@P} Make inventory space for that item!"
+			if arg 2 is "glow":
+				if {genkills::%player%} is greater than 3:
+					if {wishes::%player%} is greater than 0:
+						if player has space for 1 glowstone:
+							give player 1 glowstone
+							remove 1 from {wishes::%player%}
+							message "{@P} You have wished for &7'&eGlowstone&7'"
+							message "{@P} You have &e%{wishes::%player%}% &7wishes left"
+						else:
+							message "{@P} Make inventory space for that item!"
+			if arg 2 is "rod":
+				if {genkills::%player%} is greater than 3:
+					if {wishes::%player%} is greater than 0:
+						if player has space for 1 blaze rod:
+							give player 1 blaze rod
+							remove 1 from {wishes::%player%}
+							message "{@P} You have wished for &7'&eBlaze Rod&7'"
+							message "{@P} You have &e%{wishes::%player%}% &7wishes left"
+						else:
+							message "{@P} Make inventory space for that item!"
+			if arg 2 is "obby":
+				if {genkills::%player%} is greater than 4:
+					if {wishes::%player%} is greater than 0:
+						if player has space for 64 obsidian:
+							give player 64 obsidian
+							remove 1 from {wishes::%player%}
+							message "{@P} You have wished for &7'&eObsidian&7'"
+							message "{@P} You have &e%{wishes::%player%}% &7wishes left"
+						else:
+							message "{@P} Make inventory space for that item!"
+			if arg 2 is "ingot":
+				if {genkills::%player%} is greater than 4:
+					if {wishes::%player%} is greater than 0:
+						if player has space for 8 gold ingots:
+							give player 8 gold ingots
+							remove 1 from {wishes::%player%}
+							message "{@P} You have wished for &7'&eGold Ingots&7'"
+							message "{@P} You have &e%{wishes::%player%}% &7wishes left"
+						else:
+							message "{@P} Make inventory space for that item!"
+			if arg 2 is "soul":
+				if {genkills::%player%} is greater than 4:
+					if {wishes::%player%} is greater than 0:
+						if player has space for 4 soul sand:
+							give player 4 soul sand
+							remove 1 from {wishes::%player%}
+							message "{@P} You have wished for &7'&eSoul Sand&7'"
+							message "{@P} You have &e%{wishes::%player%}% &7wishes left"
+							player command "/playsound random.orb %player% ~ ~ ~ 10 1 1"
+						else:
+							message "{@P} Make inventory space for that item!"
+			if arg 2 is "wither":
+				if {genkills::%player%} is greater than 4:
+					if {wishes::%player%} is greater than 0:
+						if player has space for 3 397:1:
+							give player 3 397:1
+							remove 1 from {wishes::%player%}
+							message "{@P} You have wished for &7'&eWither Skulls&7'"
+							message "{@P} You have &e%{wishes::%player%}% &7wishes left"
+							player command "/playsound random.orb %player% ~ ~ ~ 10 1 1"
+						else:
+							message "{@P} Make inventory space for that item!"
+		if arg 1 is "reset":
+			delete {genkills::*}
+			delete {wishes::*}
+			message "{@P} Genie reset!"
+		if arg 1 is "tier1":
+			close player's inventory
+			wait 2 ticks
+			open chest with 1 row named "&eTier 1:" to player
+			format slot 0 of player with golden apple named "&7Golden Apple" with lore "&6» &eClick to accept!" to run "sudo %player% genie give gapple"
+			format slot 1 of player with diamond sword named "&7Diamond Sword" with lore "&6» &eClick to accept!" to run "sudo %player% genie give dsword"
+			format slot 2 of player with anvil named "&7Anvil" with lore "&6» &eClick to accept!" to run "sudo %player% genie give anvil"
+		if arg 1 is "tier2":
+			close player's inventory
+			wait 2 ticks
+			open chest with 1 row named "&eTier 2:" to player
+			format slot 0 of player with 397:3 named "&7Player Head" with lore "&6» &eClick to accept!" to run "sudo %player% genie give head"
+			format slot 1 of player with 373:8194 named "&7Speed Potion" with lore "&6» &eClick to accept!" to run "sudo %player% genie give sp1"
+			format slot 2 of player with 373:8201 named "&7Strength Potion" with lore "&6» &eClick to accept!" to run "sudo %player% genie give sr1"
+		if arg 1 is "tier3":
+			close player's inventory
+			wait 2 ticks
+			open chest with 1 row named "&eTier 3:" to player
+			format slot 0 of player with enchantment table named "&7Enchant Table" with lore "&6» &eClick to accept!" to run "sudo %player% genie give table"
+			format slot 1 of player with brewing stand named "&7Brewing Stand" with lore "&6» &eClick to accept!" to run "sudo %player% genie give stand"
+			format slot 2 of player with enchanted book named "&7Fortune 3" with lore "&6» &eClick to accept!" to run "sudo %player% genie give f3"
+		if arg 1 is "tier4":
+			close player's inventory
+			wait 2 ticks
+			open chest with 1 row named "&eTier 4:" to player
+			format slot 0 of player with bookshelf named "&715 Bookshelves" with lore "&6» &eClick to accept!" to run "sudo %player% genie give book"
+			format slot 1 of player with diamond ore named "&75 Diamond Ore" with lore "&6» &eClick to accept!" to run "sudo %player% genie give dore"
+			format slot 2 of player with 373:8226 named "&7Speed 2 Potion" with lore "&6» &eClick to accept!" to run "sudo %player% genie give sp2"
+			format slot 3 of player with nether wart named "&78 Nether Wart" with lore "&6» &eClick to accept!" to run "sudo %player% genie give wart"
+		if arg 1 is "tier5":
+			close player's inventory
+			wait 2 ticks
+			open chest with 1 row named "&eTier 5:" to player
+			format slot 0 of player with 373:8229 named "&7Instant Health 2" with lore "&6» &eClick to accept!" to run "sudo %player% genie give health"
+			format slot 1 of player with 384 named "&7128 XP Bottles" with lore "&6» &eClick to accept!" to run "sudo %player% genie give xp"
+			format slot 2 of player with glowstone named "&7Glowstone Block" with lore "&6» &eClick to accept!" to run "sudo %player% genie give glow"
+			format slot 3 of player with blaze rod named "&7Blaze Rod" with lore "&6» &eClick to accept!" to run "sudo %player% genie give rod"
+		if arg 1 is "tier6":
+			close player's inventory
+			wait 2 ticks
+			open chest with 1 row named "&eTier 6:" to player
+			format slot 0 of player with obsidian named "&764 Obsidian" with lore "&6» &eClick to accept!" to run "sudo %player% genie give obby"
+			format slot 1 of player with gold ingot named "&78 Gold Ingots" with lore "&6» &eClick to accept!" to run "sudo %player% genie give ingot"
+			format slot 2 of player with soul sand named "&74 Soul Sand" with lore "&6» &eClick to accept!" to run "sudo %player% genie give soul"
+			format slot 3 of player with 397:1 named "&73 Wither Skulls" with lore "&6» &eClick to accept!" to run "sudo %player% genie give wither"
+		if arg 1 is "wish":
+			if {scen.gen} is true:
+				if {start.timer} is true:
+					if {wishes::%player%} is greater than 0:
+						if {genkills::%player%} is 0:
+							open chest with 1 row named "&eWishes:" to player
+							format slot 0 of player with lime wool named "&70 Kills" with lore "&6» &eClick to view!" to run "sudo %player% genie tier1"
+							format slot 1 of player with red wool named "&71 Kills" with lore "&6» &eClick to view!" to run "sudo %player% genie tier2"
+							format slot 2 of player with red wool named "&72 Kills" with lore "&6» &eClick to view!" to run "sudo %player% genie tier3"
+							format slot 3 of player with red wool named "&73 Kills" with lore "&6» &eClick to view!" to run "sudo %player% genie tier4"
+							format slot 4 of player with red wool named "&74 Kills" with lore "&6» &eClick to view!" to run "sudo %player% genie tier5"
+							format slot 5 of player with red wool named "&75+ Kills" with lore "&6» &eClick to view!" to run "sudo %player% genie tier6"
+						if {genkills::%player%} is 1:
+							open chest with 1 row named "&eWishes:" to player
+							format slot 0 of player with lime wool named "&70 Kills" with lore "&6» &eClick to view!" to run "sudo %player% genie tier1"
+							format slot 1 of player with lime wool named "&71 Kills" with lore "&6» &eClick to view!" to run "sudo %player% genie tier2"
+							format slot 2 of player with red wool named "&72 Kills" with lore "&6» &eClick to view!" to run "sudo %player% genie tier3"
+							format slot 3 of player with red wool named "&73 Kills" with lore "&6» &eClick to view!" to run "sudo %player% genie tier4"
+							format slot 4 of player with red wool named "&74 Kills" with lore "&6» &eClick to view!" to run "sudo %player% genie tier5"
+							format slot 5 of player with red wool named "&75+ Kills" with lore "&6» &eClick to view!" to run "sudo %player% genie tier6"
+						if {genkills::%player%} is 2:
+							open chest with 1 row named "&eWishes:" to player
+							format slot 0 of player with lime wool named "&70 Kills" with lore "&6» &eClick to view!" to run "sudo %player% genie tier1"
+							format slot 1 of player with lime wool named "&71 Kills" with lore "&6» &eClick to view!" to run "sudo %player% genie tier2"
+							format slot 2 of player with lime wool named "&72 Kills" with lore "&6» &eClick to view!" to run "sudo %player% genie tier3"
+							format slot 3 of player with red wool named "&73 Kills" with lore "&6» &eClick to view!" to run "sudo %player% genie tier4"
+							format slot 4 of player with red wool named "&74 Kills" with lore "&6» &eClick to view!" to run "sudo %player% genie tier5"
+							format slot 5 of player with red wool named "&75+ Kills" with lore "&6» &eClick to view!" to run "sudo %player% genie tier6"
+						if {genkills::%player%} is 3:
+							open chest with 1 row named "&eWishes:" to player
+							format slot 0 of player with lime wool named "&70 Kills" with lore "&6» &eClick to view!" to run "sudo %player% genie tier1"
+							format slot 1 of player with lime wool named "&71 Kills" with lore "&6» &eClick to view!" to run "sudo %player% genie tier2"
+							format slot 2 of player with lime wool named "&72 Kills" with lore "&6» &eClick to view!" to run "sudo %player% genie tier3"
+							format slot 3 of player with lime wool named "&73 Kills" with lore "&6» &eClick to view!" to run "sudo %player% genie tier4"
+							format slot 4 of player with red wool named "&74 Kills" with lore "&6» &eClick to view!" to run "sudo %player% genie tier5"
+							format slot 5 of player with red wool named "&75+ Kills" with lore "&6» &eClick to view!" to run "sudo %player% genie tier6"
+						if {genkills::%player%} is 4:
+							open chest with 1 row named "&eWishes:" to player
+							format slot 0 of player with lime wool named "&70 Kills" with lore "&6» &eClick to view!" to run "sudo %player% genie tier1"
+							format slot 1 of player with lime wool named "&71 Kills" with lore "&6» &eClick to view!" to run "sudo %player% genie tier2"
+							format slot 2 of player with lime wool named "&72 Kills" with lore "&6» &eClick to view!" to run "sudo %player% genie tier3"
+							format slot 3 of player with lime wool named "&73 Kills" with lore "&6» &eClick to view!" to run "sudo %player% genie tier4"
+							format slot 4 of player with lime wool named "&74 Kills" with lore "&6» &eClick to view!" to run "sudo %player% genie tier5"
+							format slot 5 of player with red wool named "&75+ Kills" with lore "&6» &eClick to view!" to run "sudo %player% genie tier6"
+						if {genkills::%player%} is greater than 4:
+							open chest with 1 row named "&eWishes:" to player
+							format slot 0 of player with lime wool named "&70 Kills" with lore "&6» &eClick to view!" to run "sudo %player% genie tier1"
+							format slot 1 of player with lime wool named "&71 Kills" with lore "&6» &eClick to view!" to run "sudo %player% genie tier2"
+							format slot 2 of player with lime wool named "&72 Kills" with lore "&6» &eClick to view!" to run "sudo %player% genie tier3"
+							format slot 3 of player with lime wool named "&73 Kills" with lore "&6» &eClick to view!" to run "sudo %player% genie tier4"
+							format slot 4 of player with lime wool named "&74 Kills" with lore "&6» &eClick to view!" to run "sudo %player% genie tier5"
+							format slot 5 of player with lime wool named "&75+ Kills" with lore "&6» &eClick to view!" to run "sudo %player% genie tier6"
+					else:
+						if {wishes::%player%} is less than 1: 
+							message "{@P} You are out of wishes!"
+							player command "/playsound random.orb %player% ~ ~ ~ 10 1 1"
+on death of player:
+	attacker is a player:
+		world of attacker is not "Pheo" or "Arena":
+			if {scen.gen} is true:
+				add 1 to {genkills::%attacker%}
+				delete {genkills::%victim%}
+				delete {wishes::%victim%}
+				message "{@P} Genie Tier upgraded to &e%{genkills::%attacker%}%" to attacker
+						
+			
+		
+command /scenset [<text>]:
+	permission: skript.op
+	trigger:
+		if arg 1 is not set:
+			message "{@P} &7List of scenarios:" to command sender
+			message "{@P} &7Command: &e/scenset HB" to command sender
+			message "{@P} &7Command: &e/scenset Cutclean" to command sender
+			message "{@P} &7Command: &e/scenset Skyhigh" to command sender
+			message "{@P} &7Command: &e/scenset Cupid" to command sender
+			message "{@P} &7Command: &e/scenset teaminv" to command sender
+			message "{@P} &7Command: &e/scenset Webcage" to command sender
+			message "{@P} &7Command: &e/scenset Bleeding" to command sender
+			message "{@P} &7Command: &e/scenset Blooddiamonds" to command sender
+			message "{@P} &7Command: &e/scenset Moles" to command sender
+			message "{@P} &7Command: &e/scenset Vengeful" to command sender
+			message "{@P} &7Command: &e/scenset SuperHeroes" to command sender
+			message "{@P} &7Command: &e/scenset Timber" to command sender
+			message "{@P} &7Command: &e/scenset Assault" to command sender
+			message "{@P} &7Command: &e/scenset Night" to command sender
+			message "{@P} &7Command: &e/scenset Swap" to command sender
+			message "{@P} &7Command: &e/scenset Bare" to command sender
+			message "{@P} &7Command: &e/scenset PvE" to command sender
+			message "{@P} &7Command: &e/scenset Reward" to command sender
+			message "{@P} &7Command: &e/scenset Fast" to command sender
+		if arg 1 is "HB":
+			set {scen.hb} to true
+			message "{@P} &eHastey Boys &7has been &eadded &7to &escenarios" to command sender
+		if arg 1 is "Cutclean":
+			set {scen.cc} to true
+			message "{@P} &eCutclean &7has been &eadded &7to &escenarios" to command sender
+		if arg 1 is "Skyhigh":
+			set {scen.sh} to true
+			message "{@P} &eSkyhigh &7has been &eadded &7to &escenarios" to command sender
+		if arg 1 is "cupid":
+			set {scen.cp} to true
+			message "{@P} &eCupid &7has been &eadded &7to &escenarios" to command sender
+		if arg 1 is "teaminv":
+			set {scen.ti} to true
+			message "{@P} &eTeam Inventory &7has been &eadded &7to &escenarios" to command sender
+		if arg 1 is "webcage":
+			set {scen.wc} to true
+			message "{@P} &eWebcage &7has been &eadded &7to &escenarios" to command sender
+		if arg 1 is "bleeding":
+			set {scen.bs} to true
+			message "{@P} &eBleeding Sweets &7has been &eadded &7to &escenarios" to command sender
+		if arg 1 is "blood" or "diamonds" or "bd" or "blooddiamonds":
+			set {scen.bd} to true
+			message "{@P} &eBlood Diamonds &7has been &eadded &7to &escenarios" to command sender
+		if arg 1 is "moles" or "mole":
+			set {scen.mla} to true
+			message "{@P} &eMoles &7have been &eadded &7to &escenarios" to command sender
+		if arg 1 is "vs" or "vengeful":
+			set {scen.vs} to true
+			message "{@P} &eVengeful Spirits &7have been &eadded &7to &escenarios" to command sender
+		if arg 1 is "super" or "sh" or "superheroes":
+			set {scen.super} to true
+			message "{@P} &eSuperHeroes &7have been &eadded &7to &escenarios" to command sender
+		if arg 1 is "timber":
+			set {scen.timber} to true
+			message "{@P} &eTimber &7have been &eadded &7to &escenarios" to command sender
+		if arg 1 is "night":
+			set {scen.night} to true
+			message "{@P} &eNightmare Mode &7has been &eadded &7to &escenarios" to command sender
+		if arg 1 is "assault":
+			set {scen.assault} to true
+			message "{@P} &eAssault and Battery &7has been &eadded &7to &escenarios" to command sender
+		if arg 1 is "swap":
+			set {scen.swap} to true
+			message "{@P} &ePlayerSwap &7has been &eadded &7to &escenarios" to command sender
+		if arg 1 is "bare":
+			set {scen.bare} to true
+			message "{@P} &ePlayerSwap &7has been &eadded &7to &escenarios" to command sender
+		if arg 1 is "pve":
+			set {scen.pve} to true
+			message "{@P} &eBest PvE &7has been &eadded &7to &escenarios" to command sender
+		if arg 1 is "rod":
+			set {scen.rod} to true
+			message "{@P} &eRodless &7has been &eadded &7to &escenarios" to command sender
+		if arg 1 is "reward":
+			set {scen.rl} to true
+			message "{@P} &eRewarding Longshots &7has been &eadded &7to &escenarios" to command sender
+		if arg 1 is "fast":
+			set {scen.fg} to true
+			message "{@P} &eFast Getaway &7has been &eadded &7to &escenarios" to command sender
+		if arg 1 is "genie":
+			set {scen.gen} to true
+			message "{@P} &eGeniw &7has been &eadded &7to &escenarios" to command sender
+		if arg 1 is "reset":
+			if {scen.cc} is true:
+				delete {scen.cc}
+			if {scen.hb} is true:
+				delete {scen.hb}
+			if {scen.sh} is true:
+				delete {scen.sh}
+			if {scen.cp} is true:
+				delete {scen.cp}
+			if {scen.ti} is true:
+				delete {scen.ti}
+			if {scen.wc} is true:
+				delete {scen.wc}
+			if {scen.bs} is true:
+				delete {scen.bs}
+			if {scen.bd} is true:
+				delete {scen.bd}
+			if {scen.mla} is true:
+				delete {scen.mla}
+			if {scen.vs} is true:
+				delete {scen.vs}
+			if {scen.super} is true:
+				delete {scen.super}
+			if {scen.timber} is true:
+				delete {scen.timber}
+			if {scen.night} is true:
+				delete {scen.night}
+			if {scen.assault} is true:
+				delete {scen.assault}
+			if {scen.swap} is true:
+				delete {scen.swap}
+			if {scen.swap} is true:
+				delete {scen.bare}
+			if {scen.pve} is true:
+				delete {scen.pve}
+			if {scen.rod} is true:
+				delete {scen.rod}
+			if {scen.rl} is true:
+				delete {scen.rl}
+			if {scen.fg} is true:
+				delete {scen.fg}
+			if {scen.gen} is true:
+				delete {scen.gen}
+			message "{@P} &7Scenario list &ereloaded" to command sender
+			delete {sceno}
+
+command /scen:
+	trigger:
+		set {sceno} to 0
+		open chest with 2 rows named "{@P} &eScenarios" to player
+		if {scen.hb} is true:
+			format slot {sceno} of command sender with a diamond pickaxe of efficiency 3 named "&cHastey Boys" with lore "&7» &eAll of your tools get efficiency 3, ||   &eif for some reason they don't do /hbe!" to be unstealable
+			add 1 to {sceno}
+		if {scen.cc} is true:
+			format slot {sceno} of command sender with a gold ingot named "&cCutclean" with lore "&7» &eAll food drops will be cooked, ||   &eand any raw material will drop smelted!" to be unstealable
+			add 1 to {sceno}
+		if {scen.sh} is true:
+			format slot {sceno} of command sender with a snowblock named "&cSkyhigh" with lore "&7» &eAfter 50 minutes you must be above y100, ||   &eif you're not you will take 0.5 hearts every 30 seconds!" to be unstealable
+			add 1 to {sceno}
+		if {scen.cp} is true:
+			format slot {sceno} of command sender with a arrow named "&cCupid" with lore "&7» &eHeal 1%% when you shoot a player" to be unstealable
+			add 1 to {sceno}
+		if {scen.ti} is true:
+			format slot {sceno} of command sender with a chest named "&cTeam Inventory" with lore "&7» &eYou share a chest-sized inventory ||   &ewith your team, &eaccessible through /ti!" to be unstealable
+			add 1 to {sceno}
+		if {scen.wc} is true:
+			format slot {sceno} of command sender with a cobweb named "&cWebcage" with lore "&7» &eWhen a player dies, a dome ||   &eof cobweb spawns around their loot!" to be unstealable
+			add 1 to {sceno}
+		if {scen.bs} is true:
+			format slot {sceno} of command sender with a redstone dust named "&cBleeding Sweets" with lore "&7» &eWhen a player dies, they drop 1 diamond, ||   &e5 gold, 1 book, 2 string and 16 arrows ||   &ewith their main loot!" to be unstealable
+			add 1 to {sceno}
+		if {scen.bd} is true:
+			format slot {sceno} of command sender with a diamond named "&cBlood Diamonds" with lore "&7» &eWhen you mine a diamond, you take 0.5 hearts" to be unstealable
+			add 1 to {sceno}
+		if {scen.mla} is true:
+			format slot {sceno} of command sender with a 397:1 named "&cMoles" with lore "&7» &eAt pvp, a random person on your team will become a Mole! ||   &eYou're goal is to kill the Mole, while the Mole's ||   &egoal is to kill you and meetup with other Moles!" to be unstealable
+			add 1 to {sceno}
+		if {scen.vs} is true:
+			format slot {sceno} of command sender with a ghast tear named "&cVengeful Spirits" with lore "&7» &eWhen a player dies, a ghast or blaze will spawn at their ||   &ebody, killing the mob will drop the player's head" to be unstealable
+			add 1 to {sceno}
+		if {scen.super} is true:
+			format slot {sceno} of command sender with a water bottle named "&cSuperHeroes" with lore "&7» &eEach of your teamates will be assigned a power, the ||   &epowers are consisting of Speed, Strength, Resistance, ||   &eHealth Boost, Invisibility, and Jump Boost." to be unstealable
+			add 1 to {sceno}
+		if {scen.timber} is true:
+			format slot {sceno} of command sender with a 17 named "&cTimber" with lore "&7» &eWhole tree falls when you chop it!" to be unstealable
+			add 1 to {sceno}
+		if {scen.night} is true:
+			format slot {sceno} of command sender with a 383:54 named "&cNightmare Mode" with lore "&7» &eMobs are much harder! Creepers get ||  &espeed 2, and spawn silverfish on death! ||  &eZombies have strength two! Skeletons ||  &ehave poision arrows! Spiders spawn ||  &eCave Spiders on death with cobweb. ||  &eEnderman could spawn blaze on damage!" to be unstealable
+			add 1 to {sceno}
+		if {scen.assault} is true:
+			format slot {sceno} of command sender with a diamond sword named "&cAssault and Battery" with lore "&7» &eOne player on your team will ||   &eonly be allowed to use a bow! ||   &eThe other will only be ||   &eallowed to use a sword! ||   &eWhen one teamate dies, the ||   &ealive teamate may use both weapons!" to be unstealable
+			add 1 to {sceno}
+		if {scen.swap} is true:
+			format slot {sceno} of command sender with a player head named "&cPlayer Swap" with lore "&7» &eEvery 5 minutes, two players swap positions!" to be unstealable
+			add 1 to {sceno}
+		if {scen.bare} is true:
+			format slot {sceno} of command sender with a golden apple named "&cBarebones" with lore "&7» &eYou can't mine gold or diamonds. Also no enchants! ||   &eYou also can't craft golden apples, but you ||   &eget 1 diamond, 32 arrows, 2 string and ||   &ea golden apple from kills!" to be unstealable
+			add 1 to {sceno}
+		if {scen.eggs} is true:
+			format slot {sceno} of command sender with a egg named "&cEggs" with lore "&7» &eThrow an egg to spawn a random mob!" to be unstealable
+			add 1 to {sceno}
+		if {scen.pve} is true:
+			format slot {sceno} of command sender with a lava bucket named "&cBest PvE" with lore "&7» &eTaking damage will take you off the ||   &eBest PvE list. Being on the Best PvE list ||   &ewill result in 1 permanent heart every ||   &e10 minutes!" to be unstealable
+			add 1 to {sceno}
+		if {scen.rod} is true:
+			format slot {sceno} of command sender with a fishing rod named "&cRodless" with lore "&7» &eYou can't craft fishing rods!" to be unstealable
+			add 1 to {sceno}
+		if {scen.rl} is true:
+			format slot {sceno} of command sender with a bow named "&cRewarding Lonshots" with lore "&7» &eShooting some one gives you rewards ||   &ebased on the distance! These can ||   &ebe Diamonds, Gold or Iron!" to be unstealable
+			add 1 to {sceno}
+		if {scen.fg} is true:
+			format slot {sceno} of command sender with diamond boots named "&cFast Getaway" with lore "&7» &eKilling some one gives you Speed 2 for 1 minute!" to be unstealable
+			add 1 to {sceno}
+		if {scen.gen} is true:
+			format slot {sceno} of command sender with nether star named "&cGenie" with lore "&7» &eYou have 3 wishes that you ||   &emay use on items in different ||   &etiers. You gain tiers by getting ||   &ekills! Tiers get better per kill!" to be unstealable
+			add 1 to {sceno}
+		loop 18-{sceno} times:
+			format slot {sceno} of player with gray stained glass pane named " " to be unstealable
+			add 1 to {sceno}

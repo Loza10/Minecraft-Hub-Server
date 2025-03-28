@@ -1,0 +1,112 @@
+﻿options:
+	P: &7[&cPhoenix&7]
+
+command /pregencancel:
+	permission: skript.host
+	trigger:
+		player command "/wb fill cancel"
+		message "{@P} &7Pregen cancelled...."
+		execute console command "/motd remove 1"
+		execute console command "/motd add &eFollow us on Twitter!&7 -» &c@PheonixUHC &7«-%nl%&7» Matches: &eNo Upcoming Matches&7!"
+command /pregenstart:
+	permission: skript.host
+	trigger:
+		close player's inventory
+		message "{@P} &7World Creation Starting...."
+		wait 1 tick
+		console command "/mv create %{pregenworld}% normal"
+		wait 5 ticks
+		message "{@P} &7World Creation Complete!"
+		message "{@P} &7Stand still, pregen process starting..."
+		console command "/mv tp %player% %{pregenworld}%"
+		set player's gamemode to creative
+		wait 5 ticks
+		player command "/tppos 0 100 0"
+		player command "/gamerule sendCommandFeedback false"
+		player command "/worldborder set %{bordersize}*2%"
+		wait 2 ticks
+		execute player command "/wb shape square"
+		wait 0.1 second
+		execute player command "/wb set %{bordersize}% %{bordersize}%"
+		wait 0.1 second
+		execute player command "/wb fill %{speedamt}%"
+		wait 0.1 second
+		execute player command "/wb fill confirm"
+		send "{@P} &ePregen Started&7! &eWorld&7: &c%{pregenworld}% &7| &eRadius&7: &c%{bordersize}% &7| &eSpeed&7: &c%{speedamt}% &7|" to all ops
+		message "{@P} &e/pregencancel &7to stop the process"
+
+
+command /stepcancel:
+	permission: skript.host
+	trigger:
+		close player's inventory
+		message "{@P} All pregen settings have been &ereset!"
+
+command /nextstep:
+	permission: skript.host
+	trigger:
+		close player's inventory
+		wait 1 tick
+		set {speedamt} to 400
+		open chest with 1 rows named "&ePregen Speed" to player
+		format slot 8 of player with arrow named "&aStart Pregen" with lore "&8» &aClick to start!" to run "sudo %player% pregenstart"
+		format slot 6 of player with lime wool named "&aAdd 50" with lore "&8» &a+50 Chunks" to run "sudo %player% speedint add 50"
+		format slot 5 of player with lime wool named "&aAdd 100" with lore "&8» &a+100 Chunks" to run "sudo %player% speedint add 100"
+		format slot 4 of player with water bottle named "&eSpeed" with lore "&8» &c%{speedamt}%" to be unstealable
+		format slot 3 of player with red wool named "&cRemove 100" with lore "&8» &c-100 Chunks" to run "sudo %player% speedint remove 100"
+		format slot 2 of player with red wool named "&cRemove 50" with lore "&8» &c-50 Chunks" to run "sudo %player% speedint remove 50"
+		format slot 0 of player with redstone named "&cCancel" with lore "&8» &cCancel Process!" to run "sudo %player% stepcancel"
+	
+command /pregen [<text>]:
+	permission: skript.host
+	trigger:
+		if arg 1 is not set:
+			message "{@P} Please specify a world name!"
+		if arg 1 is set:
+			set {pregenworld} to arg 1
+			message "{@P} World Name: &e%{pregenworld}%"
+			set {bordersize} to 1000
+			open chest with 1 rows named "&eBorder Size" to player
+			format slot 8 of player with arrow named "&aNext Option" with lore "&8» &aClick to view!" to run "sudo %player% nextstep"
+			format slot 6 of player with lime wool named "&aAdd 50" with lore "&8» &a+50 Blocks" to run "sudo %player% borderint add 50"
+			format slot 5 of player with lime wool named "&aAdd 100" with lore "&8» &a+100 Blocks" to run "sudo %player% borderint add 100"
+			format slot 4 of player with barrier named "&eSize" with lore "&8» &c%{bordersize}%" to be unstealable
+			format slot 3 of player with red wool named "&cRemove 100" with lore "&8» &c-100 Blocks" to run "sudo %player% borderint remove 100"
+			format slot 2 of player with red wool named "&cRemove 50" with lore "&8» &c-50 Blocks" to run "sudo %player% borderint remove 50"
+			format slot 0 of player with redstone named "&cCancel" with lore "&8» &cCancel Process!" to run "sudo %player% stepcancel"
+
+command /borderint [<text>] [<integer>]:
+	permission: skript.host
+	trigger:
+		if arg 1 is "add":
+			if arg 2 is set:
+				add arg 2 to {bordersize}
+				message "{@P} Bordersize set to &e%{bordersize}%"
+		if arg 1 is "remove":
+			if arg 2 is set:
+				remove arg 2 from {bordersize}
+				message "{@P} Bordersize set to &c%{bordersize}%"
+
+command /speedint [<text>] [<integer>]:
+	permission: skript.host
+	trigger:
+		if arg 1 is "add":
+			if arg 2 is set:
+				add arg 2 to {speedamt}
+				message "{@P} Pregen Speed set to &e%{speedamt}%"
+		if arg 1 is "remove":
+			if arg 2 is set:
+				remove arg 2 from {speedamt}
+				message "{@P} Pregen Speed set to &c%{speedamt}%"
+on world change:
+	player's gamemode is creative:
+		wait 5 ticks
+		set player's gamemode to creative
+on world change:
+	player's gamemode is spectator:
+		wait 5 ticks
+		set player's gamemode to spectator
+on world change:
+	player's gamemode is survival:
+		wait 5 ticks
+		set player's gamemode to survival

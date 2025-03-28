@@ -1,0 +1,348 @@
+﻿options:
+	P: &7[&cPhoenix&7]
+
+command /simsmu [<text>]:
+	permission: skript.host
+	trigger:
+		if arg 1 is "start":
+			set {joinable} to true
+			set {simsdamage} to true
+			loop all players:
+				if {insims::%loop-player%} is true:
+					message "{@P} &7Scattering all players...." to loop-player
+					wait 2 ticks
+					clear the inventory of the loop-player
+					heal the loop-player by 10 hearts
+					set the loop-player's food level to 10
+					console command "/sca Sims 198 %loop-player% 25 0 0"
+					console command "/rea %loop-player%"
+			console command "/simskit randomize"
+			loop all players:
+				if {insims::%loop-player%} is true:
+					message "{@P} Scatter Complete!" to loop-player
+					wait 5 ticks
+					heal the loop-player by 10 hearts
+			broadcast "{@P} &7You have invulnerability for 10 seconds!"
+			wait 10 seconds
+			delete {simsdamage}
+			broadcast "{@P} &7You not longer have invulnerability!"
+		if arg 1 is "reset":
+			delete {musims::*}
+			delete {insims::*}
+			set {numqueue} to 0
+			delete {simstart}
+			delete {joinable}
+			broadcast "{@P} &7Meetup Sims have been &creset!"
+		if arg 1 is "enable":
+			if {simsj} is not set:
+				set {simsj} to true
+				broadcast "{@P} &7Meetup Sims&8: &eEnabled&7!"
+			else:
+				if {simsj} is true:
+					message "{@P} &7Sims already enabled!"
+		if arg 1 is "disable":
+			if {simsj} is true:
+				delete {simsj}
+				broadcast "{@P} &7Meetup Sims&8: &cDisabled&7!"
+			else:
+				if {simsj} is not set:
+					message "{@P} &7Sims already disabled!"
+
+command /musims [<text>]:
+	trigger:
+		if arg 1 is "leave":
+			if {insims::%command sender%} is true:
+				remove player from {musims::*}
+				delete {insims::%command sender%}
+				remove 1 from {numqueue}
+				broadcast "{@P} &7Someone has left the Meetup Sims queue! &8(&c%{numqueue}%&8/&c16&8)"
+			else:
+				if {insims::%command sender%} is not set:
+					message "{@P} You are not in queue!"
+		if arg 1 is not set:
+			if {joinable} is not set:
+				if {simsj} is true:
+					if {insims::%command sender%} is not set:
+						if {numqueue} is less than 30:
+							add player to {musims::*}
+							set {insims::%command sender%} to true
+							add 1 to {numqueue}
+							broadcast "{@P} &e%command sender% &7is now in Meetup Sims queue &8(&c%{numqueue}%&8/&c30&8)"
+							wait 4 ticks
+							if {simstart} is not set:
+								if {numqueue} is greater than 4:
+									broadcast "{@P} &7Meetup Sims starting in &e30 &7seconds!"
+									set {simstart} to true
+									wait 10 seconds
+									if {numqueue} is greater than 4:
+										broadcast "{@P} &7Meetup Sims starting in &e20 &7seconds!"
+										wait 10 seconds
+										if {numqueue} is greater than 4:
+											broadcast "{@P} &7Meetup Sims starting in &e10 &7seconds!"
+											wait 10 seconds
+											if {numqueue} is greater than 4:
+												broadcast "{@P} &7Meetup Sims starting now"
+												console command "/simsmu start"
+								else:
+									if {numqueue} is less than 5:
+										broadcast "{@P} &7We need at least 5 people to start!"
+			else:
+				if {joinable} is true:
+					message "{@P} &7There is already a Meetup Simulation!"
+				else:
+					if {simsj} is not set:
+						message "{@P} &7Meetup Sims is disabled"
+					else:
+						if {insims::%command sender%} is true:
+							message "{@P} &7You are already in the queue!" to command sender
+						else:
+							if {numqueue} is greater than 29:
+								message "{@P} &7The queue is currently full, please wait for this round to end!" to command sender
+command /simskit [<text>] [<player>]:
+	permission: skript.host
+	trigger:
+		if arg 1 is "normal":
+			if arg 2 is set:
+				equip arg-2 with an diamond chestplate of protection 2
+				equip arg-2 with an iron leggings of protection 2
+				equip arg-2 with an iron helmet of projectile protection 2
+				equip arg-2 with an diamond boots of projectile protection 2
+				give arg-2 a diamond sword of sharpness 2
+				give arg-2 a bow of power 2
+				give arg-2 1 water bucket
+				give arg-2 1 diamond pickaxe of efficiency 2
+				give arg-2 1 iron shovel of efficiency 2
+				give arg-2 64 baked potatoes
+				give arg-2 2 golden apples
+				give arg-2 64 cobblestone
+				give arg-2 1 fishing rod
+				set slot 17 of arg-2's inventory to 64 arrows
+				set slot 16 of arg-2's inventory to 64 arrows
+				set slot 15 of arg-2's inventory to 1 iron axe of efficiency 2
+		if arg 1 is "flame":
+			if arg 2 is set:
+				equip arg-2 with an iron chestplate of protection 1
+				equip arg-2 with an diamond leggings of protection 2
+				equip arg-2 with an iron helmet of projectile protection 1
+				equip arg-2 with an diamond boots of projectile protection 2
+				give arg-2 an iron sword of sharpness 2
+				give arg-2 a bow of power 1 and flame 1
+				give arg-2 1 water bucket
+				give arg-2 1 diamond pickaxe of efficiency 2
+				give arg-2 1 iron shovel of efficiency 2
+				give arg-2 64 baked potatoes
+				give arg-2 2 golden apples
+				give arg-2 64 cobblestone
+				give arg-2 1 fishing rod
+				set slot 17 of arg-2's inventory to 64 arrows
+				set slot 16 of arg-2's inventory to 64 arrows
+				set slot 15 of arg-2's inventory to 1 iron axe of efficiency 2
+		if arg 1 is "sword":
+			if arg 2 is set:
+				equip arg-2 with an diamond chestplate of protection 2
+				equip arg-2 with an iron leggings of protection 3
+				equip arg-2 with an diamond helmet of projectile protection 1
+				equip arg-2 with an iron boots of projectile protection 2
+				give arg-2 an diamond sword of sharpness 3
+				give arg-2 a bow of power 2
+				give arg-2 1 water bucket
+				give arg-2 1 diamond pickaxe of efficiency 2
+				give arg-2 1 iron shovel of efficiency 2
+				give arg-2 64 baked potatoes
+				give arg-2 2 golden apples
+				give arg-2 64 cobblestone
+				give arg-2 1 fishing rod
+				set slot 17 of arg-2's inventory to 64 arrows
+				set slot 16 of arg-2's inventory to 64 arrows
+				set slot 15 of arg-2's inventory to 1 iron axe of efficiency 2
+		if arg 1 is "armor":
+			if arg 2 is set:
+				equip arg-2 with an diamond chestplate of protection 2
+				equip arg-2 with an diamond leggings of protection 2
+				equip arg-2 with an diamond helmet of projectile protection 2
+				equip arg-2 with an iron boots of projectile protection 2
+				give arg-2 an iron sword of sharpness 2
+				give arg-2 a bow of power 2
+				give arg-2 1 water bucket
+				give arg-2 1 diamond pickaxe of efficiency 2
+				give arg-2 1 iron shovel of efficiency 2
+				give arg-2 64 baked potatoes
+				give arg-2 2 golden apples
+				give arg-2 64 cobblestone
+				give arg-2 1 fishing rod
+				set slot 17 of arg-2's inventory to 64 arrows
+				set slot 16 of arg-2's inventory to 64 arrows
+				set slot 15 of arg-2's inventory to 1 iron axe of efficiency 2
+		if arg 1 is "bow":
+			if arg 2 is set:
+				equip arg-2 with an iron chestplate of protection 2
+				equip arg-2 with an diamond leggings of protection 2
+				equip arg-2 with an diamond helmet of projectile protection 3
+				equip arg-2 with an iron boots of projectile protection 2
+				give arg-2 an iron sword of sharpness 2
+				give arg-2 a bow of power 4
+				give arg-2 1 water bucket
+				give arg-2 1 diamond pickaxe of efficiency 2
+				give arg-2 1 iron shovel of efficiency 2
+				give arg-2 64 baked potatoes
+				give arg-2 2 golden apples
+				give arg-2 64 cobblestone
+				give arg-2 1 fishing rod
+				set slot 17 of arg-2's inventory to 64 arrows
+				set slot 16 of arg-2's inventory to 64 arrows
+				set slot 15 of arg-2's inventory to 1 iron axe of efficiency 2
+		if arg 1 is "heal":
+			if arg 2 is set:
+				equip arg-2 with an iron chestplate of protection 2
+				equip arg-2 with an diamond leggings of protection 2
+				equip arg-2 with an iron helmet of projectile protection 2
+				equip arg-2 with an diamond boots of projectile protection 2
+				give arg-2 an diamond sword of sharpness 2
+				give arg-2 a bow of power 1
+				give arg-2 1 water bucket
+				give arg-2 1 diamond pickaxe of efficiency 2
+				give arg-2 1 iron shovel of efficiency 2
+				give arg-2 64 baked potatoes
+				give arg-2 4 golden apples
+				give arg-2 64 cobblestone
+				give arg-2 1 fishing rod
+				set slot 17 of arg-2's inventory to 64 arrows
+				set slot 16 of arg-2's inventory to 64 arrows
+				set slot 15 of arg-2's inventory to 1 iron axe of efficiency 2
+		if arg 1 is "randomize":
+			delete {tempkit}
+			wait 1 tick
+			loop all players:
+				if {insims::%loop-player%} is true:
+					set {tempkit} to a random integer between 1 and 6
+					wait 2 ticks
+					if {tempkit} is 1:
+						clear the inventory of the loop-player	
+						console command "/simskit normal %loop-player%"
+						message "{@P} &7You have been assinged the &eNormal &7kit!" to loop-player
+					if {tempkit} is 2:
+						clear the inventory of the loop-player	
+						console command "/simskit flame %loop-player%"
+						message "{@P} &7You have been assinged the &eFlame &7kit!" to loop-player
+					if {tempkit} is 3:
+						clear the inventory of the loop-player	
+						console command "/simskit sword %loop-player%"
+						message "{@P} &7You have been assinged the &eSword &7kit!" to loop-player
+					if {tempkit} is 4:
+						clear the inventory of the loop-player	
+						console command "/simskit armor %loop-player%"
+						message "{@P} &7You have been assinged the &eArmor &7kit!" to loop-player
+					if {tempkit} is 5:
+						clear the inventory of the loop-player	
+						console command "/simskit bow %loop-player%"
+						message "{@P} &7You have been assinged the &eBow &7kit!" to loop-player
+					if {tempkit} is 6:
+						clear the inventory of the loop-player	
+						console command "/simskit heal %loop-player%"
+						message "{@P} &7You have been assinged the &eHealer &7kit!" to loop-player
+on death of player:
+	if victim is in "Sims":
+		set death message to ""
+		remove water bucket from the drops
+		apply regeneration 3 to attacker for 5 seconds
+		apply absorption to attacker for 30 seconds
+		drop 1 golden apple at victim
+		wait 2 ticks
+		broadcast "&c%victim% was killed by %attacker% &8(&c%{numqueue}%&8/&c30&8)"
+on disconnect:
+	if {joinable} is not set:
+		if {insims::%player%} is true:
+			delete {insims::%player%}
+			remove 1 from {numqueue}
+			broadcast "{@P} &7Someone has left the Meetup Sims queue! &8(&c%{numqueue}%&8/&c16&8)"
+		
+on death of player:
+	victim is in "Sims":
+		remove 1 from {numqueue}
+		if {numqueue} is less than 2:
+			wait 5 ticks
+			loop all players:
+				if loop-player is in "Sims":
+					broadcast "{@P} &e%loop-player% &7has won this simulation!"
+					make loop-player execute command "/killall drops 2000"
+					launch ball large firework colored cyan at loop-player timed 1
+					wait 5 ticks
+					launch creeper firework colored red at loop-player timed 1
+					wait 5 ticks
+					launch star firework colored green at loop-player timed 1
+					wait 5 ticks
+					launch burst firework colored purple at loop-player timed 1
+					wait 5 seconds
+					clear the inventory of the loop-player
+					heal the loop-player by 10 hearts
+					set the loop-player's food level to 10
+					console command "/simsmu reset"
+					console command "/spawn %loop-player%"
+					loop {Sims.Player.%loop-player%.BlockLocations::*}:
+						set (block at (loop-value-2)) to air
+						if {_TickTime} was more than 0.05 seconds ago:
+							wait 1 tick
+							set {_TickTime} to now
+					delete {Sims.Player.%loop-player%.BlockLocations::*}
+					delete {Sims.Player.HasPlacedBlocks::%loop-player%}
+on place:
+	event-world is "Sims"
+	if gamemode of player is survival:
+		if event-block is cobblestone:
+			if y-coordinate of event-block is more than 120:
+				cancel the event
+				message "{@P} You may not tower higher!"
+			else:
+				set {Sims.Player.HasPlacedBlocks::%player%} to true
+				add (location of event-block) to {Sims.Player.%player%.BlockLocations::*}
+				set (tool of player) to (64 cobblestone)	
+		else if event-block is water:
+			loop blocks in radius 3 around event-block:
+				loop-block is water or lava or fire
+				cancel the event
+				stop
+			wait 7 ticks
+			remove empty bucket from player
+			player is alive:
+				give water bucket to player
+			loop blocks in radius 1 around event-block:
+				loop-block is water
+				set loop-block to air		
+		else:
+			message "&4You do not have permission for this area."
+			cancel the event
+	else:
+		player does not have permission "skript.op":
+			cancel the event 
+		else:	
+			event-block is cobblestone 
+			add (location of event-block) to {Sims.Player.%player%.BlockLocations::*}
+
+on disconnect:
+	player is in "Sims"
+	kill the player
+on block break:
+	event-block is not cobblestone:
+		player is in "Sims":
+			cancel the event
+
+on death of player:
+	set {_TickTime} to now
+	loop {Sims.Player.%victim%.BlockLocations::*}:
+		set (block at (loop-value)) to air
+		if {_TickTime} was more than 0.05 seconds ago:
+			wait 1 tick
+			set {_TickTime} to now
+	delete {Sims.Player.%victim%.BlockLocations::*}
+	delete {Sims.Player.HasPlacedBlocks::%victim%}
+
+on player join:
+	wait 5 ticks
+	message "{@P} &7Do &e/musims &7to join Meetup Sims"
+
+on damage of player:
+	victim is in "Sims":
+		if {simsdamage} is true:
+			cancel the event
+
+					

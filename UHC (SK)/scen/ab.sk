@@ -1,0 +1,76 @@
+﻿options:
+	P: &7[&cPhoenix&7]
+
+command /ab [<text>] [<text>]:
+	permission: skript.op
+	trigger:
+		if arg 1 is not set:
+			if arg 2 is not set:
+				message "{@P} &7Correct Usage:"
+				message "{@P} &e/ab set &8» &7Sets classes!"
+				message "{@P} &e/ab reset &8» &7Resets classes!"
+				message "{@P} &e/ab check <player> &8» &7Checks player's class!"		
+		if arg 1 is "reset":
+			delete {dontbow::*}
+			delete {dontmelee::*}
+			broadcast "{@P} &7Assault and Battery reset!"
+		if arg 1 is "set":
+			broadcast "{@P} &7Setting classes...."
+			wait 3 ticks
+			loop {Teams::*}:
+				wait 1 tick
+				set {_potAb.%loop-value%::*} to {Team.%loop-value%::*}
+				set {_assault} to (random element out of {_potAb.%loop-value%::*})
+				set {_Assaulter} to ("%{_assault}%" parsed as offlineplayer)
+				set {dontbow::%{_Assaulter}%} to true
+				remove {_Assaulter} from {_potAb.%loop-value%::*}
+				wait 1 tick
+				set {_battery} to (random element out of {_potAb.%loop-value%::*})
+				set {_Batteryer} to ("%{_battery}%" parsed as offlineplayer)
+				set {dontmelee::%{_Batteryer}%} to true
+				remove {_Batteryer} from {_potAb.%loop-value%::*}
+				message "{@P} &7Assaulter &8» &c%{_Assaulter}%" to {_Assaulter}
+				message "{@P} &7Assaulter &8» &c%{_Assaulter}%" to {_Batteryer}
+				message "{@P} &7Battery &8» &e%{_Batteryer}%" to {_Assaulter}
+				message "{@P} &7Battery &8» &e%{_Batteryer}%" to {_Batteryer}
+				console command "/playsound random.orb %{_Batteryer}% ~ ~ ~ 10 1 1"
+				console command "/playsound random.orb %{_Assaulter}% ~ ~ ~ 10 1 1"
+		if arg 1 is "check":
+			if arg 2 is set:
+				if {dontmelee::%arg-2%} is true:
+					message "{@P} &c%arg-2% &7is the &eBattery &7of the team!"
+				if {dontbow::%arg-2%} is true:
+					message "{@P} &e%arg-2% &7is the &cAssaulter &7of the team!"
+				if {dontbow::%arg-2%} is not set:
+					if {dontmelee::%arg-2%} is not set:
+						message "{@P} &7This person may use both weapons!"
+
+on damage of player:
+	if damage was caused by attack:
+		if {dontmelee::%attacker%} is true:
+			cancel the event
+	if damage was caused by projectile:
+		projectile is an arrow:
+			if {dontbow::%attacker%} is true:
+				cancel the event
+on death of player:
+	if {dontbow::%victim%} is true:
+		console command "/team kick %victim%"
+	if {dontmelee::%victim%} is true:
+		console command "/team kick %victim%"
+	wait 1 second
+	loop {Teams::*}:
+		if (size of ({Team.%loop-value%::*})) is 1:
+			wait 3 ticks
+			set {_both} to (first element out of {Team.%loop-value%::*})
+			if {dontmelee::%{_both}%} is true:
+				delete {dontbow::%{_both}%}
+				delete {dontmelee::%{_both}%}
+				set {_bother} to ("%{_both}%" parsed as offlineplayer)
+				message "{@P} &7You may now use bow and sword!" to {_bother}
+			if {dontbow::%{_both}%} is true:
+				delete {dontbow::%{_both}%}
+				delete {dontmelee::%{_both}%}
+				set {_bother} to ("%{_both}%" parsed as offlineplayer)
+				message "{@P} &7You may now use bow and sword!" to {_bother}
+

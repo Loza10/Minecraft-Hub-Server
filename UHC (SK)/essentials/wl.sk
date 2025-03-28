@@ -1,0 +1,115 @@
+﻿options:
+	P: &7[&cPhoenix&7]
+
+command /wl [<text>] [<text>]:
+	permission: skript.op
+	trigger:
+		if arg 1 is "on":
+			if {wljoin} is not set:
+				set {wljoin} to true
+				broadcast "{@P} Whitelist is now &eenabled"
+			else:
+				{wljoin} is true:
+					message "{@P} &eWhitelist is already enabled" to command sender
+		if arg 1 is "off":
+			if {wljoin} is true:
+				delete {wljoin}
+				broadcast "{@P} Whitelist is now &edisabled"
+			else:
+				{wljoin} is not set:
+					message "{@P} &eWhitelist is already disabled" to command sender
+		if arg 1 is "add":
+			if arg 2 is set:
+				if {white::%arg-2%} is not set:
+					set {white::%arg-2%} to true
+					add arg 2 to {list::*}
+					broadcast "{@P} &e%arg-2% &7has been added to the Whitelist"
+				else:
+					if {white::%arg-2%} is true:
+						message "{@P} &eThat person is already on the whitelist" to command sender
+		if arg 1 is "all": 
+			loop all players:
+				set {white::%loop-player%} to true
+				add loop-player to {list::*}
+			broadcast "{@P} All players are now whitelisted!"
+		if arg 1 is "clear":
+			loop all players:
+				delete {white::*}
+				delete {list::*}
+			broadcast "{@P} All players are no longer whitelisted!"
+		if arg 1 is "remove":
+			if arg 2 is set:
+				if {white::%arg-2%} is true:
+					delete {white::%arg-2%}
+					remove arg 2 from {list::*}
+					message "{@P} &c%arg-2% &7has been &cremoved &7from the Whitelist" to command sender
+				else:
+					if {white::%arg-2%} is not set:
+						message "{@P} &eThat player is not on the whitelist" to command sender
+		if arg 1 is "list":
+			if arg 2 is not set:
+				message "{@P} &7Whitelisted Players:" to command sender
+				message "&e%{list::*}%" to command sender
+		if arg 1 is not set:
+			if arg 2 is not set:
+				message "{@P} &e/wl on &c- &7Turns whitelist &aon" to command sender
+				message "{@P} &e/wl off &c- &7Turns whitelist &coff" to command sender
+				message "{@P} &e/wl add <player> &c- &7Adds a player to whitelist" to command sender
+				message "{@P} &e/wl remove <player> &c- &7Removes a player from whitelist" to command sender
+				message "{@P} &e/wl list &c- &7Lists everyone on whitelist" to command sender
+				message "{@P} &e/wl all &c- &7Adds everyone to whitelist" to command sender
+				message "{@P} &e/wl clear &c- &7Removes everyone from whitelist" to command sender
+			
+
+on connect:
+	if {wljoin} is true:
+		if {white::%player%} is not set:
+			player doesn't have permission "skript.spec"
+			kick player due to "&7» You are not whitelisted! «%nl% &7» Follow our Twitter &e@PheonixUHC &7for games and updates! «"
+on command "/whitelist":
+	cancel the event
+	message "&cThat's an old command" to command sender
+
+command /autowl [<text>]:
+	permission: skript.op
+	trigger:
+		set {_length} to length of "%arg-1%"
+		if {_length} is not 5:
+			send "{@P} Your UTC time should always contain 4 numbers and a :"
+			stop trigger
+		else:
+			if arg-1 is "reset" or "remove" or "cancel":
+				delete {wloff}
+				send "{@P} Reset whitelist off time."
+				stop trigger
+			set {_testnumbers} to "%arg-1%"
+			replace all ":" with "" in {_testnumbers}
+			if ("%{_testnumbers}%" parsed as integer) is not set:
+				send "{@P} Your UTC time should always contain 4 numbers and a :"
+				stop trigger
+			if "%arg-1%" does not contain ":":
+				send "{@P} Your UTC time should always contain 4 numbers and a :"
+				stop trigger
+			set {_makesureisvalid::*} to arg-1 split at ":"
+			if ("%{_makesureisvalid::1}%" parsed as integer) is not between 0 and 24:
+				send "{@P} That is an invalid UTC time!"
+				stop trigger
+			set {wloff} to arg-1
+			send "{@P} You Set automatic whitelist off time to '&e%arg-1%&7'."
+			set {_w} to "%{wloff}%"
+			while {wloff} is {_w}:
+				wait 10 ticks
+				$ thread
+				set {_text} to text from "http://worldclockapi.com/api/json/utc/now"
+				set {_text::*} to {_text} split at ""
+				set {_time} to "%{_text::42}%%{_text::43}%%{_text::44}%%{_text::45}%%{_text::46}%"
+				{_time} is {wloff}
+				delete {wljoin}
+				delete {wloff}
+				send "{@P} Turned off whitelist at '&e%arg-1%&7'." to all ops
+				console command "/timer 300 &eGame Starting &7»&c"
+				wait 5 minutes
+				console command "/wl all"
+				console command "/wl on"
+				console command "/chat off"
+				console command "/pvparena disable"

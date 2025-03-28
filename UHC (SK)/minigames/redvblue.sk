@@ -1,0 +1,281 @@
+﻿options:
+	P: &7[&cPhoenix&7]
+
+command /rvb [<text>]:
+	permission: skript.op
+	trigger:
+		if arg 1 is "reset":
+			command sender has permission "skript.op":
+				delete {redalive}
+				delete {bluealive}
+				delete {rvbnum}
+				delete {rvblue}
+				delete {rvbpick::*}
+				delete {blueteam::*}
+				delete {redteam::*}
+				delete {blueboy::*}
+				delete {redboy::*}
+				delete {inrvb::*}
+				message "{@P} &cR&7v&bB &7has been reset!"
+		if arg 1 is "enable":
+			command sender has permission "skript.op":
+				if {rvbstart} is not set:
+					set {rvbstart} to true
+					message "{@P} &cRed &7vs &bBlue &7has been enabled!"
+				else:
+					if {rvbstart} is true:
+						message "{@P} &cRed &7vs &bBlue &7is already enabled!"
+		if arg 1 is "disable":
+			command sender has permission "skript.op":
+				if {rvbstart} is true:
+					delete {rvbstart}
+					message "{@P} &cRed &7vs &bBlue &7has been disabled!"
+				else:
+					if {rvbstart} is not set:
+						message "{@P} &cRed &7vs &bBlue &7is already disabled!"
+		if arg 1 is "start":
+			set {rvblue} to {rvbnum}/2
+			loop {rvblue} times:
+				delete {_bluemem}
+				set {_bluemem} to (random element out of {rvbpick::*})
+				add {_bluemem} to {blueteam::*}
+				set {blueboy::%{_bluemem}%} to true
+				remove {_bluemem} from {rvbpick::*}
+				remove 1 from {rvbnum}
+				add 1 to {bluealive}
+			wait 1 tick
+			loop {rvbnum} times:
+				delete {_redmem}
+				set {_redmem} to (random element out of {rvbpick::*})
+				add {_redmem} to {redteam::*}
+				set {redboy::%{_redmem}%} to true
+				remove {_redmem} from {rvbpick::*}
+				add 1 to {redalive}
+			delete {rvbpick::*}
+			wait 1 tick
+			set {_bluetp} to (random element out of {blueteam::*})
+			teleport {_bluetp} to {warps::rvblue::loc}
+			wait 1 tick
+			set {_redtp} to (random element out of {redteam::*})
+			teleport {_redtp} to {warps::redvb::loc}
+			wait 5 ticks
+			loop all players:
+				if {blueboy::%loop-player%} is true:
+					clear loop-player's inventory
+					console command "/scoreboard teams join rvblue %loop-player%"
+					teleport loop-player to {_bluetp}
+				if {redboy::%loop-player%} is true:
+					clear loop-player's inventory
+					console command "/scoreboard teams join redvb %loop-player%"
+					teleport loop-player to {_redtp}
+			wait 4 ticks
+			loop all players:
+				if {blueboy::%loop-player%} is true:
+					console command "/zrvbkit %loop-player%"
+				if {redboy::%loop-player%} is true:
+					console command "/zrvbkit %loop-player%"
+			wait 2 ticks
+			delete {_bluetp}
+			delete {_redtp}
+			broadcast "{@P} The &cRed &7vs &bBlue &7has begun!"
+		if arg 1 is "list":
+			message "{@P} Teams list:"
+			message "{@P} &c%{redteam::*}%"
+			message "{@P} &b%{blueteam::*}%"
+
+command /rvbjoin:
+	trigger:
+		if {rvbstart} is true:
+			if {inrvb::%command sender%} is not set:
+				set {inrvb::%command sender%} to true
+				add command sender to {rvbpick::*}
+				add 1 to {rvbnum}
+				message "{@P} You have joined the &cRed &7vs &bBlue &7queue!"
+				loop all players:
+					if {inrvb::%loop-player%} is true:
+						message "{@P} &e%command sender% &7has joined the &cRed &7vs &bBlue &7queue!" to loop-player
+		else:				
+			if {rvbstart} is true:
+				message "{@P} &cR&7v&bB &7is currently disabled!"
+			 
+
+command /zrvbkit [<player>]:
+	trigger:
+		if arg 1 is set:
+			equip arg-1 with an diamond chestplate of protection 2
+			equip arg-1 with an iron leggings of protection 2
+			equip arg-1 with an iron helmet of projectile protection 2
+			equip arg-1 with an diamond boots of projectile protection 2
+			give arg-1 a diamond sword of sharpness 2
+			give arg-1 a bow of power 2
+			give arg-1 1 water bucket
+			give arg-1 1 diamond pickaxe of efficiency 2
+			give arg-1 1 iron shovel of efficiency 2
+			give arg-1 64 baked potatoes
+			give arg-1 2 golden apples
+			give arg-1 64 cobblestone
+			give arg-1 1 fishing rod
+			set slot 17 of arg-1's inventory to 64 arrows
+			set slot 16 of arg-1's inventory to 64 arrows
+			set slot 15 of arg-1's inventory to 1 iron axe of efficiency 2
+
+on death of player:
+	if victim is in "arena6":
+		clear the drops
+	loop all players:
+		if {blueboy::%loop-player%} is true:
+			if {blueboy::%victim%} is true:
+				message "&7» &b%victim% has died to %attacker%" to loop-player
+			if {redboy::%victim%} is true:
+				message "&7» &c%victim% has died to %attacker%" to loop-player
+		if {redboy::%loop-player%} is true:
+			if {blueboy::%victim%} is true:
+				message "&7» &b%victim% has died to %attacker%" to loop-player
+			if {redboy::%victim%} is true:
+				message "&7» &c%victim% has died to %attacker%" to loop-player
+	if {blueboy::%victim%} is true:
+		set death message to ""
+		remove 1 from {bluealive}
+		delete {blueboy::%victim%}
+		remove victim from {blueteam::*}
+		console command "/scoreboard teams leave %victim%"
+		if {bluealive} is 0:
+			broadcast "{@P} &7RvB has ended, &bBlue Team &7wins!"
+			loop all players:
+				if {blueboy::%loop-player%} is true:
+					broadcast "&b%loop-player%"
+					clear loop-player's inventory
+					heal loop-player
+					make loop-player execute command "/killall drops"
+					console command "/spawn %loop-player%"
+					console command "/scoreboard teams leave %loop-player%"
+				if {redboy::%loop-player%} is true:
+					clear loop-player's inventory
+					heal loop-player
+					make loop-player execute command "/killall drops"
+					console command "/spawn %loop-player%"
+					console command "/scoreboard teams leave %loop-player%"
+			console command "/rvb reset"
+			loop {game.placed.blocks::*}:
+				if {_countplaced} < 128:
+					set {_loc2} to loop-value
+					set block at {_loc2} to air
+					add 1 to {_countplaced}
+				else:
+					set {_loc2} to loop-value
+					set block at {_loc2} to air
+					set {_countplaced} to 1
+					wait 1 tick
+	if {redboy::%victim%} is true:
+		set death message to ""
+		remove 1 from {redalive}
+		delete {redboy::%victim%}
+		remove victim from {redteam::*}
+		console command "/scoreboard teams leave %victim%"
+		if {redalive} is 0:
+			broadcast "{@P} &7RvB has ended, &cRed Team &7wins!"
+			loop all players:
+				if {blueboy::%loop-player%} is true:
+					clear loop-player's inventory
+					heal loop-player
+					make loop-player execute command "/killall drops"
+					wait 4 ticks
+					console command "/spawn %loop-player%"
+					console command "/scoreboard teams leave %loop-player%"
+				if {redboy::%loop-player%} is true:
+					broadcast "&c%loop-player%"
+					clear loop-player's inventory
+					heal loop-player
+					make loop-player execute command "/killall drops"
+					wait 4 ticks
+					console command "/spawn %loop-player%"
+					console command "/scoreboard teams leave %loop-player%"
+			console command "/rvb reset"
+			loop {game.placed.blocks::*}:
+				if {_countplaced} < 128:
+					set {_loc2} to loop-value
+					set block at {_loc2} to air
+					add 1 to {_countplaced}
+				else:
+					set {_loc2} to loop-value
+					set block at {_loc2} to air
+					set {_countplaced} to 1
+					wait 1 tick
+on place:
+	player is in "arena6":
+		player's y-coordinate is less than 100:
+			add location of event-block to {game.placed.blocks::*}
+			wait 2 ticks
+			give player 1 cobblestone
+
+on damage of player:
+	if {blueboy::%victim%} is true:
+		if {blueboy::%attacker%} is true:
+			cancel the event
+			message "{@P} You can not kill your teamates!" to attacker
+	if {redboy::%victim%} is true:
+		if {redboy::%attacker%} is true:
+			cancel the event
+			message "{@P} You can not kill your teamates!" to attacker
+on disconnect:
+	if {inrvb::%player%} is true:
+		delete {inrvb::%player%}
+		remove player from {rvbpick::*}
+		remove 1 from {rvbnum}
+on disconnect:
+	wait 1 tick
+	if {redboy::%player%} is true:
+		set {rvboff::%player%} to true
+		console command "/scoreboard teams leave %player%"
+		remove 1 from {redalive}
+		remove player from {redteam::*}
+		loop all players:
+			if {blueboy::%loop-player%} is true:
+				if {blueboy::%player%} is true:
+					message "&7» &b%player% has left the game" to loop-player
+				if {redboy::%player%} is true:
+					message "&7» &c%player% has left the game" to loop-player
+			if {redboy::%loop-player%} is true:
+				if {blueboy::%player%} is true:
+					message "&7» &b%player% has left the game" to loop-player
+				if {redboy::%player%} is true:
+					message "&7» &c%player% has left the game" to loop-player
+		wait 1 tick
+		delete {redboy::%player%}
+	wait 1 tick
+	if {blueboy::%player%} is true:
+		set {rvboff::%player%} to true
+		console command "/scoreboard teams leave %player%"
+		remove 1 from {bluealive}
+		remove player from {blueteam::*}
+		loop all players:
+			if {blueboy::%loop-player%} is true:
+				if {blueboy::%player%} is true:
+					message "&7» &b%player% has left the game" to loop-player
+				if {redboy::%player%} is true:
+					message "&7» &c%player% has left the game" to loop-player
+			if {redboy::%loop-player%} is true:
+				if {blueboy::%player%} is true:
+					message "&7» &b%player% has left the game" to loop-player
+				if {redboy::%player%} is true:
+					message "&7» &c%player% has left the game" to loop-player
+		wait 1 tick
+		delete {blueboy::%player%}
+		
+
+on consume of golden apple:
+	if {blueboy::%player%} is true:
+		wait 2 ticks
+		apply absorption to player for 2 minutes
+	if {redboy::%player%} is true:
+		wait 2 ticks
+		apply absorption to player for 2 minutes
+
+on join:
+	if {rvboff::%player%} is true:
+		console command "/spawn %player%"
+		clear player's inventory
+		heal player
+		delete {rvboff::%player%}
+
+

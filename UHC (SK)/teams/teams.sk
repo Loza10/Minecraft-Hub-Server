@@ -1,0 +1,1507 @@
+
+options:
+	T: &7[&cPhoenix&7]
+	C: &e # <------ Important Text Color
+	C2: &7 # <----- Text Color
+	PERM: skript.op
+	TC: &7[&cPM&7]&e
+	TC1: &8 #<------ Team Chat Important Text Color
+	TC2: &7 #<------ Team Chat Text Color
+   
+command /team [<text>] [<text>] [<text>]:
+	trigger:
+		if arg-1 is not set:
+			send "{@C}----------------------------------------------"
+			send "{@T}{@C2} &lTeam Commands"
+			send "{@T}{@C2} /team invite <player>"
+			send "{@T}{@C2} /team accept <player>"
+			send "{@T}{@C2} /team leave"
+			send "{@T}{@C2} /team list"
+			send "{@T}{@C2} /pm <message>"
+			send "{@T}{@C2} /pmcoords"
+			send "{@T}{@C2} /pmores"
+			send "{@C}----------------------------------------------"
+			if player has permission "{@PERM}":
+				send "{@T}{@C2} &lAdmin Commands"
+				send "{@T}{@C2} /team broadcast"
+				send "{@T}{@C2} /team setsize <integer>"
+				send "{@T}{@C2} /team create"
+				send "{@T}{@C2} /tc <player> [<player>] [<player>] [<player>] [<player>]"
+				send "{@T}{@C2} /team set <player> <team>"
+				send "{@T}{@C2} /team lock/unlock"
+				send "{@T}{@C2} /team kick <player>"
+				send "{@T}{@C2} /team reset"
+				send "{@T}{@C2} /team removeempty"
+				send "{@T}{@C2} /team hidelist"
+				send "{@T}{@C2} /team unhidelist"
+				send "{@T}{@C2} /team deathkick <on/off>"
+				send "{@T}{@C2} /team autodelete <on/off>"
+				send "{@T}{@C2} /team autocolor <on/off>"
+				send "{@T}{@C2} /team friendlyfire <on/off>"
+				send "{@T}{@C2} /dontrandomize <player/list>"
+				send "{@T}{@C2} /team randomize <team size>"   
+				send "{@T}{@C2} /team redvsblue [<number of teams>]"
+				send "{@T}{@C2} /team doubledates [<ignorenumber>]"
+				send "{@T}{@C2} /team kickunder <team size>"
+				send "{@T}{@C2} /team delete <team>"
+				send "{@T}{@C2} /team mute <player/all>"
+				send "{@T}{@C2} /team unmute <player/all>"
+				send "{@T}{@C2} /team viewpm <team/all>"
+				send "{@T}{@C2} /team unviewpm <team/all>"
+				send "{@T}{@C2} /colorteam <team> <color> [bold] [underline] [strikethrough] [italic]"
+				send "{@T}{@C2} /team resetcolor <team>"
+				send "{@T}{@C2} /checkteam <player>"
+				send "{@C}----------------------------------------------"
+		else:
+			if arg-1 is "invite":
+				arg-2 is set
+				if {teamslocked} is not set:
+					if {pendingteam::%player%::%arg-2%} is not set:
+						if "%arg-2%" is not "%player%":
+							# Check if the player being requested is in a team
+							if {Teams.InTeam::%arg-2%} is not set:
+								send "{@T}{@C2} You have invited {@C}%arg-2% {@C2}to join your team!"
+								set {pendingteam::%player%::%arg-2%} to arg-2
+								send "{@T}{@C} %player% {@C2}has invited you to his/her team!" to ("%arg-2%" parsed as offline player)
+								send "{@T}{@C2} Type {@C}/team accept %player% {@C2}to accept!" to ("%arg-2%" parsed as offline player)
+							else:
+								send "{@T}{@C2} This player is already on a team!"
+						else:
+							send "{@T}{@C2} You cannot invite yourself!"
+					else:
+						send "{@T}{@C2} You already sent {@C}%arg-2% {@C2}a request!"
+				else:
+					send "{@T}{@C2} Teams are locked!"
+ 
+			   
+			else if arg-1 is "accept":
+				if {teamslocked} is not set:
+					# If arg-2 sent a request
+					if {pendingteam::%arg-2%::%player%} is set:
+						# If player is in a team - delete variables and remove from scoreboard team
+						if {Teams.InTeam::%player%} is not set:
+							# if arg-2 is on a team
+							if {Teams.InTeam::%arg-2%} is set:
+								if (size of {Team.%{Teams.InTeam::%arg-2%}%::*}) is less than {teamsize}:
+									set {Team.%{Teams.InTeam::%arg-2%}%::%player%} to player
+									set {Teams.InTeam::%player%} to {Teams.InTeam::%arg-2%}
+									command "/scoreboard teams join UHC%{Teams.InTeam::%arg-2%}% %player%"
+									delete {pendingteam::%arg-2%::%player%}
+									loop {Team.%{Teams.InTeam::%arg-2%}%::*}:
+										if "%loop-value%" is not "%player%":
+											send "{@T} {@C}%player% {@C2}has joined your team!" to ("%loop-value%" parsed as offline player)
+									send "{@T}{@C2} You have joined team {@C}%{Teams.InTeam::%player%}%{@C2}!" to player
+								else:
+									send "{@T}{@C2} That team is full!" to player
+							else:
+								set {findteamnumber} to 1
+								set {findingteamnumber} to true
+								while {findingteamnumber} is true:
+									if {Teams::%{findteamnumber}%} is not set:
+										delete {findingteamnumber}
+									else:
+										add 1 to {findteamnumber}
+
+								set {Team.%{findteamnumber}%::%player%} to player
+								set {Team.%{findteamnumber}%::%arg-2%} to arg-2
+								set {Teams::%{findteamnumber}%} to {findteamnumber}
+								command "/scoreboard teams add UHC%{findteamnumber}%"
+								if {teamfriendlyfire} is set:
+									command "/scoreboard teams option UHC%{findteamnumber}% friendlyfire false"
+								set {Teams.InTeam::%player%} to {findteamnumber}
+								set {Teams.InTeam::%arg-2%} to {findteamnumber}
+								delete {pendingteam::%arg-2%::%player%}
+								command "/scoreboard teams join UHC%{findteamnumber}% %player%"
+								command "/scoreboard teams join UHC%{findteamnumber}% %arg-2%"
+								send "{@T} {@C}%player% {@C2}has joined your team!" to ("%arg-2%" parsed as offline player)
+								send "{@T}{@C2} You have joined team {@C}%{Teams.InTeam::%player%}%{@C2}!"
+								if {ninjateams.dontautocolor} is not set:
+									command "/colorteam %{Teams.InTeam::%player%}%"
+						else:
+							send "{@T}{@C2} You are already on a team!"
+							send "{@T}{@C2} Type {@C}/team leave {@C2}to leave!"
+					else:
+						send "{@T}{@C2} That player did not invite you to his/her team!"
+				else:
+					send "{@T}{@C2} Teams are locked!"
+ 
+					   
+					   
+			else if arg-1 is "leave":
+				if {Teams.InTeam::%player%} is not set:
+					command sender is a player
+					send "{@T}{@C2} You're not on a team, silly!"
+					stop
+				if {teamslocked} is not set:
+					command "/scoreboard teams leave %player%"
+					if (size of {Team.%{Teams.InTeam::%player%}%::*} - 1) is less than 2:
+						{ninjateamsautodelete} is not set
+						command "/team resetcolor %{Teams.InTeam::%player%}%"
+						loop {Team.%{Teams.InTeam::%player%}%::*}:
+							command "/scoreboard teams leave %loop-value%"
+							delete {Teams::%{Teams.InTeam::%loop-value%}%}
+							delete {Team.%{Teams.InTeam::%player%}%::%loop-value%}
+							delete {Teams.InTeam::%loop-value%}
+					command "/scoreboard teams leave %player%"
+					delete {Team.%{Teams.InTeam::%player%}%::%player%}
+					delete {Teams.InTeam::%player%}
+					send "{@T}{@C2} You have left your team!"
+				else:
+					send "{@T}{@C2} Teams are locked!"
+			else if arg-1 is "list":
+				if {ninjateamshidelist} is set:
+					send "{@T}{@C2} Teams are currently hidden!"
+					if player does not have permission "{@PERM}":
+						stop
+				if (size of {Teams::*}) is not 0:
+					send "{@C}----------------------------------------------------"
+					send "{@C2}&lTeams"
+					loop {Teams::*}:
+						if {TeamColor::%loop-value%::Reference} is set:
+							set {_saveteammembers} to "%{Team.%loop-value%::*}%"
+							send "{@C2}&l %loop-value% {@C2}: %{TeamColor::%loop-value%::Reference}%%{_saveteammembers}%"
+							
+						else:
+							send "{@C2}&l %loop-value% :&f %{Team.%loop-value%::*}%"
+					send "{@C}----------------------------------------------------"
+				else:
+					send "{@C}----------------------------------------------------"
+					send "{@T}{@C2} No teams are set!"
+					send "{@C}----------------------------------------------------"
+			else if arg-1 is "reset":
+				if command sender is a player:
+					if player does not have permission "{@PERM}":
+						send "{@C}----------------------------------------------"
+						send "{@T}{@C2} You do not have permission to do that!"
+						send "{@C}----------------------------------------------"
+						stop
+				delete {pendingteam::*}
+				loop {Teams::*}:
+					command "/scoreboard teams remove UHC%loop-value%"
+					delete {Team.%loop-value%::*}
+				delete {Teams.InTeam::*}
+				delete {Teams::*}
+				delete {allTheColors}
+				delete {teamColor::*}
+				delete {randomizing::*}
+				delete {dontrandomize::*}
+				delete {findteamnumber}
+				delete {ninjateamsdeathkick}
+				delete {UsingUsedColors::*}
+				delete {TeamMuted::*}
+				delete {CanViewPM::*}
+				delete {CanViewAllPM::*}
+			   
+				set {allColors::*} to "aqua", "black", "blue", "dark_aqua", "dark_blue", "dark_gray", "dark_green", "dark_purple", "dark_red", "gold", "gray", "green", "light_purple", "red" and "yellow"
+				set {allColorsBold::*} to "aqua", "black", "blue", "dark_aqua", "dark_blue", "dark_gray", "dark_green", "dark_purple", "dark_red", "gold", "gray", "green", "light_purple", "red", "white" and "yellow"
+				set {allColorsUnderline::*} to "aqua", "black", "blue", "dark_aqua", "dark_blue", "dark_gray", "dark_green", "dark_purple", "dark_red", "gold", "gray", "green", "light_purple", "red", "white" and "yellow"
+				set {allColorsStrikethrough::*} to "aqua", "black", "blue", "dark_aqua", "dark_blue", "dark_gray", "dark_green", "dark_purple", "dark_red", "gold", "gray", "green", "light_purple", "red", "white" and "yellow"
+				set {allColorsItalic::*} to "aqua", "black", "blue", "dark_aqua", "dark_blue", "dark_gray", "dark_green", "dark_purple", "dark_red", "gold", "gray", "green", "light_purple", "red", "white" and "yellow"
+				set {allColorsBoldUnderline::*} to "aqua", "black", "blue", "dark_aqua", "dark_blue", "dark_gray", "dark_green", "dark_purple", "dark_red", "gold", "gray", "green", "light_purple", "red", "white" and "yellow"
+				set {allColorsBoldStrikethrough::*} to "aqua", "black", "blue", "dark_aqua", "dark_blue", "dark_gray", "dark_green", "dark_purple", "dark_red", "gold", "gray", "green", "light_purple", "red", "white" and "yellow"
+				set {allColorsBoldItalic::*} to "aqua", "black", "blue", "dark_aqua", "dark_blue", "dark_gray", "dark_green", "dark_purple", "dark_red", "gold", "gray", "green", "light_purple", "red", "white" and "yellow"
+				set {allColorsUnderlineStrikethrough::*} to "aqua", "black", "blue", "dark_aqua", "dark_blue", "dark_gray", "dark_green", "dark_purple", "dark_red", "gold", "gray", "green", "light_purple", "red", "white" and "yellow"
+				set {allColorsUnderlineItalic::*} to "aqua", "black", "blue", "dark_aqua", "dark_blue", "dark_gray", "dark_green", "dark_purple", "dark_red", "gold", "gray", "green", "light_purple", "red", "white" and "yellow"
+				set {allColorsStrikethroughItalic::*} to "aqua", "black", "blue", "dark_aqua", "dark_blue", "dark_gray", "dark_green", "dark_purple", "dark_red", "gold", "gray", "green", "light_purple", "red", "white" and "yellow"
+				set {allColorsBoldUnderlineStrikethrough::*} to "aqua", "black", "blue", "dark_aqua", "dark_blue", "dark_gray", "dark_green", "dark_purple", "dark_red", "gold", "gray", "green", "light_purple", "red", "white" and "yellow"
+				set {allColorsBoldUnderlineItalic::*} to "aqua", "black", "blue", "dark_aqua", "dark_blue", "dark_gray", "dark_green", "dark_purple", "dark_red", "gold", "gray", "green", "light_purple", "red", "white" and "yellow"
+				set {allColorsBoldStrikethroughItalic::*} to "aqua", "black", "blue", "dark_aqua", "dark_blue", "dark_gray", "dark_green", "dark_purple", "dark_red", "gold", "gray", "green", "light_purple", "red", "white" and "yellow"
+				set {allColorsUnderlineStrikethroughItalic::*} to "aqua", "black", "blue", "dark_aqua", "dark_blue", "dark_gray", "dark_green", "dark_purple", "dark_red", "gold", "gray", "green", "light_purple", "red", "white" and "yellow"
+				set {allColorsBoldUnderlineStrikethroughItalic::*} to "aqua", "black", "blue", "dark_aqua", "dark_blue", "dark_gray", "dark_green", "dark_purple", "dark_red", "gold", "gray", "green", "light_purple", "red", "white" and "yellow"
+				set {allColorsRandom::*} to "aqua", "black", "blue", "dark_aqua", "dark_blue", "dark_gray", "dark_green", "dark_purple", "dark_red", "gold", "gray", "green", "light_purple", "red", "white" and "yellow"
+			   
+			   
+				send "{@C}----------------------------------------------------"
+				send "{@T}{@C2} Teams Reset!"
+				send "{@C}----------------------------------------------------"
+			else if arg-1 is "set":
+				if command sender is a player:
+					if player does not have permission "{@PERM}":
+						send "{@C}----------------------------------------------"
+						send "{@T}{@C2} You do not have permission to do that!"
+						send "{@C}----------------------------------------------"
+						stop
+				# If arg-3 is a valid team
+				if {Teams::%arg-3%} is set:
+				   
+					if (size of {Team.%{Teams.InTeam::%arg-2%}%::*} - 1) is less than 2:
+						{ninjateamsautodelete} is not set
+						command "/team resetcolor %{Teams.InTeam::%arg-2%}%"
+						loop {Team.%{Teams.InTeam::%arg-2%}%::*}:
+							command "/scoreboard teams leave %loop-value%"
+							delete {Teams::%{Teams.InTeam::%loop-value%}%}
+							delete {Team.%{Teams.InTeam::%arg-2%}%::%loop-value%}
+							delete {Teams.InTeam::%loop-value%}
+				   
+				   
+					command "/scoreboard teams leave %arg-2%"
+					delete {Team.%{Teams.InTeam::%arg-2%}%::%arg-2%}
+					set {Teams.InTeam::%arg-2%} to arg-3
+					set {Team.%arg-3%::%arg-2%} to arg-2
+					loop all players:
+						delete {pendingteam::%loop-player%::arg-2}
+					command "/scoreboard teams join UHC%arg-3% %arg-2%"
+					send "{@T}{@C2} You have been added to team {@C}%arg-3%{@C2}!" to ("%arg-2%" parsed as offline player)
+					send "{@T}{@C2} You set {@C}%arg-2% {@C2}to team {@C}%arg-3%{@C2}!" to player
+				else if {Teams.InTeam::%arg-3%} is set:
+					if (size of {Team.%{Teams.InTeam::%arg-2%}%::*} - 1) is less than 2:
+						{ninjateamsautodelete} is not set
+						command "/team resetcolor %{Teams.InTeam::%arg-2%}%"
+						loop {Team.%{Teams.InTeam::%arg-2%}%::*}:
+							command "/scoreboard teams leave %loop-value%"
+							delete {Teams::%{Teams.InTeam::%loop-value%}%}
+							delete {Team.%{Teams.InTeam::%arg-2%}%::%loop-value%}
+							delete {Teams.InTeam::%loop-value%}
+		
+					command "/scoreboard teams leave %arg-2%"
+					delete {Team.%{Teams.InTeam::%arg-2%}%::%arg-2%}
+					set {Teams.InTeam::%arg-2%} to {Teams.InTeam::%arg-3%}
+					set {Team.%{Teams.InTeam::%arg-3%}%::%arg-2%} to arg-2
+					loop all players:
+						delete {pendingteam::%loop-player%::arg-2}
+					command "/scoreboard teams join UHC%{Teams.InTeam::%arg-3%}% %arg-2%"
+					send "{@T}{@C2} You have been added to team {@C}%{Teams.InTeam::%arg-3%}%{@C2}!" to ("%arg-2%" parsed as offline player)
+					send "{@T}{@C2} You set {@C}%arg-2% {@C2}to {@C}%arg-3%{@C2}'s team!" to player
+						
+				else:
+					arg-3 is set
+					command "/ct %arg-2% %arg-3%"
+					send "{@T}{@C2} You set {@C}%arg-2% {@C2}to {@C}%arg-3%{@C2}'s team!" to player
+
+			else if arg-1 is "create":
+				if command sender is a player:
+					if player does not have permission "{@PERM}":
+						send "{@T}{@C2} Insufficient Permissions. This is an a staff command."
+						send "{@T}{@C2} Use to {@C}/team invite {@C2}to create a team automatically!"
+						stop
+				set {findteamnumber} to 1
+				set {findingteamnumber} to true
+				while {findingteamnumber} is true:
+					if {Teams::%{findteamnumber}%} is not set:
+						delete {findingteamnumber}
+					else:
+						add 1 to {findteamnumber}
+				set {Teams::%{findteamnumber}%} to {findteamnumber}
+				command "/scoreboard teams add UHC%{findteamnumber}%"
+				if {teamfriendlyfire} is set:
+					command "/scoreboard teams option UHC%{findteamnumber}% friendlyfire false"
+				if {ninjateams.dontautocolor} is not set:
+					command "/colorteam %{findteamnumber}%"
+				send "{@T}{@C2} Team {@C}%{findteamnumber}% {@C2}Created!"
+			else if arg-1 is "lock":
+				if command sender is a player:
+					if player does not have permission "{@PERM}":
+						send "{@C}----------------------------------------------"
+						send "{@T}{@C2} You do not have permission to do that!"
+						send "{@C}----------------------------------------------"
+						stop
+				set {teamslocked} to true
+				send "{@C}----------------------------------------------"
+				send "{@T}{@C2} Teams Locked!"
+				send "{@C}----------------------------------------------"
+			else if arg-1 is "unlock":
+				if command sender is a player:
+					if player does not have permission "{@PERM}":
+						send "{@C}----------------------------------------------"
+						send "{@T}{@C2} You do not have permission to do that!"
+						send "{@C}----------------------------------------------"
+						stop
+				delete {teamslocked}
+				send "{@C}----------------------------------------------"
+				send "{@T}{@C2} Teams Unlocked!"
+				send "{@C}----------------------------------------------"
+			else if arg-1 is "autocolor":
+				if command sender is a player:
+					if player does not have permission "{@PERM}":
+						send "{@C}----------------------------------------------"
+						send "{@T}{@C2} You do not have permission to do that!"
+						send "{@C}----------------------------------------------"
+						stop
+				if arg-2 is "on":
+					delete {ninjateams.dontautocolor}
+					send "{@C}----------------------------------------------"
+					send "{@T}{@C2} Auto-Coloring Enabled!"
+					send "{@C}----------------------------------------------"
+				else if arg-2 is "off":
+					set {ninjateams.dontautocolor} to true
+					send "{@C}----------------------------------------------"
+					send "{@T}{@C2} Auto-Coloring Disabled!"
+					send "{@C}----------------------------------------------"
+			else if arg-1 is "kick":
+				if command sender is a player:
+					if player does not have permission "{@PERM}":
+						send "{@C}----------------------------------------------"
+						send "{@T}{@C2} You do not have permission to do that!"
+						send "{@C}----------------------------------------------"
+						stop
+				command "/scoreboard teams leave %arg-2%"
+				if (size of {Team.%{Teams.InTeam::%arg-2%}%::*} - 1) is less than 2:
+					{ninjateamsautodelete} is not set
+					command "/team resetcolor %{Teams.InTeam::%arg-2%}%"
+					loop {Team.%{Teams.InTeam::%arg-2%}%::*}:
+						command "/scoreboard teams leave %loop-value%"
+						delete {Teams::%{Teams.InTeam::%loop-value%}%}
+						delete {Team.%{Teams.InTeam::%arg-2%}%::%loop-value%}
+						delete {Teams.InTeam::%loop-value%}
+				command "/scoreboard teams leave %arg-2%"
+				delete {Team.%{Teams.InTeam::%arg-2%}%::%arg-2%}
+				delete {Teams.InTeam::%arg-2%}
+				send "{@T}{@C} %arg-2% {@C2}has been kicked from his/her team!"
+				send "{@T}{@C2} You were removed from your team." to ("%arg-2%" parsed as offline player)
+				   
+			else if arg-1 is "setsize":
+				if command sender is a player:
+					if player does not have permission "{@PERM}":
+						send "{@C}----------------------------------------------"
+						send "{@T}{@C2} You do not have permission to do that!"
+						send "{@C}----------------------------------------------"
+						stop
+				if ("%arg-2%" parsed as integer) is less than 2:
+					send "{@C}----------------------------------------------"
+					send "{@T}{@C2} Teams must be at least 2 in size!"
+					send "{@C}----------------------------------------------"
+					stop
+				set {teamsize} to ("%arg-2%" parsed as integer)
+				send "{@C}----------------------------------------------"
+				send "{@T}{@C2} Team size set to {@C}%{teamsize}%{@C2}!"
+				send "{@C}----------------------------------------------"
+				   
+			else if arg-1 is "randomize":
+			   
+ 
+				if command sender is a player:
+					if player does not have permission "{@PERM}":
+						send "{@C}----------------------------------------------"
+						send "{@T}{@C2} You do not have permission to do that!"
+						send "{@C}----------------------------------------------"
+						stop
+				delete {randomizing::*}
+				send "{@C}-----------------------------------------------------"
+				send "{@T}{@C2} Randomizing Teams of {@C}%arg-2%{@C2}..."
+				send "{@C}-----------------------------------------------------"
+				loop all players:
+					if {dontrandomize::%loop-player%} is not set:
+						if {Teams.InTeam::%loop-player%} is not set:
+							set {randomizing::%loop-player%} to loop-player
+				set {_teamsize} to ("%arg-2%" parsed as integer)
+				set {findteamnumber} to 1
+				set {findingteamnumber} to true
+				while {findingteamnumber} is true:
+					if {Teams::%{findteamnumber}%} is not set:
+						delete {findingteamnumber}
+					else:
+						add 1 to {findteamnumber}
+				# Individually add each player to a random team
+				loop (size of {randomizing::*}) times:
+					if {Teams::%{findteamnumber}%} is not set:
+						set {Teams::%{findteamnumber}%} to {findteamnumber}
+						command "/scoreboard teams add UHC%{findteamnumber}%"
+						if {teamfriendlyfire} is set:
+							command "/scoreboard teams option UHC%{findteamnumber}% friendlyfire false"
+						if {ninjateams.dontautocolor} is not set:
+							command "/colorteam %{findteamnumber}%"
+					set {_randomplayer} to (random element of {randomizing::*})
+					if (size of {Team.%{findteamnumber}%::*}) is less than {_teamsize}:
+						set {Teams.InTeam::%{_randomplayer}%} to {findteamnumber}
+						set {Team.%{findteamnumber}%::%{_randomplayer}%} to {_randomplayer}
+						message "{@T}{@C2} You are now on team {@C}%{findteamnumber}%&7." to {_randomplayer}
+						execute console command "/scoreboard teams join UHC%{findteamnumber}% %{_randomplayer}%"
+						delete {randomizing::%{_randomplayer}%}
+					if (size of {Team.%{findteamnumber}%::*}) is {_teamsize}:
+						set {findteamnumber} to 1
+						set {findingteamnumber} to true
+						while {findingteamnumber} is true:
+							if {Teams::%{findteamnumber}%} is not set:
+								delete {findingteamnumber}
+							else:
+								add 1 to {findteamnumber}
+
+					
+			else if arg-1 is "broadcast" or "br":
+				if command sender is a player:
+					if player does not have permission "{@PERM}":
+						send "{@C}----------------------------------------------"
+						send "{@T}{@C2} You do not have permission to do that!"
+						send "{@C}----------------------------------------------"
+						stop
+				broadcast "{@C}-----------------------------------------------------"
+				broadcast "{@T}{@C2} &lTeam Setup"
+				broadcast "{@T}{@C2} /team invite <player>"
+				broadcast "{@T}{@C2} /team accept <player>"
+				broadcast "{@C}-----------------------------------------------------"
+				   
+			else if arg-1 is "removeempty":
+				if command sender is a player:
+					if player does not have permission "{@PERM}":
+						send "{@C}----------------------------------------------"
+						send "{@T}{@C2} You do not have permission to do that!"
+						send "{@C}----------------------------------------------"
+						stop
+				loop {Teams::*}:
+					if (size of {Team.%loop-value%::*}) is 0:
+						command "/team resetcolor %loop-value%"
+						delete {Team.%loop-value%::*}
+						delete {Teams::%loop-value%}
+				send "{@C}----------------------------------------------"
+				send "{@T}{@C2} Empty Teams Removed!"
+				send "{@C}----------------------------------------------"
+			else if arg-1 is "deathkick":
+				if command sender is a player:
+					if player does not have permission "{@PERM}":
+						send "{@C}----------------------------------------------"
+						send "{@T}{@C2} You do not have permission to do that!"
+						send "{@C}----------------------------------------------"
+						stop
+				if arg-2 is "on" or "enable":
+					send "{@C}----------------------------------------------"
+					send "{@T}{@C2} Team Death-Kick Enabled!"
+					send "{@C}----------------------------------------------"
+					set {ninjateamsdeathkick} to true #Should I make it so this variable is deleted when teams are reset?
+				else if arg-2 is "off" or "disable":
+					send "{@C}----------------------------------------------"
+					send "{@T}{@C2} Team Death-Kick Disabled!"
+					send "{@C}----------------------------------------------"
+					delete {ninjateamsdeathkick}
+					   
+			else if arg-1 is "resetcolor":
+				arg-2 is set
+				if command sender is a player:
+					if player does not have permission "{@PERM}":
+						send "{@C}----------------------------------------------"
+						send "{@T}{@C2} You do not have permission to do that!"
+						send "{@C}----------------------------------------------"
+						stop
+				if arg-2 is "all":
+					loop {Teams::*}:
+						command "/team resetcolor %loop-value%"
+					send "{@C}----------------------------------------------"
+					send "{@T}{@C2} All team colors have been reset!"
+					send "{@C}----------------------------------------------"
+				if {teamColor::%arg-2%::Color} is set:
+					send "{@C}----------------------------------------------"
+					send "{@T}{@C2} Color for team {@C}%arg-2% {@C2}has been reset!"
+					send "{@C}----------------------------------------------"
+					if {UsingUsedColors::%arg-2%} is not set:
+						#Backward form of color checking to add the color back to the correct list variable
+					   
+						if {teamColor::%arg-2%::bold} and {teamColor::%arg-2%::underline} and {teamColor::%arg-2%::strikethrough} and {teamColor::%arg-2%::italic} is set:
+							add "%{teamColor::%arg-2%::Color}%" to {allColorsBoldUnderlineStrikethroughItalic::*}
+							   
+						else if {teamColor::%arg-2%::bold} and {teamColor::%arg-2%::underline} and {teamColor::%arg-2%::strikethrough} is set:
+							add "%{teamColor::%arg-2%::Color}%" to {allColorsBoldUnderlineStrikethrough::*}
+					   
+						else if {teamColor::%arg-2%::bold} and {teamColor::%arg-2%::underline} and {teamColor::%arg-2%::italic} is set:
+							add "%{teamColor::%arg-2%::Color}%" to {allColorsBoldUnderlineItalic::*}
+							   
+						else if {teamColor::%arg-2%::bold} and {teamColor::%arg-2%::underline} is set:
+							add "%{teamColor::%arg-2%::Color}%" to {allColorsBoldUnderline::*}
+							   
+						else if {teamColor::%arg-2%::bold} and {teamColor::%arg-2%::strikethrough} is set:
+							add "%{teamColor::%arg-2%::Color}%" to {allColorsBoldStrikethrough::*}
+							   
+						else if {teamColor::%arg-2%::bold} and {teamColor::%arg-2%::italic} is set:
+							add "%{teamColor::%arg-2%::Color}%" to {allColorsBoldItalic::*}
+							   
+						else if {teamColor::%arg-2%::bold} is set:
+							add "%{teamColor::%arg-2%::Color}%" to {allColorsBold::*}
+							   
+						else if {teamColor::%arg-2%::underline} is set:
+							add "%{teamColor::%arg-2%::Color}%" to {allColorsUnderline::*}
+							   
+						else if {teamColor::%arg-2%::strikethrough} is set:
+							add "%{teamColor::%arg-2%::Color}%" to {allColorsStrikethrough::*}
+							   
+						else if {teamColor::%arg-2%::italic} is set:
+							add "%{teamColor::%arg-2%::Color}%" to {allColorsItalic::*}
+						else:
+							add "%{teamColor::%arg-2%::Color}%" to {allColors::*}
+						   
+					command "/scoreboard teams option UHC%arg-2% color white"
+					delete {teamColor::%arg-2%::*}
+					delete {UsingUsedColors::%arg-2%}
+						   
+			else if arg-1 is "colorall":
+				if command sender is a player:
+					if player does not have permission "{@PERM}":
+						send "{@C}----------------------------------------------"
+						send "{@T}{@C2} You do not have permission to do that!"
+						send "{@C}----------------------------------------------"
+						stop
+				loop {Teams::*}:
+					command "/colorteam %loop-value%"
+				send "{@T}{@C2} All teams have been colored!"
+			else if arg-1 is "kickunder":
+				if command sender is a player:
+					if player does not have permission "{@PERM}":
+						send "{@C}----------------------------------------------"
+						send "{@T}{@C2} You do not have permission to do that!"
+						send "{@C}----------------------------------------------"
+						stop
+				loop all players:
+					if {Teams.InTeam::%loop-player%} is set:
+						if (size of {Team.%{Teams.InTeam::%loop-player%}%::*}) is less than ("%arg-2%" parsed as integer):
+							set {_saveloop} to {Teams.InTeam::%loop-player%}
+							loop {Team.%{Teams.InTeam::%loop-player%}%::*}:
+								command "/scoreboard teams leave %loop-value-2%"
+								if "%loop-value-2%" parsed as offline player does not have permission "{@PERM}":
+									kick ("%loop-value-2%" parsed as offline player) due to "{@T}{@C2} You were kicked for not having enough players on your team!"
+								command "/whitelist remove %loop-value-2%"
+								delete {Teams.InTeam::%loop-value-2%}
+								delete {Teams.InTeam::%loop-value-2%}
+							delete {Team.%{_saveloop}%::*}
+							delete {Teams::%{_saveloop}%}
+						   
+					else if loop-player does not have permission "{@PERM}":
+						kick loop-player due to "{@T}{@C2} You were kicked for not having enough players on your team!"
+						command "/wl remove %loop-value%"
+				send "{@C}----------------------------------------------"
+				send "{@T}{@C2} Teams of less than {@C}%arg-2% {@C2}have been kicked!"
+				send "{@C}----------------------------------------------"
+			   
+			else if arg-1 is "hidelist":
+				if command sender is a player:
+					if player does not have permission "{@PERM}":
+						send "{@C}----------------------------------------------"
+						send "{@T}{@C2} You do not have permission to do that!"
+						send "{@C}----------------------------------------------"
+						stop
+				set {ninjateamshidelist} to true
+				send "{@C}----------------------------------------------"
+				send "{@T}{@C2} Players can no longer do {@C}/team list{@C2}!"
+				send "{@T}{@C2} Type {@C}/team unhidelist{@C2} to undo this!"
+				send "{@C}----------------------------------------------"      
+			   
+			else if arg-1 is "unhidelist":
+				if command sender is a player:
+					if player does not have permission "{@PERM}":
+						send "{@C}----------------------------------------------"
+						send "{@T}{@C2} You do not have permission to do that!"
+						send "{@C}----------------------------------------------"
+						stop
+				delete {ninjateamshidelist}
+				send "{@C}----------------------------------------------"
+				send "{@T}{@C2} Players can now do {@C}/team list{@C2}!"
+				send "{@T}{@C2} Type {@C}/team hidelist{@C2} to hide the list!"
+				send "{@C}----------------------------------------------"      
+			   
+			else if arg-1 is "rvb" or "redvsblue":
+				if command sender is a player:
+					if player does not have permission "{@PERM}":
+						send "{@C}----------------------------------------------"
+						send "{@T}{@C2} You do not have permission to do that!"
+						send "{@C}----------------------------------------------"
+						stop
+					   
+				delete {randomizing::*}
+				loop all players:
+					if {dontrandomize::%loop-player%} is not set:
+						if {Teams.InTeam::%loop-player%} is not set:
+							set {randomizing::%loop-player%} to loop-player
+				set {findteamnumber} to 1
+				set {findingteamnumber} to true
+				while {findingteamnumber} is true:
+					if {Teams::%{findteamnumber}%} is not set:
+						delete {findingteamnumber}
+					else:
+						add 1 to {findteamnumber}
+				set {_currentnumber} to {findteamnumber}
+				if arg-2 is set:
+					set {_teamsize} to ceil((size of {randomizing::*}) / ("%arg-2%" parsed as integer))
+				else:
+					set {_teamsize} to ceil((size of {randomizing::*}) / 2)
+				send "{@C}-----------------------------------------------------"
+				send "{@T}{@C2} Randomizing RvB Teams of {@C}%{_teamsize}%{@C2}..."
+				send "{@C}-----------------------------------------------------"
+				set {_LOOPNUMBER} to 1
+				# Individually add each player to a random team
+				loop (size of {randomizing::*}) times:
+					if {Teams::%{findteamnumber}%} is not set:
+						set {Teams::%{findteamnumber}%} to {findteamnumber}
+						command "/scoreboard teams add UHC%{findteamnumber}%"
+						if {teamfriendlyfire} is set:
+							command "/scoreboard teams option UHC%{findteamnumber}% friendlyfire false"
+						if {ninjateams.dontautocolor} is not set:
+							if {_LOOPNUMBER} is 1:
+								command "/colorteam %{findteamnumber}% red"
+							else if {_LOOPNUMBER} is 2:
+								command "/colorteam %{findteamnumber}% blue"
+							else if {_LOOPNUMBER} is 3:
+								command "/colorteam %{findteamnumber}% yellow"
+							else if {_LOOPNUMBER} is 4:
+								command "/colorteam %{findteamnumber}% green"
+							else:
+								command "/colorteam %{findteamnumber}%"
+							set {_LOOPNUMBER} to {_LOOPNUMBER} + 1
+					set {_randomplayer} to (random element of {randomizing::*})
+					if (size of {Team.%{findteamnumber}%::*}) is less than {_teamsize}:
+						set {Teams.InTeam::%{_randomplayer}%} to {findteamnumber}
+						set {Team.%{findteamnumber}%::%{_randomplayer}%} to {_randomplayer}
+						message "{@T}{@C2} You are now on team {@C}%{findteamnumber}%&7." to {_randomplayer}
+						execute console command "/scoreboard teams join UHC%{findteamnumber}% %{_randomplayer}%"
+						delete {randomizing::%{_randomplayer}%}
+					if (size of {Team.%{findteamnumber}%::*}) is {_teamsize}: 
+						set {findteamnumber} to 1
+						set {findingteamnumber} to true
+						while {findingteamnumber} is true:
+							if {Teams::%{findteamnumber}%} is not set:
+								delete {findingteamnumber}
+							else:
+								add 1 to {findteamnumber}
+			else if arg-1 is "delete":
+				if command sender is a player:
+					if player does not have permission "{@PERM}":
+						send "{@C}----------------------------------------------"
+						send "{@T}{@C2} You do not have permission to do that!"
+						send "{@C}----------------------------------------------"
+						stop
+				command "/team resetcolor %arg-2%"
+				loop {Team.%arg-2%::*}:
+					command "/scoreboard teams leave %loop-value%"
+					delete {Team.%{Teams.InTeam::%loop-value%}%::%loop-value%}
+					delete {Teams.InTeam::loop-value}
+				delete {TeamColor::%arg-2%::*}
+				delete {Teams::%arg-2%}
+				delete {Team.%arg-2%::*}
+				send "{@T}{@C2} Team {@C}%arg-2% {@C2}has been deleted!" 
+				   
+			else if arg-1 is "listcolors":
+				send "{@C}----------------------------------------------------"
+				send "{@T}{@C2} &lColors:"
+				send "{@T}{@C} <light aqua>aqua, <black>black, <light blue>blue, <dark aqua>dark_aqua, <dark blue>dark_blue, <dark gray>dark_gray, <dark green>dark_green, <dark purple>dark_purple, <dark red>dark_red, <gold>gold, <gray>gray, <light green>green, <light purple>light_purple, <red>red, <white>white, <yellow>yellow"
+				send "{@C}----------------------------------------------------"
+			else if arg-1 is "unmuteall":
+				if command sender is a player:
+					if player does not have permission "{@PERM}":
+						send "{@C}----------------------------------------------"
+						send "{@T}{@C2} You do not have permission to do that!"
+						send "{@C}----------------------------------------------"
+						stop
+				delete {PMDISABLED}
+				send "{@C}----------------------------------------------"
+				send "{@T}{@C2} Teams can now PM!"
+				send "{@T}{@C2} Use {@C}/team muteall {@C2}to undo this!"
+				send "{@C}----------------------------------------------"
+			else if arg-1 is "mute":
+				if command sender is a player:
+					if player does not have permission "{@PERM}":
+						send "{@C}----------------------------------------------"
+						send "{@T}{@C2} You do not have permission to do that!"
+						send "{@C}----------------------------------------------"
+						stop
+				if arg-2 is set:
+					if arg-2 is "all" or "*":
+						set {PMDISABLED} to true
+						send "{@C}----------------------------------------------"
+						send "{@T}{@C2} Teams can no longer use team chat!"
+						send "{@T}{@C2} Use {@C}/team unmuteall {@C2}to undo this!"
+						send "{@C}----------------------------------------------"
+					else:
+						set {TeamMuted::%arg-2%} to arg-2
+						send "{@C}----------------------------------------------"
+						send "{@T}{@C} %arg-2% {@C2}can no longer use team chat!"
+						send "{@T}{@C2} Use {@C}/team unmute %arg-2% {@C2}to undo this!"
+						send "{@C}----------------------------------------------"
+			else if arg-1 is "unmute":
+				if command sender is a player:
+					if player does not have permission "{@PERM}":
+						send "{@C}----------------------------------------------"
+						send "{@T}{@C2} You do not have permission to do that!"
+						send "{@C}----------------------------------------------"
+						stop
+				if arg-2 is set:
+					if arg-2 is "all" or "*":
+						delete {PMDISABLED}
+						send "{@C}----------------------------------------------"
+						send "{@T}{@C2} Teams can now use team chat!"
+						send "{@T}{@C2} Use {@C}/team muteall {@C2}to undo this!"
+						send "{@C}----------------------------------------------"
+					else:
+						delete {TeamMuted::%arg-2%}
+						send "{@C}----------------------------------------------"
+						send "{@T}{@C} %arg-2% {@C2}can now use team chat!"
+						send "{@T}{@C2} Use {@C}/team mute %arg-2% {@C2}to undo this!"
+						send "{@C}----------------------------------------------"
+			else if arg-1 is "viewpm":
+				if command sender is a player:
+					if player does not have permission "{@PERM}":
+						send "{@C}----------------------------------------------"
+						send "{@T}{@C2} You do not have permission to do that!"
+						send "{@C}----------------------------------------------"
+						stop
+				if arg-2 is set:
+					if arg-2 is "all" or "*":
+						set {CanViewAllPM::%player%} to player
+						send "{@C}----------------------------------------------"
+						send "{@T}{@C2} You can now view all team chat!"
+						send "{@C}----------------------------------------------"
+					else if {Teams::%arg-2%} is set:
+						set {CanViewPM::%arg-2%::%player%} to player
+						send "{@C}----------------------------------------------"
+						send "{@T}{@C2} You can now view team {@C}%arg-2%{@C2}'s chat!"
+						send "{@C}----------------------------------------------"
+					else:
+						send "{@C}----------------------------------------------"
+						send "{@T}{@C2} That team doesn't exist!"
+						send "{@C}----------------------------------------------"
+ 
+			else if arg-1 is "unviewpm":
+				if command sender is a player:
+					if player does not have permission "{@PERM}":
+						send "{@C}----------------------------------------------"
+						send "{@T}{@C2} You do not have permission to do that!"
+						send "{@C}----------------------------------------------"
+						stop
+				if arg-2 is set:
+					if arg-2 is "all" or "*":
+						delete {CanViewAllPM::%player%}
+						send "{@C}----------------------------------------------"
+						send "{@T}{@C2} You can no longer view all team chat!"
+						send "{@C}----------------------------------------------"
+						loop {Teams::*}:
+							delete {CanViewPM::%loop-value%::%player%}
+					else if {Teams::%arg-2%} is set:
+						delete {CanViewPM::%arg-2%::%player%}
+						send "{@C}----------------------------------------------"
+						send "{@T}{@C2} You can no longer view team {@C}%arg-2%{@C2}'s chat!"
+						send "{@C}----------------------------------------------"
+					else:
+						send "{@C}----------------------------------------------"
+						send "{@T}{@C2} That team doesn't exist!"
+						send "{@C}----------------------------------------------"
+			else if arg-1 is "autodelete":
+				if command sender is a player:
+					if player does not have permission "{@PERM}":
+						send "{@C}----------------------------------------------"
+						send "{@T}{@C2} You do not have permission to do that!"
+						send "{@C}----------------------------------------------"
+						stop
+				if arg-2 is "on" or "enable":
+					send "{@C}----------------------------------------------"
+					send "{@T}{@C2} Team Auto-Delete Enabled!"
+					send "{@C}----------------------------------------------"
+					delete {ninjateamsautodelete}
+				else if arg-2 is "off" or "disable":
+					send "{@C}----------------------------------------------"
+					send "{@T}{@C2} Team Auto-Delete Disabled!"
+					send "{@C}----------------------------------------------"
+					set {ninjateamsautodelete} to false
+			else if arg-1 is "friendlyfire" or "ff" or "fire":
+				if command sender is a player:
+					if player does not have permission "{@PERM}":
+						send "{@C}----------------------------------------------"
+						send "{@T}{@C2} You do not have permission to do that!"
+						send "{@C}----------------------------------------------"
+						stop
+				if arg-2 is "on" or "enable":
+					send "{@C}----------------------------------------------"
+					send "{@T}{@C2} Friendly Fire Enabled!"
+					send "{@C}----------------------------------------------"
+					delete {teamfriendlyfire}
+					loop {Teams::*}:
+						command "/scoreboard teams option UHC%loop-value% friendlyfire true"
+				   
+				else if arg-2 is "off" or "disable":
+					send "{@C}----------------------------------------------"
+					send "{@T}{@C2} Friendly Fire Disabled!" 
+					send "{@C}----------------------------------------------"
+					set {teamfriendlyfire} to false            
+					loop {Teams::*}:
+						command "/scoreboard teams option UHC%loop-value% friendlyfire false"
+					   
+			else if arg-1 is "doubledates":
+				if command sender is a player:
+					if player does not have permission "{@PERM}":
+						send "{@C}----------------------------------------------"
+						send "{@T}{@C2} You do not have permission to do that!"
+						send "{@C}----------------------------------------------"
+						stop
+				set {_num1moduled} to (size of {Teams::*})
+				if {_num1moduled} is equal to 1:
+					send "{@C}----------------------------------------------"
+					send "{@T}{@C2} Not enough teams!"
+					send "{@C}----------------------------------------------"
+					stop trigger
+				if {_num1moduled} is equal to 0:
+					send "{@C}----------------------------------------------"
+					send "{@T} No teams are set!"
+					send "{@C}----------------------------------------------"
+					stop trigger
+				while {_num1moduled} is greater than or equal to 2:
+					set {_count} to {_count} + 1
+					set {_num1moduled} to {_num1moduled} - 2
+					if {_num1moduled} is 1:
+						"%arg-2%" is not "ignorenumber"
+						send "{@C}----------------------------------------------"
+						send "{@T}{@C2} There is an odd number of teams." to player
+						send "{@T}{@C2} You can do {@C}/team doubledates ignorenumber {@C2}, but one team won't get a double date." to player
+						send "{@C}----------------------------------------------"
+						stop trigger
+				send "{@C}----------------------------------------------"
+				send "{@T}{@C2} Each team is now merged with another team." 
+				send "{@C}----------------------------------------------"		
+				delete {DDatesOriginal::*}
+				loop {Teams::*}:
+					set {DDatesOriginal::%loop-value%} to loop-value
+				loop ((size of {Teams::*}) / 2) times:
+					set {_team1} to (random element of {DDatesOriginal::*})
+					delete {Teams::%{_team1}%}
+					delete {DDatesOriginal::%{_team1}%}
+					set {_team2} to (random element of {DDatesOriginal::*})
+					delete {Teams::%{_team2}%}
+					delete {DDatesOriginal::%{_team2}%}
+					set {_count2} to 1
+					delete {_creatingteam::*}
+					loop {Team.%{_team1}%::*}:
+						set {_creatingteam::%{_count2}%} to loop-value-2
+						add 1 to {_count2}
+					loop {Team.%{_team2}%::*}:
+						set {_creatingteam::%{_count2}%} to loop-value-2
+						add 1 to {_count2}
+						
+					loop {_creatingteam::*}:
+						if {Teams.InTeam::%loop-value-2%} is set:
+							command "/scoreboard teams leave %loop-value-2%"
+							if ((size of {Team.%{Teams.InTeam::%loop-value-2%}%::*}) - 1) is less than 2:
+								{ninjateamsautodelete} is not set
+								command "/team resetcolor %{Teams.InTeam::%loop-value-2%}%"
+								loop {Team.%{Teams.InTeam::%loop-value-2%}%::*}:
+									command "/scoreboard teams leave %loop-value-2%"
+									delete {Teams::%{Teams.InTeam::%loop-value-2%}%}
+									delete {Team.%{Teams.InTeam::%loop-value-2%}%::%loop-value-2%}
+									delete {Teams.InTeam::%loop-value-2%}
+							delete {Team.%{Teams.InTeam::%loop-value-2%}%::%loop-value-2%}
+						loop all players:
+							delete {pendingteam::%loop-player%::loop-value-1}
+								
+					set {findteamnumber} to 1
+					set {findingteamnumber} to true
+					while {findingteamnumber} is true:
+						if {Teams::%{findteamnumber}%} is not set:
+							delete {findingteamnumber}
+						else:
+							add 1 to {findteamnumber}
+					set {Teams::%{findteamnumber}%} to {findteamnumber}
+					command "/scoreboard teams add UHC%{findteamnumber}%"
+					if {teamfriendlyfire} is set:
+						command "/scoreboard teams option UHC%{findteamnumber}% friendlyfire false"
+				   
+					loop {_creatingteam::*}:
+						set {Teams.InTeam::%loop-value-2%} to {findteamnumber}
+						set {Team.%{findteamnumber}%::%loop-value-2%} to loop-value-2
+						if {ninjateams.dontautocolor} is not set:
+							command "/colorteam %{findteamnumber}%"
+						command "/scoreboard teams join UHC%{findteamnumber}% %loop-value-2%"
+					   
+					   
+ 
+					   
+					   
+		   
+command /colorteam <integer> [<text>] [<text>] [<text>] [<text>] [<text>]:
+	usage: /colorteam <team> [color] [bold] [underline] [strikethrough] [italic]
+	permission: {@PERM}
+	trigger:
+		{Teams::%arg-1%} is set
+		if {allTheColors} is not set:
+			set {allTheColors} to true
+			set {allColors::*} to "aqua", "black", "blue", "dark_aqua", "dark_blue", "dark_gray", "dark_green", "dark_purple", "dark_red", "gold", "gray", "green", "light_purple", "red" and "yellow"
+			set {allColorsBold::*} to "aqua", "black", "blue", "dark_aqua", "dark_blue", "dark_gray", "dark_green", "dark_purple", "dark_red", "gold", "gray", "green", "light_purple", "red", "white" and "yellow"
+			set {allColorsUnderline::*} to "aqua", "black", "blue", "dark_aqua", "dark_blue", "dark_gray", "dark_green", "dark_purple", "dark_red", "gold", "gray", "green", "light_purple", "red", "white" and "yellow"
+			set {allColorsStrikethrough::*} to "aqua", "black", "blue", "dark_aqua", "dark_blue", "dark_gray", "dark_green", "dark_purple", "dark_red", "gold", "gray", "green", "light_purple", "red", "white" and "yellow"
+			set {allColorsItalic::*} to "aqua", "black", "blue", "dark_aqua", "dark_blue", "dark_gray", "dark_green", "dark_purple", "dark_red", "gold", "gray", "green", "light_purple", "red", "white" and "yellow"
+			set {allColorsBoldUnderline::*} to "aqua", "black", "blue", "dark_aqua", "dark_blue", "dark_gray", "dark_green", "dark_purple", "dark_red", "gold", "gray", "green", "light_purple", "red", "white" and "yellow"
+			set {allColorsBoldStrikethrough::*} to "aqua", "black", "blue", "dark_aqua", "dark_blue", "dark_gray", "dark_green", "dark_purple", "dark_red", "gold", "gray", "green", "light_purple", "red", "white" and "yellow"
+			set {allColorsBoldItalic::*} to "aqua", "black", "blue", "dark_aqua", "dark_blue", "dark_gray", "dark_green", "dark_purple", "dark_red", "gold", "gray", "green", "light_purple", "red", "white" and "yellow"
+			set {allColorsUnderlineStrikethrough::*} to "aqua", "black", "blue", "dark_aqua", "dark_blue", "dark_gray", "dark_green", "dark_purple", "dark_red", "gold", "gray", "green", "light_purple", "red", "white" and "yellow"
+			set {allColorsUnderlineItalic::*} to "aqua", "black", "blue", "dark_aqua", "dark_blue", "dark_gray", "dark_green", "dark_purple", "dark_red", "gold", "gray", "green", "light_purple", "red", "white" and "yellow"
+			set {allColorsStrikethroughItalic::*} to "aqua", "black", "blue", "dark_aqua", "dark_blue", "dark_gray", "dark_green", "dark_purple", "dark_red", "gold", "gray", "green", "light_purple", "red", "white" and "yellow"
+			set {allColorsBoldUnderlineStrikethrough::*} to "aqua", "black", "blue", "dark_aqua", "dark_blue", "dark_gray", "dark_green", "dark_purple", "dark_red", "gold", "gray", "green", "light_purple", "red", "white" and "yellow"
+			set {allColorsBoldUnderlineItalic::*} to "aqua", "black", "blue", "dark_aqua", "dark_blue", "dark_gray", "dark_green", "dark_purple", "dark_red", "gold", "gray", "green", "light_purple", "red", "white" and "yellow"
+			set {allColorsBoldStrikethroughItalic::*} to "aqua", "black", "blue", "dark_aqua", "dark_blue", "dark_gray", "dark_green", "dark_purple", "dark_red", "gold", "gray", "green", "light_purple", "red", "white" and "yellow"
+			set {allColorsUnderlineStrikethroughItalic::*} to "aqua", "black", "blue", "dark_aqua", "dark_blue", "dark_gray", "dark_green", "dark_purple", "dark_red", "gold", "gray", "green", "light_purple", "red", "white" and "yellow"
+			set {allColorsBoldUnderlineStrikethroughItalic::*} to "aqua", "black", "blue", "dark_aqua", "dark_blue", "dark_gray", "dark_green", "dark_purple", "dark_red", "gold", "gray", "green", "light_purple", "red", "white" and "yellow"
+			set {allColorsRandom::*} to "aqua", "black", "blue", "dark_aqua", "dark_blue", "dark_gray", "dark_green", "dark_purple", "dark_red", "gold", "gray", "green", "light_purple", "red", "white" and "yellow"
+		if arg-2 is set:
+			if arg-2 is not "aqua", "black", "blue", "dark_aqua", "dark_blue", "dark_gray", "dark_green", "dark_purple", "dark_red", "gold", "gray", "green", "light_purple", "red", "white" or "yellow":
+				send "{@C}----------------------------------------------"
+				send "{@T}{@C2} Invalid Color: {@C}%arg-2%{@C2}"
+				send "{@T}{@C2} The following are valid colors: {@C}aqua, black, blue, dark_aqua, dark_blue, dark_gray, dark_green, dark_purple, dark_red, gold, gray, green, light_purple, red, white and yellow"
+				send "{@C}----------------------------------------------"
+				stop       
+			if {teamColor::%arg-1%::Color} is set:
+				if {UsingUsedColors::%arg-1%} is not set:
+					#Backward form of color checking to add the color back to the correct list variable
+				   
+				   
+				   
+		# bold underline strikethrough italic
+					if {teamColor::%arg-1%::bold} and {teamColor::%arg-1%::underline} and {teamColor::%arg-1%::strikethrough} and {teamColor::%arg-1%::italic} is set:
+						add "%{teamColor::%arg-1%::Color}%" to {allColorsBoldUnderlineStrikethroughItalic::*}
+						   
+		# bold underline strikethrough
+					else if {teamColor::%arg-1%::bold} and {teamColor::%arg-1%::underline} and {teamColor::%arg-1%::strikethrough} is set:
+						add "%{teamColor::%arg-1%::Color}%" to {allColorsBoldUnderlineStrikethrough::*}
+				   
+		# bold underline italic
+					else if {teamColor::%arg-1%::bold} and {teamColor::%arg-1%::underline} and {teamColor::%arg-1%::italic} is set:
+						add "%{teamColor::%arg-1%::Color}%" to {allColorsBoldUnderlineItalic::*}
+						   
+# underline strikethrough italic
+					else if {teamColor::%arg-1%::underline} and {teamColor::%arg-1%::strikethrough} and {teamColor::%arg-1%::italic} is set:
+						add "%{teamColor::%arg-1%::Color}%" to {allColorsUnderlineStrikethroughItalic::*}
+						
+# bold strikethrough italic
+					else if {teamColor::%arg-1%::bold} and {teamColor::%arg-1%::strikethrough} and {teamColor::%arg-1%::italic} is set:
+						add "%{teamColor::%arg-1%::Color}%" to {allColorsBoldStrikethroughItalic::*}
+						   
+		# bold underline
+					else if {teamColor::%arg-1%::bold} and {teamColor::%arg-1%::underline} is set:
+						add "%{teamColor::%arg-1%::Color}%" to {allColorsBoldUnderline::*}
+						   
+		# bold strikethrough
+					else if {teamColor::%arg-1%::bold} and {teamColor::%arg-1%::strikethrough} is set:
+						add "%{teamColor::%arg-1%::Color}%" to {allColorsBoldStrikethrough::*}
+						   
+		# bold italic
+					else if {teamColor::%arg-1%::bold} and {teamColor::%arg-1%::italic} is set:
+						add "%{teamColor::%arg-1%::Color}%" to {allColorsBoldItalic::*}
+				
+# underline strikethrough
+					else if {teamColor::%arg-1%::underline} and {teamColor::%arg-1%::strikethrough} is set:
+						add "%{teamColor::%arg-1%::Color}%" to {allColorsUnderlineStrikethrough::*}
+						
+# underline italic
+					else if {teamColor::%arg-1%::underline} and {teamColor::%arg-1%::italic} is set:
+						add "%{teamColor::%arg-1%::Color}%" to {allColorsUnderlineItalic::*}
+						
+# strikethrough italic
+					else if {teamColor::%arg-1%::strikethrough} and {teamColor::%arg-1%::italic} is set:	   
+						add "%{teamColor::%arg-1%::Color}%" to {allColorsStrikethroughItalic::*}
+		# bold
+					else if {teamColor::%arg-1%::bold} is set:
+						add "%{teamColor::%arg-1%::Color}%" to {allColorsBold::*}
+						   
+		# underline
+					else if {teamColor::%arg-1%::underline} is set:
+						add "%{teamColor::%arg-1%::Color}%" to {allColorsUnderline::*}
+						   
+		# strikethrough
+					else if {teamColor::%arg-1%::strikethrough} is set:
+						add "%{teamColor::%arg-1%::Color}%" to {allColorsStrikethrough::*}
+						   
+		# italic
+					else if {teamColor::%arg-1%::italic} is set:
+						add "%{teamColor::%arg-1%::Color}%" to {allColorsItalic::*}
+					   
+					else:
+						add "%{teamColor::%arg-1%::Color}%" to {allColors::*}
+				   
+				   
+				   
+				   
+			delete {teamColor::%arg-1%::*}
+			set {teamColor::%arg-1%::%arg-3%} to true
+			set {teamColor::%arg-1%::%arg-4%} to true
+			set {teamColor::%arg-1%::%arg-5%} to true
+			set {teamColor::%arg-1%::%arg-6%} to true
+		   
+# bold underline strikethrough italic
+			if {teamColor::%arg-1%::bold} and {teamColor::%arg-1%::underline} and {teamColor::%arg-1%::strikethrough} and {teamColor::%arg-1%::italic} is set:
+				if (size of {allColorsBoldUnderlineStrikethroughItalic::*}) is greater than 0:
+					if (size of {allColorsBoldUnderlineStrikethroughItalic::*}) is 1:
+						delete {allTheColors}
+					if "%{allColorsBoldUnderlineStrikethroughItalic::*}%" does not contain "%arg-2%":
+						set {UsingUsedColors::%arg-1%} to true
+					remove "%arg-2%" from {allColorsBoldUnderlineStrikethroughItalic::*}
+				   
+# bold underline strikethrough
+			else if {teamColor::%arg-1%::bold} and {teamColor::%arg-1%::underline} and {teamColor::%arg-1%::strikethrough} is set:
+				if (size of {allColorsBoldUnderlineStrikethrough::*}) is greater than 0:
+					if "%{allColorsBoldUnderlineStrikethrough::*}%" does not contain "%arg-2%":
+						set {UsingUsedColors::%arg-1%} to true
+					remove "%arg-2%" from {allColorsBoldUnderlineStrikethrough::*}
+		   
+# bold underline italic
+			else if {teamColor::%arg-1%::bold} and {teamColor::%arg-1%::underline} and {teamColor::%arg-1%::italic} is set:
+				if (size of {allColorsBoldUnderlineItalic::*}) is greater than 0:
+					if "%{allColorsBoldUnderlineItalic::*}%" does not contain "%arg-2%":
+						set {UsingUsedColors::%arg-1%} to true
+					remove "%arg-2%" from {allColorsBoldUnderlineItalic::*}
+				   
+# underline strikethrough italic
+			else if {teamColor::%arg-1%::underline} and {teamColor::%arg-1%::strikethrough} and {teamColor::%arg-1%::italic} is set:
+				if (size of {allColorsUnderlineStrikethroughItalic::*}) is greater than 0:
+					if "%{allColorsUnderlineStrikethroughItalic::*}%" does not contain "%arg-2%":
+						set {UsingUsedColors::%arg-1%} to true
+					remove "%arg-2%" from {allColorsUnderlineStrikethroughItalic::*}
+					
+# bold strikethrough italic
+			else if {teamColor::%arg-1%::bold} and {teamColor::%arg-1%::strikethrough} and {teamColor::%arg-1%::italic} is set:
+				if (size of {allColorsBoldStrikethroughItalic::*}) is greater than 0:
+					if "%{allColorsBoldStrikethroughItalic::*}%" does not contain "%arg-2%":
+						set {UsingUsedColors::%arg-1%} to true
+					remove "%arg-2%" from {allColorsBoldStrikethroughItalic::*}
+# bold underline
+			else if {teamColor::%arg-1%::bold} and {teamColor::%arg-1%::underline} is set:
+				if (size of {allColorsBoldUnderline::*}) is greater than 0:
+					if "%{allColorsBoldUnderline::*}%" does not contain "%arg-2%":
+						set {UsingUsedColors::%arg-1%} to true
+					remove "%arg-2%" from {allColorsBoldUnderline::*}
+				   
+# bold strikethrough
+			else if {teamColor::%arg-1%::bold} and {teamColor::%arg-1%::strikethrough} is set:
+				if (size of {allColorsBoldStrikethrough::*}) is greater than 0:
+					if "%{allColorsBoldStrikethrough::*}%" does not contain "%arg-2%":
+						set {UsingUsedColors::%arg-1%} to true
+					remove "%arg-2%" from {allColorsBoldStrikethrough::*}
+				   
+# bold italic
+			else if {teamColor::%arg-1%::bold} and {teamColor::%arg-1%::italic} is set:
+				if (size of {allColorsBoldItalic::*}) is greater than 0:
+					if "%{allColorsBoldItalic::*}%" does not contain "%arg-2%":
+						set {UsingUsedColors::%arg-1%} to true
+					remove "%arg-2%" from {allColorsBoldItalic::*}
+					
+# underline strikethrough
+			else if {teamColor::%arg-1%::underline} and {teamColor::%arg-1%::strikethrough} is set:
+				if (size of {allColorsUnderlineStrikethrough::*}) is greater than 0:
+					if "%{allColorsUnderlineStrikethrough::*}%" does not contain "%arg-2%":
+						set {UsingUsedColors::%arg-1%} to true
+					remove "%arg-2%" from {allColorsUnderlineStrikethrough::*}
+					
+# underline italic
+			else if {teamColor::%arg-1%::underline} and {teamColor::%arg-1%::italic} is set:
+				if (size of {allColorsUnderlineItalic::*}) is greater than 0:
+					if "%{allColorsUnderlineItalic::*}%" does not contain "%arg-2%":
+						set {UsingUsedColors::%arg-1%} to true
+					remove "%arg-2%" from {allColorsUnderlineItalic::*}
+					
+# strikethrough italic
+			else if {teamColor::%arg-1%::strikethrough} and {teamColor::%arg-1%::italic} is set:	   
+				if (size of {allColorsStrikethroughItalic::*}) is greater than 0:
+					if "%{allColorsStrikethroughItalic::*}%" does not contain "%arg-2%":
+						set {UsingUsedColors::%arg-1%} to true
+					remove "%arg-2%" from {allColorsStrikethroughItalic::*}
+					
+# bold
+			else if {teamColor::%arg-1%::bold} is set:
+				if (size of {allColorsBold::*}) is greater than 0:
+					if "%{allColorsBold::*}%" does not contain "%arg-2%":
+						set {UsingUsedColors::%arg-1%} to true
+					remove "%arg-2%" from {allColorsBold::*}
+				   
+# underline
+			else if {teamColor::%arg-1%::underline} is set:
+				if (size of {allColorsUnderline::*}) is greater than 0:
+					if "%{allColorsUnderline::*}%" does not contain "%arg-2%":
+						set {UsingUsedColors::%arg-1%} to true
+					remove "%arg-2%" from {allColorsUnderline::*}
+				   
+# strikethrough
+			else if {teamColor::%arg-1%::strikethrough} is set:
+				if (size of {allColorsStrikethrough::*}) is greater than 0:
+					if "%{allColorsStrikethrough::*}%" does not contain "%arg-2%":
+						set {UsingUsedColors::%arg-1%} to true
+					remove "%arg-2%" from {allColorsStrikethrough::*}
+				   
+# italic
+			else if {teamColor::%arg-1%::italic} is set:
+				if (size of {allColorsItalic::*}) is greater than 0:
+					if "%{allColorsItalic::*}%" does not contain "%arg-2%":
+						set {UsingUsedColors::%arg-1%} to true
+					remove "%arg-2%" from {allColorsItalic::*}
+			else:
+				if (size of {allColors::*}) is greater than 0:
+					if "%{allColors::*}%" does not contain "%arg-2%":
+						set {UsingUsedColors::%arg-1%} to true
+					remove "%arg-2%" from {allColors::*}
+			set {teamColor::%arg-1%::Color} to arg-2
+			set {teamColor::%arg-1%::Reference} to "%{teamColor::%arg-1%::Color}%"
+			replace "_" in {teamColor::%arg-1%::Reference} with " "
+			if "%{teamColor::%arg-1%::Reference}%" is "aqua":
+				set {teamColor::%arg-1%::Reference} to "light aqua"
+			else if "%{teamColor::%arg-1%::Reference}%" is "blue":
+				set {teamColor::%arg-1%::Reference} to "light blue"
+			else if "%{teamColor::%arg-1%::Reference}%" is "green":
+				set {teamColor::%arg-1%::Reference} to "light green"
+			else if "%{teamColor::%arg-1%::Reference}%" is "red":
+				set {teamColor::%arg-1%::Reference} to "light red"
+			set {teamColor::%arg-1%::Reference} to "<%{teamColor::%arg-1%::Reference}%>"
+			set {teamColor::%arg-1%::ColorReference} to {teamColor::%arg-1%::Reference}
+			execute console command "/scoreboard teams option UHC%arg-1% color %arg-2%"
+			wait 5 ticks
+			if {teamColor::%arg-1%::bold} is true:
+				execute console command "/bold UHC%arg-1%"
+				set {teamColor::%arg-1%::Reference} to "%{teamColor::%arg-1%::Reference}%&l"
+			if {teamColor::%arg-1%::underline} is true:
+				execute console command "/underline UHC%arg-1%"
+				set {teamColor::%arg-1%::Reference} to "%{teamColor::%arg-1%::Reference}%&n"
+			if {teamColor::%arg-1%::strikethrough} is true:
+				execute console command "/strikethrough UHC%arg-1%"
+				set {teamColor::%arg-1%::Reference} to "%{teamColor::%arg-1%::Reference}%&m"
+			if {teamColor::%arg-1%::italic} is true:
+				execute console command "/italic UHC%arg-1%"
+				set {teamColor::%arg-1%::Reference} to "%{teamColor::%arg-1%::Reference}%&o"
+				   
+				   
+		else:      
+			if {teamColor::%arg-1%::Color} is not set:
+				if (size of {allColors::*}) is greater than 0:
+					set {_chosenColor} to (random element of {allColors::*})
+					remove "%{_chosenColor}%" from {allColors::*}
+				else if (size of {allColorsBold::*}) is greater than 0:
+					set {_chosenColor} to (random element of {allColorsBold::*})
+					remove {_chosenColor} from {allColorsBold::*}
+					set {teamColor::%arg-1%::bold} to true
+				else if (size of {allColorsUnderline::*}) is greater than 0:
+					set {_chosenColor} to (random element of {allColorsUnderline::*})
+					remove {_chosenColor} from {allColorsUnderline::*}
+					set {teamColor::%arg-1%::underline} to true
+				else if (size of {allColorsStrikethrough::*}) is greater than 0:
+					set {_chosenColor} to (random element of {allColorsStrikethrough::*})
+					remove {_chosenColor} from {allColorsStrikethrough::*}
+					set {teamColor::%arg-1%::strikethrough} to true
+				else if (size of {allColorsItalic::*}) is greater than 0:
+					set {_chosenColor} to (random element of {allColorsItalic::*})
+					remove {_chosenColor} from {allColorsItalic::*}
+					set {teamColor::%arg-1%::italic} to true
+				else if (size of {allColorsBoldUnderline::*}) is greater than 0:
+					set {_chosenColor} to (random element of {allColorsBoldUnderline::*})
+					remove {_chosenColor} from {allColorsBoldUnderline::*}
+					set {teamColor::%arg-1%::bold} to true
+					set {teamColor::%arg-1%::underline} to true
+				else if (size of {allColorsBoldStrikethrough::*}) is greater than 0:
+					set {_chosenColor} to (random element of {allColorsBoldStrikethrough::*})
+					remove {_chosenColor} from {allColorsBoldStrikethrough::*}
+					set {teamColor::%arg-1%::bold} to true
+					set {teamColor::%arg-1%::strikethrough} to true
+				else if (size of {allColorsBoldItalic::*}) is greater than 0:
+					set {_chosenColor} to (random element of {allColorsBoldItalic::*})
+					remove {_chosenColor} from {allColorsBoldItalic::*}
+					set {teamColor::%arg-1%::bold} to true
+					set {teamColor::%arg-1%::italic} to true
+				else if (size of {allColorsUnderlineStrikethrough::*}) is greater than 0:
+					set {_chosenColor} to (random element of {allColorsUnderlineStrikethrough::*})
+					remove {_chosenColor} from {allColorsUnderlineStrikethrough::*}
+					set {teamColor::%arg-1%::underline} to true
+					set {teamColor::%arg-1%::strikethrough} to true
+				else if (size of {allColorsUnderlineItalic::*}) is greater than 0:
+					set {_chosenColor} to (random element of {allColorsUnderlineItalic::*})
+					remove {_chosenColor} from {allColorsUnderlineItalic::*}
+					set {teamColor::%arg-1%::underline} to true
+					set {teamColor::%arg-1%::italic} to true
+				else if (size of {allColorsStrikethroughItalic::*}) is greater than 0:
+					set {_chosenColor} to (random element of {allColorsStrikethroughItalic::*})
+					remove {_chosenColor} from {allColorsStrikethroughItalic::*}
+					set {teamColor::%arg-1%::strikethrough} to true
+					set {teamColor::%arg-1%::italic} to true
+				else if (size of {allColorsBoldUnderlineStrikethrough::*}) is greater than 0:
+					set {_chosenColor} to (random element of {allColorsBoldUnderlineStrikethrough::*})
+					remove {_chosenColor} from {allColorsBoldUnderlineStrikethrough::*}
+					set {teamColor::%arg-1%::bold} to true
+					set {teamColor::%arg-1%::underline} to true
+					set {teamColor::%arg-1%::strikethrough} to true
+				else if (size of {allColorsBoldUnderlineItalic::*}) is greater than 0:
+					set {_chosenColor} to (random element of {allColorsBoldUnderlineItalic::*})
+					remove {_chosenColor} from {allColorsBoldUnderlineItalic::*}
+					set {teamColor::%arg-1%::bold} to true
+					set {teamColor::%arg-1%::underline} to true
+					set {teamColor::%arg-1%::italic} to true
+				else if (size of {allColorsBoldStrikethroughItalic::*}) is greater than 0:
+					set {_chosenColor} to (random element of {allColorsBoldStrikethroughItalic::*})
+					remove {_chosenColor} from {allColorsBoldStrikethroughItalic::*}
+					set {teamColor::%arg-1%::bold} to true
+					set {teamColor::%arg-1%::strikethrough} to true
+					set {teamColor::%arg-1%::italic} to true
+				else if (size of {allColorsUnderlineStrikethroughItalic::*}) is greater than 0:
+					set {_chosenColor} to (random element of {allColorsUnderlineStrikethroughItalic::*})
+					remove {_chosenColor} from {allColorsUnderlineStrikethroughItalic::*}
+					set {teamColor::%arg-1%::underline} to true
+					set {teamColor::%arg-1%::strikethrough} to true
+					set {teamColor::%arg-1%::italic} to true
+				else if (size of {allColorsBoldUnderlineStrikethroughItalic::*}) is greater than 0:
+					if (size of {allColorsBoldUnderlineStrikethroughItalic::*}) is 1:
+						delete {allTheColors}
+					set {_chosenColor} to (random element of {allColorsBoldStrikethroughItalic::*})
+					remove {_chosenColor} from {allColorsBoldUnderlineStrikethroughItalic::*}
+					set {teamColor::%arg-1%::bold} to true
+					set {teamColor::%arg-1%::underline} to true
+					set {teamColor::%arg-1%::strikethrough} to true
+					set {teamColor::%arg-1%::italic} to true
+				set {teamColor::%arg-1%::Color} to {_chosenColor}
+				set {teamColor::%arg-1%::Reference} to "%{_chosenColor}%"
+				replace "_" in {teamColor::%arg-1%::Reference} with " "
+				if "%{teamColor::%arg-1%::Reference}%" is "aqua":
+					set {teamColor::%arg-1%::Reference} to "light aqua"
+				else if "%{teamColor::%arg-1%::Reference}%" is "blue":
+					set {teamColor::%arg-1%::Reference} to "light blue"
+				else if "%{teamColor::%arg-1%::Reference}%" is "green":
+					set {teamColor::%arg-1%::Reference} to "light green"
+				else if "%{teamColor::%arg-1%::Reference}%" is "red":
+					set {teamColor::%arg-1%::Reference} to "light red"
+				set {teamColor::%arg-1%::Reference} to "<%{teamColor::%arg-1%::Reference}%>"
+				set {teamColor::%arg-1%::ColorReference} to {teamColor::%arg-1%::Reference}
+				execute console command "/scoreboard teams option UHC%arg-1% color %{_chosenColor}%"
+				wait 5 ticks
+				if {teamColor::%arg-1%::Bold} is true:
+					execute console command "/bold UHC%arg-1%"
+					set {teamColor::%arg-1%::Reference} to "%{teamColor::%arg-1%::Reference}%&l"
+				if {teamColor::%arg-1%::Underline} is true:
+					execute console command "/underline UHC%arg-1%"
+					set {teamColor::%arg-1%::Reference} to "%{teamColor::%arg-1%::Reference}%&n"
+				if {teamColor::%arg-1%::Strikethrough} is true:
+					execute console command "/strikethrough UHC%arg-1%"
+					set {teamColor::%arg-1%::Reference} to "%{teamColor::%arg-1%::Reference}%&m"
+				if {teamColor::%arg-1%::Italic} is true:
+					execute console command "/italic UHC%arg-1%"
+					set {teamColor::%arg-1%::Reference} to "%{teamColor::%arg-1%::Reference}%&o"
+			   
+			   
+			   
+command /pm <text>:
+	trigger:
+		if {Teams.InTeam::%player%} is not set:
+			send "{@C}----------------------------------------------"
+			send "{@T}{@C2} You are not on a team!"
+			send "{@C}----------------------------------------------"
+			stop
+		if {TeamMuted::%player%} is set:
+			send "{@C}----------------------------------------------"
+			send "{@T}{@C2} You're muted in team chat!"
+			send "{@C}----------------------------------------------"
+		else if {PMDISABLED} is set:
+			send "{@C}----------------------------------------------"
+			send "{@T}{@C2} Team chat is currently disabled!"
+			send "{@C}----------------------------------------------"
+		else:  
+			delete {_sendTo::*}
+			loop {CanViewAllPM::*}:
+				("%loop-value%" parsed as offline player) has permission "{@PERM}"
+				set {_sendTo::%loop-value%} to loop-value
+			loop {CanViewPM::%{Teams.InTeam::%player%}%::*}:
+				("%loop-value%" parsed as offline player) has permission "{@PERM}"
+				set {_sendTo::%loop-value%} to loop-value
+			loop {Team.%{Teams.InTeam::%player%}%::*}:
+				set {_sendTo::%loop-value%} to loop-value
+			loop {_sendTo::*}:
+				send "{@TC} %{TeamColor::%{Teams.InTeam::%player%}%::ColorReference}%%player%{@TC1}: &7%arg-1%" to ("%loop-value%" parsed as offlineplayer)
+			delete {_sendTo::*}
+command /tl:
+	aliases: /pmc
+	trigger:
+		if {Teams.InTeam::%player%} is not set:
+			send "{@C}----------------------------------------------"
+			send "{@T}{@C2} You are not on a team!"
+			send "{@C}----------------------------------------------"
+			stop
+		if {TeamMuted::%player%} is set:
+			send "{@C}----------------------------------------------"
+			send "{@T}{@C2} You're muted in team chat!"
+			send "{@C}----------------------------------------------"
+		else if {PMDISABLED} is set:
+			send "{@C}----------------------------------------------"
+			send "{@T}{@C2} Team chat is currently disabled!"
+			send "{@C}----------------------------------------------"
+		else:  
+			delete {_sendTo::*}
+			loop {CanViewAllPM::*}:
+				("%loop-value%" parsed as offline player) has permission "{@PERM}"
+				set {_sendTo::%loop-value%} to loop-value
+			loop {CanViewPM::%{Teams.InTeam::%player%}%::*}:
+				("%loop-value%" parsed as offline player) has permission "{@PERM}"
+				set {_sendTo::%loop-value%} to loop-value
+			loop {Team.%{Teams.InTeam::%player%}%::*}:
+				set {_sendTo::%loop-value%} to loop-value
+			loop {_sendTo::*}:
+				message "{@TC} %{TeamColor::%{Teams.InTeam::%player%}%::ColorReference}%%player%&8: &7%(player's location)%" to ("%loop-value%" parsed as offlineplayer)
+		   
+command /pmores:
+	trigger:
+		if {Teams.InTeam::%player%} is not set:
+			send "{@C}----------------------------------------------"
+			send "{@T}{@C2} You are not on a team!"
+			send "{@C}----------------------------------------------"
+			stop
+		if {TeamMuted::%player%} is set:
+			send "{@C}----------------------------------------------"
+			send "{@T}{@C2} You're muted in team chat!"
+			send "{@C}----------------------------------------------"
+		else if {PMDISABLED} is set:
+			send "{@C}----------------------------------------------"
+			send "{@T}{@C2} Team chat is currently disabled!"
+			send "{@C}----------------------------------------------"
+		else:  
+			delete {_sendTo::*}
+			loop {CanViewAllPM::*}:
+				("%loop-value%" parsed as offline player) has permission "{@PERM}"
+				set {_sendTo::%loop-value%} to loop-value
+			loop {CanViewPM::%{Teams.InTeam::%player%}%::*}:
+				("%loop-value%" parsed as offline player) has permission "{@PERM}"
+				set {_sendTo::%loop-value%} to loop-value
+			loop {Team.%{Teams.InTeam::%player%}%::*}:
+				set {_sendTo::%loop-value%} to loop-value
+			loop {_sendTo::*}:
+				message "{@TC} %{TeamColor::%{Teams.InTeam::%player%}%::ColorReference}%%player% &8» &7Iron&8: &8%((amount of iron ore in player's inventory) + (amount of iron ingot in player's inventory))% &7Gold&8: &6%((amount of gold ore in player's inventory) + (amount of gold ingot in player's inventory))% &7Diamond&8: &b%((amount of diamond ore in player's inventory) + (amount of diamond in player's inventory))%" to ("%loop-value%" parsed as offlineplayer)
+
+command /pmminedores:
+	trigger:
+		if {Teams.InTeam::%player%} is not set:
+			send "{@C}----------------------------------------------"
+			send "{@T}{@C2} You are not on a team!"
+			send "{@C}----------------------------------------------"
+			stop
+		if {TeamMuted::%player%} is set:
+			send "{@C}----------------------------------------------"
+			send "{@T}{@C2} You're muted in team chat!"
+			send "{@C}----------------------------------------------"
+		else if {PMDISABLED} is set:
+			send "{@C}----------------------------------------------"
+			send "{@T}{@C2} Team chat is currently disabled!"
+			send "{@C}----------------------------------------------"
+		else:  
+			delete {_sendTo::*}
+			loop {CanViewAllPM::*}:
+				("%loop-value%" parsed as offline player) has permission "{@PERM}"
+				set {_sendTo::%loop-value%} to loop-value
+			loop {CanViewPM::%{Teams.InTeam::%player%}%::*}:
+				("%loop-value%" parsed as offline player) has permission "{@PERM}"
+				set {_sendTo::%loop-value%} to loop-value
+			loop {Team.%{Teams.InTeam::%player%}%::*}:
+				set {_sendTo::%loop-value%} to loop-value
+			loop {_sendTo::*}:
+				message "{@TC} %{TeamColor::%{Teams.InTeam::%player%}%::ColorReference}%%player% &8» &7Diamonds&8: &b%{minned.dia::%player%}%&7, &7Gold&8: &6%{minned.gold::%player%}%&7, &7Iron&8: &8%{minned.iron::%player%}%" to ("%loop-value%" parsed as offlineplayer)
+
+on mine of diamond ore:
+	if {start.timer} is true:
+		add 1 to {minned.dia::%player%}
+on mine of gold ore:
+	if {start.timer} is true:
+		add 1 to {minned.gold::%player%}
+on mine of iron ore:
+	if {start.timer} is true:
+		add 1 to {minned.iron::%player%}
+command /dontrandomize <text>:
+	usage: /dontrandomize <player/list>
+	permission: skript.op
+	trigger:
+		if arg-1 is "list":
+			if (size of {dontrandomize::*}) is not 0:
+				send "{@C}----------------------------------------------"
+				send "{@T}{@C2} &lNot Randomizing:"
+				loop {dontrandomize::*}:
+					send "{@T}{@C} %loop-value%"
+				send "{@C}----------------------------------------------"
+			else:
+				send "{@C}----------------------------------------------"
+				send "{@T}{@C2} No players will not be not randomized!"
+				send "{@T}{@C2} Type {@C}/dontrandomize <player> {@C2}to not randomize a player!"
+				send "{@C}----------------------------------------------"
+		else:
+			set {dontrandomize::%arg-1%} to arg-1
+			send "{@C}----------------------------------------------"
+			send "{@T}{@C} %arg-1% {@C2} will not be randomized!"
+			send "{@T}{@C2} To undo this, type {@C}/dorandomize %arg-1%{@C2}!"
+			send "{@C}----------------------------------------------"
+	   
+command /dorandomize <player>:
+	permission: skript.op
+	trigger:
+		delete {dontrandomize::%arg-1%}
+		send "{@C}----------------------------------------------"
+		send "{@T}{@C} %arg-1% {@C2}will be randomized!"
+		send "{@C}----------------------------------------------"
+	   
+	   
+	   
+command /tc <text> [<text>] [<text>] [<text>] [<text>] [<text>] [<text>] [<text>] [<text>] [<text>] [<text>]:
+	usage: /tc <player> [<player>] [<player>] [<player>] [<player>] [<player>] [<player>] [<player>] [<player>] [<player>] [<player>]
+	aliases: /ct
+	permission: skript.op
+	trigger:
+		
+		delete {tcARGS::*}
+		set {tcARGS::%arg-1%} to arg-1
+		set {tcARGS::%arg-2%} to arg-2
+		set {tcARGS::%arg-3%} to arg-3
+		set {tcARGS::%arg-4%} to arg-4
+		set {tcARGS::%arg-5%} to arg-5
+		set {tcARGS::%arg-6%} to arg-6
+		set {tcARGS::%arg-7%} to arg-7
+		set {tcARGS::%arg-8%} to arg-8
+		set {tcARGS::%arg-9%} to arg-9
+		set {tcARGS::%arg-10%} to arg-10
+		loop {tcARGS::*}:
+			if {Teams.InTeam::%loop-value%} is set:
+				command "/scoreboard teams leave %loop-value%"
+				if (size of {Team.%{Teams.InTeam::%loop-value%}%::*} - 1) is less than 2:
+					{ninjateamsautodelete} is not set
+					command "/team resetcolor %{Teams.InTeam::%loop-value%}%"
+					loop {Team.%{Teams.InTeam::%loop-value%}%::*}:
+						command "/scoreboard teams leave %loop-value-2%"
+						delete {Teams::%{Teams.InTeam::%loop-value-2%}%}
+						delete {Team.%{Teams.InTeam::%loop-value-2%}%::%loop-value-2%}
+						delete {Teams.InTeam::%loop-value-2%}
+				delete {Team.%{Teams.InTeam::%loop-value%}%::%loop-value%}
+			loop all players:
+				delete {pendingteam::%loop-player%::loop-value-1}
+				
+		set {findteamnumber} to 1
+		set {findingteamnumber} to true
+		while {findingteamnumber} is true:
+			if {Teams::%{findteamnumber}%} is not set:
+				delete {findingteamnumber}
+			else:
+				add 1 to {findteamnumber}
+		set {Teams::%{findteamnumber}%} to {findteamnumber}
+		command "/scoreboard teams add UHC%{findteamnumber}%"
+		if {teamfriendlyfire} is set:
+			command "/scoreboard teams option UHC%{findteamnumber}% friendlyfire false"
+		send "{@T}{@C2} Team {@C}%{findteamnumber}% {@C2}Created!"
+		
+		
+		loop {tcARGS::*}:
+			set {Teams.InTeam::%loop-value%} to {findteamnumber}
+			set {Team.%{findteamnumber}%::%loop-value%} to loop-value
+			if {ninjateams.dontautocolor} is not set:
+				command "/colorteam %{findteamnumber}%"
+			command "/scoreboard teams join UHC%{findteamnumber}% %loop-value%"
+			send "{@T}{@C2} You have joined team {@C}%{findteamnumber}%{@C2}!" to ("%loop-value%" parsed as offline player)
+			
+		
+	   
+	   
+on death of player:
+	{ninjateamsdeathkick} is set
+	{Teams.InTeam::%victim%} is set
+	wait 1 second
+	command "/scoreboard teams leave %victim%"
+	if (size of {Team.%{Teams.InTeam::%victim%}%::*} - 1) is less than 2:
+		{ninjateamsautodelete} is not set
+		execute console command "/team resetcolor %{Teams.InTeam::%victim%}%"
+		delete {Teams::%{Teams.InTeam::%victim%}%}
+		loop {Team.%{Teams.InTeam::%victim%}%::*}:
+			command "/scoreboard teams leave %loop-value%"
+			delete {Teams.InTeam::%loop-value%}
+			delete {Team.%{Teams.InTeam::%victim%}%::%loop-value%}
+	command "/scoreboard teams leave %victim%"
+	delete {Team.%{Teams.InTeam::%victim%}%::%victim%}
+	delete {Teams.InTeam::%victim%}
+	   
+   
+command /checkteam <offline player>:
+	permission: skript.op
+	trigger:
+		if {Teams.InTeam::%arg-1%} is set:
+			set {_displaycolor} to {TeamColor::%{Teams.InTeam::%arg-1%}%::Color}
+			replace all "_" in {_displaycolor} with " "
+			send "{@C}----------------------------------------------"
+			send "{@T}{@C2} Player: {@C}%arg-1%"
+			send "{@T}{@C2} Team Number: {@C}%{Teams.InTeam::%arg-1%}%"
+			send "{@T}{@C2} Team Size: {@C}%(size of {Team.%{Teams.InTeam::%arg-1%}%::*})%"
+			send "{@T}{@C2} Players on Team: {@C}%{Team.%{Teams.InTeam::%arg-1%}%::*}%"
+			send "{@T}{@C2} Team Color: %{TeamColor::%{Teams.InTeam::%arg-1%}%::Reference}%%{TeamColor::%{Teams.InTeam::%arg-1%}%::Color}%"
+			send "{@C}----------------------------------------------"
+		else:
+			send "{@C}----------------------------------------------"
+			send "{@T}{@C} %arg-1% {@C2}is not on a team!"
+			send "{@C}----------------------------------------------"

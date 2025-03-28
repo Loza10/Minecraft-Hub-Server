@@ -1,0 +1,186 @@
+﻿options:
+	P: &7[&cPhoenix&7]
+
+command /superheroes [<text>] [<player>]:
+	trigger:
+		if arg 1 is not set:
+			message "{@P} &7Correct Usage:" to command sender
+			message "{@P} &e/superheroes teams &8» &7Use this for To5!" to command sender
+			message "{@P} &e/superheroes ffa &8» &7Use this for FFA - To3!" to command sender
+			message "{@P} &e/superheroes apply &8» &7Apply effects to players!" to command sender
+			message "{@P} &e/superheroes reset &8» &7Reset powers and effects!" to command sender
+			message "{@P} &e/superheroes falldmg &8» &7Toggle fall damage!" to command sender
+			message "{@P} &e/superheroes apply <player> &8» &7Apply effects to specfic players!" to command sender
+			message "{@P} &e/superheroes set <player> &8» &7Gives a specific player a random power!" to command sender
+		if arg 1 is "set":
+			if arg 2 is set:
+				set {cersuper} to a random integer between 1 and 6
+				if {cersuper} is 1:
+					message "{@P} &7You have been assinged the &eSpeed&7!" to arg 2
+					set {SuperSpeed::%arg-2%} to true
+					message "{@P} &7You have been assinged &e%arg-2% &7power &eSpeed&7!" to command sender
+				if {cersuper} is 2:
+					message "{@P} &7You have been assinged the &eStrength&7!" to arg 2
+					set {SuperStrength::%arg-2%} to true
+					message "{@P} &7You have been assinged &e%arg-2% &7power &eStrength&7!" to command sender
+				if {cersuper} is 3:
+					message "{@P} &7You have been assinged the &eDouble Health&7!" to arg 2
+					set {SuperHealth::%arg-2%} to true
+					message "{@P} &7You have been assinged &e%arg-2% &7power &eDouble Health&7!" to command sender
+				if {cersuper} is 4:
+					message "{@P} &7You have been assinged the &eJump Boost&7!" to arg 2
+					set {SuperJump::%arg-2%} to true
+					message "{@P} &7You have been assinged &e%arg-2% &7power &eJump Boost&7!" to command sender
+				if {cersuper} is 5:
+					message "{@P} &7You have been assinged the &eResistance&7!" to arg 2
+					set {SuperRes::%arg-2%} to true	
+					message "{@P} &7You have been assinged &e%arg-2% &7power &eResistance&7!" to command sender
+				message "{@P} &7Now do &e/superheroes apply %arg-2%" to command sender
+		if arg 1 is "teams":
+			delete {_heroPot::*}
+			delete {SuperSpeed::*}
+			delete {SuperStrength::*}
+			delete {SuperHealth::*}
+			delete {SuperJump::*}
+			delete {SuperRes::*}
+			delete {SuperInvis::*}
+			delete {_heroPot::*}
+			delete {superfall}
+			loop {Teams::*}:
+				set {_heroPot::*} to {Team.%loop-value%::*}
+				set {_SSpeed} to (random element out of {_heroPot::*})
+				remove {_SSpeed} from {_heroPot::*}
+				set {_SpeedPlayer} to ("%{_SSpeed}%" parsed as offlineplayer)
+				set {SuperSpeed::%{_SpeedPlayer}%} to true
+				if {_SpeedPlayer} is online:
+					message "{@P} You have been assigned &eSpeed&7!" to {_SpeedPlayer}
+				set {_SStrength} to (random element out of {_heroPot::*})
+				remove {_SStrength} from {_heroPot::*}
+				set {_StrengthPlayer} to ("%{_SStrength}%" parsed as offlineplayer)
+				set {SuperStrength::%{_StrengthPlayer}%} to true
+				if {_StrengthPlayer} is online:
+					message "{@P} You have been assigned &eStrength&7!" to {_StrengthPlayer}
+				set {_SHealth} to (random element out of {_heroPot::*})
+				remove {_SHealth} from {_heroPot::*}
+				set {_HealthPlayer} to ("%{_SHealth}%" parsed as offlineplayer)
+				set {SuperHealth::%{_HealthPlayer}%} to true
+				if {_HealthPlayer} is online:
+					message "{@P} You have been assigned &eHealth&7!" to {_HealthPlayer}
+				set {_SJump} to (random element out of {_heroPot::*})
+				remove {_SJump} from {_heroPot::*}
+				set {_JumpPlayer} to ("%{_SJump}%" parsed as offlineplayer)
+				set {SuperJump::%{_JumpPlayer}%} to true
+				if {_JumpPlayer} is online:
+					message "{@P} You have been assigned &eJump Boost&7!" to {_JumpPlayer}
+				set {_SRes} to (random element out of {_heroPot::*})
+				remove {_SRes} from {_heroPot::*}
+				set {_ResPlayer} to ("%{_SRes}%" parsed as offlineplayer)
+				set {SuperRes::%{_ResPlayer}%} to true
+				if {_ResPlayer} is online:
+					message "{@P} You have been assigned &eResistance&7!" to {_ResPlayer}
+		if arg 1 is "falldmg":
+			if {superfall} is not set:
+				set {superfall} to true
+				message "{@P} &7Fall Damage&8: &eEnabled" to command sender
+			else:
+				if {superfall} is true:
+					delete {superfall}
+					message "{@P} &7Fall Damage&8: &cDisabled" to command sender
+		if arg 1 is "reset":
+			set {superfall} to true
+			delete {_heroPot::*}
+			delete {SuperSpeed::*}
+			delete {SuperStrength::*}
+			delete {SuperHealth::*}
+			delete {SuperJump::*}
+			delete {SuperRes::*}
+			delete {SuperInvis::*}
+			loop all players:
+				console command "/effect %loop-player% clear"
+				set max health of loop-player to 10
+			broadcast "{@P} &7Superheroes has been &creset&7!"
+		if arg 1 is "ffa":
+			delete {_heroPot::*}
+			delete {SuperSpeed::*}
+			delete {SuperStrength::*}
+			delete {SuperHealth::*}
+			delete {SuperJump::*}
+			delete {SuperRes::*}
+			delete {SuperInvis::*}
+			delete {ffasuper}
+			delete {superfall}
+			loop all players:
+				delete {ffasuper}
+				set {ffasuper} to a random integer between 1 and 6
+				if {ffasuper} is 1:
+					message "{@P} &7You have been assinged the &eSpeed&7!" to loop-player
+					set {SuperSpeed::%loop-player%} to true
+				if {ffasuper} is 2:
+					message "{@P} &7You have been assinged the &eStrength&7!" to loop-player
+					set {SuperStrength::%loop-player%} to true
+				if {ffasuper} is 3:
+					message "{@P} &7You have been assinged the &eDouble Health&7!" to loop-player
+					set {SuperHealth::%loop-player%} to true
+				if {ffasuper} is 4:
+					message "{@P} &7You have been assinged the &eJump Boost&7!" to loop-player
+					set {SuperJump::%loop-player%} to true
+				if {ffasuper} is 5:
+					message "{@P} &7You have been assinged the &eResistance&7!" to loop-player
+					set {SuperRes::%loop-player%} to true
+				if {ffasuper} is 6:
+					message "{@P} &7You have been assinged the &eInvisibility&7!" to loop-player
+					set {SuperInvis::%loop-player%} to true		
+		if arg 1 is "apply":
+			if arg 2 is not set:
+				loop all players:
+					if {SuperSpeed::%loop-player%} is true:
+						apply speed 2 to loop-player for 999 days
+						apply haste 2 to loop-player for 999 days
+					if {SuperStrength::%loop-player%} is true:
+						apply strength 1 to loop-player for 999 days
+					if {SuperHealth::%loop-player%} is true:
+						set max health of loop-player to 20
+						heal loop-player by 10 hearts
+					if {SuperJump::%loop-player%} is true:
+						apply jump boost 4 to loop-player for 999 days
+						apply haste 2 to loop-player for 999 days
+						apply saturation 1 to loop-player for 999 days
+					if {SuperRes::%loop-player%} is true:
+						apply resistance 2 to loop-player for 999 days
+						apply fire resistance 1 to loop-player for 999 days
+					if {SuperInvis::%loop-player%} is true:
+						apply invisibility 2 to loop-player for 999 days
+				broadcast "{@P} Effects given!"
+			if arg 2 is set:
+				if {SuperSpeed::%arg-2%} is true:
+					apply speed 2 to arg-2 for 999 days
+					apply haste 2 to arg-2 for 999 days
+				if {SuperStrength::%arg-2%} is true:
+					apply strength 1 to arg-2 for 999 days
+				if {SuperHealth::%arg-2%} is true:
+					set max health of arg-2 to 20
+					heal arg-2 by 10 hearts
+				if {SuperJump::%arg-2%} is true:
+					apply jump boost 4 to arg-2 for 999 days
+					apply haste 2 to arg-2 for 999 days
+					apply saturation 1 to arg-2 for 999 days
+				if {SuperRes::%arg-2%} is true:
+					apply resistance 2 to arg-2 for 999 days
+					apply fire resistance 1 to arg-2 for 999 days
+				if {SuperInvis::%arg-2%} is true:
+					apply invisibility 2 to arg-2 for 999 days
+				message "{@P} You gave &e%arg-2% &7their effects!" to command sender
+on death of player:
+	if {SuperHealth::%victim%} is true:
+		set max health of victim to 10
+on damage:
+	if {superfall} is not set:
+		damage was caused by fall:
+			cancel the event
+on consume of golden apple:
+	if {SuperHealth::%player%} is true:
+		wait 2 ticks
+		apply absorption to player for 2 minutes
+on consume of milk:
+	if {superfall} is not set:
+		cancel the event

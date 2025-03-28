@@ -1,0 +1,919 @@
+options:
+	P: &7[&cPhoenix&7]
+	variable: uhcsk
+	HeartSymbol: ?
+
+function regRecipes(b: boolean):
+	reset all recipes
+	loop 3 times:
+		register new shapeless recipe for glistering melon named "&fGlistering Melon" using air, air, air, melon slice, gold block, air, air, air, air
+		register new shaped recipe for golden apple item named "&6Golden Head" using gold ingot, gold ingot, gold ingot, gold ingot, player head, gold ingot, gold ingot, gold ingot, gold ingot
+		if {features.darrow} is true:
+			register new shaped recipe for 8 arrows using air, flint, air, air, stick, air, air, feather, air
+			register new shaped recipe for 8 arrows using flint, air, air, stick, air, air, feather, air, air
+			register new shaped recipe for 8 arrows using air, air, flint, air, air, stick, air, air, feather
+sub "updateTab":
+	set {_p} to parameter-1
+	set {_h} to floor({_p}'s health*10)
+	"%{{@variable}::Temps::%{_p}%}%" is not "%{_h}%"
+	set {{@variable}::Temps::%{_p}%} to {_h}
+	command "/scoreboard players set %{_p}% Health %{_h}%"
+	command "/scoreboard players set %{_p}% HealthTab %{_h}%"
+	if {{@variable}::FFAColors} is true:
+		if {spec::%{_p}%} is true:
+			set {_p} tab name to "%{_p}%"
+		else:
+			set {_h} to floor({_p}'s health*10)
+			if {_h} is greater than 70:
+				set {_p} tab name to "<light green>%{_p}%"
+			else if {_h} is greater than 30:
+				set {_p} tab name to "<yellow>%{_p}%"
+			else:
+				set {_p} tab name to "&c%{_p}%"
+	
+command /uhc:
+	trigger:
+		open chest with 5 rows named "&2Game Info:" to player
+		loop integers from 0 to 44:
+			if loop-integer is 0 or 2 or 4 or 6 or 8 or 10 or 12 or 14 or 16 or 18 or 20 or 22 or 24 or 26 or 28 or 30 or 32 or 34 or 36 or 38 or 40:
+				format slot loop-integer of player with gray stained glass pane named " " to be unstealable
+			else:
+				format slot loop-integer of player with gray stained glass pane named " " to be unstealable
+		set {_p} to "Keegle" parsed as offlineplayer
+		format slot 10 of player with book named "&6Match Info" with lore "&6» &7Host: &e%{game::host}% ||&6» &7Game Length: &e%{game::length}% Minutes ||&6» &7Teamsize: &e%{game::teamsize}% ||&6» &7Matchpost: &e/matchpost" to be unstealable
+		format slot 13 of player with golden apple named "&6Healing" with lore "&6» &7Golden Apples heal: &e2 Hearts ||&6» &7Golden Heads heal: &e4 Hearts ||&6» &7Absorption: %{feature::absorp}% ||&6» &7God/Notch Apples: %{feature::godapple}%" to be unstealable
+		format slot 16 of player with iron pick named "&6Mining" with lore "&6» &7Stripmining and Pokeholing: &eAllowed ||&6» &7Rollercoasting: &eAllowed ||&6» &7Digging to Teammates: &eAllowed ||&6» &7Blastmining: &eAllowed ||&6» &7Mining to Sounds: &eAllowed" to be unstealable
+		format slot 19 of player with diamond named "&6Staff" with lore "&6» &7Click to view!" to run "sudo %player% staff"
+		format slot 22 of player with skull of {_p} named "&6Server Info" with lore "&6» &7Owner: &eZakkeagle ||&6» &7Hosted: &eMontreal ||&6» &7Provider: &eQenis ||&6» &7RAM: &e10GB" to be unstealable
+		format slot 25 of player with nether star named "&6Donators" with lore "&6» &7Click to view!" to run "sudo %player% donators"
+		format slot 28 of player with iron sword named "&6PvP" with lore "&6» &7IPvP: &cDisabled ||&6» &7Stalking: %{feature::stalk}% ||&6» &7Stealing: %{feature::steal}% ||&6» &7Excessive Stalking: &cDisabled ||&6» &7Fireaspect: %{feature::fire}% ||&6» &7Flame: %{feature::flame}%" to be unstealable
+		format slot 31 of player with apple named "&6Rates" with lore "&6» &7Apple Rates: &e%{feature::apple}%%% ||&6» &7Shears: %{feature::shear}% ||&6» &7Flint Rates: &e%{feature::flint}%%% ||&6» &7Towering: &e%{feature::tower}%" to be unstealable
+		format slot 34 of player with ender pearl named "&6Misc" with lore "&6» &7Horses: %{feature::horse}% ||&6» &7Enderpearl Damage: %{feature::pearl}% ||&6» &7Nether: %{feature::nether}% ||&6» &7Splash Potions: %{feature::splash}% ||&6» &7Strength: %{feature::strength}% ||&6» &7Double Arrows: &e%{feature::darrow}% ||&6» &7Bookshelves: %{feature::book}% ||&6» &7Quartz Nerfs: %{feature::quartz}% ||&6» &7Portal Trapping/Camping: %{feature::camping}% ||&6» &7Potions: %{feature::potion}% ||&6» &7Horse Healing: %{feature::hh}% ||&6» &7Horse Armor: %{feature::hr}%" to be unstealable
+
+command /hostconfig:
+	permission: skript.host
+	trigger:
+		open chest with 5 rows named "&2Host Config:" to player
+		format slot 0 of player with golden apple named "&7Absorption" with lore "&6» &e%{feature::absorp}%" to run "sudo %player% feature absorption"
+		format slot 2 of player with flint named "&7Flint Rates" with lore "&6» %{feature::flint}%%%" to run "sudo %player% rates flint"
+		format slot 4 of player with apple named "&7Apple Rates" with lore "&6» %{feature::apple}%%%" to run "sudo %player% rates apple"
+		format slot 6 of player with creeper spawn egg named "&7Stalking" with lore "&6» %{feature::stalk}%" to run "sudo %player% feature stalk"
+		format slot 8 of player with ender pearl named "&7Pearl Damage" with lore "&6» %{feature::pearl}%" to run "sudo %player% feature pearldmg"
+		format slot 10 of player with Shears named "&7Shears" with lore "&6» %{feature::shear}%" to run "sudo %player% feature shears"
+		format slot 12 of player with horse spawn egg named "&7Horses" with lore "&6» %{feature::horse}%" to run "sudo %player% feature horse"
+		format slot 14 of player with cobblestone named "&7Towering" with lore "&6» %{feature::tower}%" to run "sudo %player% feature tower"
+		format slot 16 of player with netherrack named "&7Nether" with lore "&6» %{feature::nether}%" to run "sudo %player% feature nether"
+		format slot 18 of player with arrow named "&7Double Arrows" with lore "&6» %{feature::darrow}%" to run "sudo %player% feature darrow"
+		format slot 20 of player with book named "&7Bookshelves" with lore "&6» %{feature::book}%" to run "sudo %player% feature book"
+		format slot 22 of player with diamond sword named "&7Fire Aspect" with lore "&6» %{feature::fire}%" to run "sudo %player% feature fire"
+		format slot 24 of player with bow named "&7Flame" with lore "&6» %{feature::flame}%" to run "sudo %player% feature flame"
+		format slot 26 of player with chest named "&7Stealing" with lore "&6» %{feature::steal}%" to run "sudo %player% feature steal"
+		format slot 28 of player with enchanted golden apple named "&7God Apples" with lore "&6» %{feature::godapple}%" to run "sudo %player% feature godapple"
+		format slot 30 of player with player head named "&7Player Heads" with lore "&6» %{feature::head}%" to run "sudo %player% feature head"
+		format slot 32 of player with sugar named "&7Splash Potions" with lore "&6» %{feature::splash}%" to run "sudo %player% feature splash"
+		format slot 34 of player with blaze rod named "&7Strength Potions" with lore "&6» %{feature::strength}%" to run "sudo %player% feature strength"
+		format slot 36 of player with nether quartz named "&7Quartz Nerf" with lore "&6» %{feature::quartz}%" to run "sudo %player% feature quartz"
+		format slot 38 of player with lava bucket named "&7Portal Trapping/Camping" with lore "&6» %{feature::camping}%" to run "sudo %player% feature camping"
+		format slot 40 of player with 379 named "&7Potions" with lore "&6» %{feature::potion}%" to run "sudo %player% feature potion"
+		format slot 42 of player with 296 named "&7Horse Healing" with lore "&6» %{feature::hh}%" to run "sudo %player% feature hhealing"
+		format slot 44 of player with 418 named "&7Horse Armor" with lore "&6» %{feature::hr}%" to run "sudo %player% feature harmor"
+command /feature [<text>] [<int>]:
+	permission: skript.host
+	trigger:
+		if arg 1 is not set:
+			if arg 2 is not set:
+				delete {features.tower}
+				delete {feature::tower}
+				message "{@P} &7Useful Commands:"
+				message "{@P} &e/feature absorption"
+				message "{@P} &e/feature godapple"
+				message "{@P} &e/feature ipvp"
+				message "{@P} &e/feature stalk"
+				message "{@P} &e/feature exstalk"
+				message "{@P} &e/feature apple <int>"
+				message "{@P} &e/feature flint <int>"
+				message "{@P} &e/feature pearldmg"
+				message "{@P} &e/feature shears"
+				message "{@P} &e/feature horse"
+				message "{@P} &e/feature tower"
+				message "{@P} &e/feature nether"
+				message "{@P} &e/feature darrow"
+				message "{@P} &e/feature book"
+				message "{@P} &e/feature fire"
+				message "{@P} &e/feature flame"
+				message "{@P} &e/feature steal"
+				message "{@P} &e/feature head"
+				message "{@P} &e/feature splash"
+				message "{@P} &e/feature strength"
+				message "{@P} &e/feature quartz"
+				message "{@P} &e/feature camping"
+				message "{@P} &e/feature potion"
+				message "{@P} &e/feature hhealing"
+		if arg 1 is "absorption":
+			if {features.absorp} is not set:
+				set {feature::absorp} to "&eEnabled"
+				set {features.absorp} to true
+				close player's inventory
+				message "{@P} &7Absorption: &e%{feature::absorp}%"
+				wait 2 ticks
+				player command "/hostconfig"
+			else:
+				if {features.absorp} is true:
+					set {feature::absorp} to "&cDisabled"
+					delete {features.absorp}
+					close player's inventory
+					message "{@P} &7Absorption: &e%{feature::absorp}%"
+					wait 2 ticks
+					player command "/hostconfig"
+		if arg 1 is "godapple":
+			if {features.godapple} is not set:
+				set {feature::godapple} to "&eEnabled"
+				set {features.godapple} to true
+				close player's inventory
+				message "{@P} &7God Apples: &e%{feature::godapple}%"
+				wait 2 ticks
+				player command "/hostconfig"
+			else:
+				if {features.godapple} is true:
+					set {feature::godapple} to "&cDisabled"
+					delete {features.godapple}
+					close player's inventory
+					message "{@P} &7God Apples: &e%{feature::godapple}%"
+					wait 2 ticks
+					player command "/hostconfig"
+		if arg 1 is "ipvp":
+			if {features.ipvp} is not set:
+				set {feature::ipvp} to "&eEnabled"
+				set {features.ipvp} to true
+				close player's inventory
+				message "{@P} &7iPvP: &e%{feature::ipvp}%"
+				wait 2 ticks
+				player command "/hostconfig"
+			else:
+				if {features.ipvp} is true:
+					set {feature::ipvp} to "&cDisabled"
+					delete {features.ipvp}
+					close player's inventory
+					message "{@P} &7iPvP: &e%{feature::ipvp}%"
+					wait 2 ticks
+					player command "/hostconfig"
+		if arg 1 is "stalk":
+			if {features.stalk} is not set:
+				set {feature::stalk} to "&eEnabled"
+				set {features.stalk} to true
+				close player's inventory
+				message "{@P} &7Stalking: &e%{feature::stalk}%"
+				wait 2 ticks
+				player command "/hostconfig"
+			else:
+				if {features.stalk} is true:
+					set {feature::stalk} to "&cDisabled"
+					delete {features.stalk}
+					close player's inventory
+					message "{@P} &7Stalking: &e%{feature::stalk}%"
+					wait 2 ticks
+					player command "/hostconfig"
+		if arg 1 is "exstalk":
+			if {features.exstalk} is not set:
+				set {feature::exstalk} to "&eEnabled"
+				set {features.exstalk} to true
+				close player's inventory
+				message "{@P} &7Excessive Stalking: &e%{feature::exstalk}%"
+				wait 2 ticks
+				player command "/hostconfig"
+			else:
+				if {features.exstalk} is true:
+					set {feature::exstalk} to "&cDisabled"
+					delete {features.exstalk}
+					close player's inventory
+					message "{@P} &7Excessive Stalking: &e%{feature::exstalk}%"
+					wait 2 ticks
+					player command "/hostconfig"
+		if arg 1 is "apple":
+			if arg 2 is set:
+				set {feature::apple} to arg 2
+				message "{@P} &7Apple Rates: &e%{feature::apple}% percent"
+
+		if arg 1 is "flint":
+			if arg 2 is set:
+				set {feature::flint} to arg 2
+				message "{@P} &7Flint Rates: &e%{feature::flint}% percent"
+
+		if arg 1 is "pearldmg":
+			if {features.pearl} is not set:
+				set {feature::pearl} to "&eEnabled"
+				set {features.pearl} to true
+				close player's inventory
+				message "{@P} &7Pearl Damage: &e%{feature::pearl}%"
+				wait 2 ticks
+				player command "/hostconfig"
+			else:
+				if {features.pearl} is true:
+					set {feature::pearl} to "&cDisabled"
+					delete {features.pearl}
+					close player's inventory
+					message "{@P} &7Pearl Damage: &e%{feature::pearl}%"
+					wait 2 ticks
+					player command "/hostconfig"
+		if arg 1 is "shears":
+			if {features.shear} is not set:
+				set {feature::shear} to "&eEnabled"
+				set {features.shear} to true
+				close player's inventory
+				message "{@P} &7Shears: &e%{feature::shear}%"
+				wait 2 ticks
+				player command "/hostconfig"
+			else:
+				if {features.shear} is true:
+					set {feature::shear} to "&cDisabled"
+					delete {features.shear}
+					close player's inventory
+					message "{@P} &7Shears: &e%{feature::shear}%"
+					wait 2 ticks
+					player command "/hostconfig"
+		if arg 1 is "horse":
+			if {features.horse} is not set:
+				set {feature::horse} to "&eEnabled"
+				set {features.horse} to true
+				close player's inventory
+				message "{@P} &7Horses: &e%{feature::horse}%"
+				wait 2 ticks
+				player command "/hostconfig"
+			else:
+				if {features.horse} is true:
+					set {feature::horse} to "&cDisabled"
+					delete {features.horse}
+					close player's inventory
+					message "{@P} &7Horses: &e%{feature::horse}%"
+					wait 2 ticks
+					player command "/hostconfig"
+		if arg 1 is "tower":
+			if {features.tower} is not set:
+				set {feature::tower} to "Enabled (Come down at Meetup)"
+				set {features.tower} to true
+				close player's inventory
+				message "{@P} &7Towering: &e%{feature::tower}%"
+				wait 2 ticks
+				player command "/hostconfig"
+			else:
+				if {featurs.tower} is true:
+					set {feature::tower} to "&cDisabled"
+					delete {features.tower}
+					close player's inventory
+					message "{@P} &7Towering: &e%{feature::tower}%"
+					wait 2 ticks
+					player command "/hostconfig"
+		if arg 1 is "nether":
+			if {features.nether} is not set:
+				set {feature::nether} to "&eEnabled"
+				set {features.nether} to true
+				close player's inventory
+				message "{@P} &7Nether: &e%{feature::nether}%"
+				wait 2 ticks
+				player command "/hostconfig"
+			else:
+				if {features.nether} is true:
+					set {feature::nether} to "&cDisabled"
+					delete {features.nether}
+					close player's inventory
+					message "{@P} &7Nether: &e%{feature::nether}%"
+					wait 2 ticks
+					player command "/hostconfig"
+		if arg 1 is "darrow":
+			if {features.darrow} is not set:
+				set {feature::darrow} to "&eEnabled"
+				set {features.darrow} to true
+				close player's inventory
+				message "{@P} &7Double Arrows: &e%{feature::darrow}%"
+				wait 2 ticks
+				player command "/hostconfig"
+			else:
+				if {features.darrow} is true:
+					set {feature::darrow} to "&cDisabled"
+					delete {features.darrow}
+					close player's inventory
+					message "{@P} &7Double Arrows: &e%{feature::darrow}%"
+					wait 2 ticks
+					player command "/hostconfig"
+		if arg 1 is "book":
+			if {features.book} is not set:
+				set {feature::book} to "&eEnabled"
+				set {features.book} to true
+				close player's inventory
+				message "{@P} &7Bookshelves: &e%{feature::book}%"
+				wait 2 ticks
+				player command "/hostconfig"
+			else:
+				if {features.book} is true:
+					set {feature::book} to "&cDisabled"
+					delete {features.book}
+					close player's inventory
+					message "{@P} &7Bookshelves: &e%{feature::book}%"
+					wait 2 ticks
+					player command "/hostconfig"
+		if arg 1 is "fire":
+			if {features.fire} is not set:
+				set {feature::fire} to "&eEnabled"
+				set {features.fire} to true
+				close player's inventory
+				message "{@P} &7Fire Aspect: &e%{feature::fire}%"
+				wait 2 ticks
+				player command "/hostconfig"
+			else:
+				if {features.fire} is true:
+					set {feature::fire} to "&cDisabled"
+					delete {features.fire}
+					close player's inventory
+					message "{@P} &7Fire Aspect: &e%{feature::fire}%"
+					wait 2 ticks
+					player command "/hostconfig"
+		if arg 1 is "flame":
+			if {features.flame} is not set:
+				set {feature::flame} to "&eEnabled"
+				set {features.flame} to true
+				close player's inventory
+				message "{@P} &7Flame: &e%{feature::flame}%"
+				wait 2 ticks
+				player command "/hostconfig"
+			else:
+				if {features.flame} is true:
+					set {feature::flame} to "&cDisabled"
+					delete {features.flame}
+					close player's inventory
+					message "{@P} &7Flame: &e%{feature::flame}%"
+					wait 2 ticks
+					player command "/hostconfig"
+		if arg 1 is "steal":
+			if {features.steal} is not set:
+				set {feature::steal} to "&eEnabled"
+				set {features.steal} to true
+				close player's inventory
+				message "{@P} &7Stealing: &e%{feature::steal}%"
+				wait 2 ticks
+				player command "/hostconfig"
+			else:
+				if {features.steal} is true:
+					set {feature::steal} to "&cDisabled"
+					delete {features.steal}
+					close player's inventory
+					message "{@P} &7Stealing: &e%{feature::steal}%"
+					wait 2 ticks
+					player command "/hostconfig"
+		if arg 1 is "head":
+			if {features.head} is not set:
+				set {feature::head} to "&eEnabled"
+				set {features.head} to true
+				close player's inventory
+				message "{@P} &7Player Heads: &e%{feature::head}%"
+				wait 2 ticks
+				player command "/hostconfig"
+			else:
+				if {features.head} is true:
+					set {feature::head} to "&cDisabled"
+					delete {features.head}
+					close player's inventory
+					message "{@P} &7Player Heads: &e%{feature::head}%"
+					wait 2 ticks
+					player command "/hostconfig"
+		if arg 1 is "splash":
+			if {features.splash} is not set:
+				set {feature::splash} to "&eEnabled"
+				set {features.splash} to true
+				close player's inventory
+				message "{@P} &7Splash Potions: &e%{feature::splash}%"
+				wait 2 ticks
+				player command "/hostconfig"
+			else:
+				if {features.splash} is true:
+					set {feature::splash} to "&cDisabled"
+					delete {features.splash}
+					close player's inventory
+					message "{@P} &7Splash Potions: &e%{feature::splash}%"
+					wait 2 ticks
+					player command "/hostconfig"
+		if arg 1 is "strength":
+			if {features.strength} is not set:
+				set {feature::strength} to "&eEnabled"
+				set {features.strength} to true
+				close player's inventory
+				message "{@P} &7Strength: &e%{feature::strength}%"
+				wait 2 ticks
+				player command "/hostconfig"
+			else:
+				if {features.strength} is true:
+					set {feature::strength} to "&cDisabled"
+					delete {features.strength}
+					close player's inventory
+					message "{@P} &7Strength: &e%{feature::strength}%"
+					wait 2 ticks
+					player command "/hostconfig"
+		if arg 1 is "quartz":
+			if {features.quartz} is not set:
+				set {feature::quartz} to "&eEnabled"
+				set {features.quartz} to true
+				close player's inventory
+				message "{@P} &7Quartz Nerf: &e%{feature::quartz}%"
+				wait 2 ticks
+				player command "/hostconfig"
+			else:
+				if {features.quartz} is true:
+					set {feature::quartz} to "&cDisabled"
+					delete {features.quartz}
+					close player's inventory
+					message "{@P} &7Quartz Nerf: &e%{feature::quartz}%"
+					wait 2 ticks
+					player command "/hostconfig"
+		if arg 1 is "camping":
+			if {features.camping} is not set:
+				set {feature::camping} to "&eEnabled"
+				set {features.camping} to true
+				close player's inventory
+				message "{@P} &7Portal Trapping/Camping: &e%{feature::camping}%"
+				wait 2 ticks
+				player command "/hostconfig"
+			else:
+				if {features.camping} is true:
+					set {feature::camping} to "&cDisabled"
+					delete {features.camping}
+					close player's inventory
+					message "{@P} &7Portal Trapping/Camping: &e%{feature::camping}%"
+					wait 2 ticks
+					player command "/hostconfig"
+		if arg 1 is "potion":
+			if {features.potion} is not set:
+				set {feature::potion} to "&eEnabled"
+				set {features.potion} to true
+				close player's inventory
+				message "{@P} &7Potions: &e%{feature::potion}%"
+				wait 2 ticks
+				player command "/hostconfig"
+			else:
+				if {features.potion} is true:
+					set {feature::potion} to "&cDisabled"
+					delete {features.potion}
+					close player's inventory
+					message "{@P} &7Potions: &e%{feature::potion}%"
+					wait 2 ticks
+					player command "/hostconfig"
+		if arg 1 is "hhealing":
+			if {features.hh} is not set:
+				set {feature::hh} to "&eEnabled"
+				set {features.hh} to true
+				close player's inventory
+				message "{@P} &7Horse Healing: &e%{feature::hh}%"
+				wait 2 ticks
+				player command "/hostconfig"
+			else:
+				if {features.hh} is true:
+					set {feature::hh} to "&cDisabled"
+					delete {features.hh}
+					close player's inventory
+					message "{@P} &7Horse Healing: &e%{feature::hh}%"
+					wait 2 ticks
+					player command "/hostconfig"
+		if arg 1 is "harmor":
+			if {features.hr} is not set:
+				set {feature::hr} to "&eEnabled"
+				set {features.hr} to true
+				close player's inventory
+				message "{@P} &7Horse Armor: &e%{feature::hr}%"
+				wait 2 ticks
+				player command "/hostconfig"
+			else:
+				if {features.hr} is true:
+					set {feature::hr} to "&cDisabled"
+					delete {features.hr}
+					close player's inventory
+					message "{@P} &7Horse Armor: &e%{feature::hr}%"
+					wait 2 ticks
+					player command "/hostconfig"
+
+			
+on skript load:
+	command "/difficulty hard"
+	regRecipes(true)
+	command "/scoreboard objectives add Health dummy {@HeartSymbol}"
+	command "/scoreboard objectives add HealthTab dummy HealthTab"
+	command "/scoreboard objectives setdisplay list HealthTab"
+	command "/scoreboard objectives setdisplay belowName Health"
+
+on heal:
+	event-entity is a player:
+		heal reason is satiated
+		cancel the event
+	wait 1 tick
+	invoke "updateTab" from player
+
+every 20 ticks:
+	loop all players:
+		invoke "updateTab" from loop-player
+on consume:
+	if event-item is a golden apple:
+		if name of player's tool contains "&6Golden Head":
+			wait 2 ticks
+			remove regeneration from player
+			apply regeneration 2 to player for 9 seconds
+		wait 1 tick
+		remove absorption from player
+		if {features.absorp} is true:
+			wait 1 tick
+			apply absorption to player for 2 minutes
+
+on craft of enchanted golden apple:
+	if {features.godapple} is not set:
+		cancel the event
+		message "{@P} &cGod Apples &7are &cDisabled!"
+
+on damage of player:
+	if {features.pearl} is not set:
+		if damage cause is fall:
+			projectile exists
+			projectile is a enderpearl
+			cancel the event
+	wait 1 tick
+	invoke "updateTab" from victim
+	if {features.flame} is not set:
+		if attacker is a player:
+			damage was caused by projectile:
+				projectile is an arrow:
+					extinguish the victim
+	if {features.fire} is not set:
+		if attacker is a player:
+			damage was caused by attack:
+				extinguish the victim
+
+on rightclick on horse:
+	if {features.horse} is not set:
+		cancel the event
+		message "{@P} &eHorses &7are &eDisabled!" to player
+
+on place of obsidian:
+	if {features.nether} is not set:
+		cancel the event
+		message "{@P} &eNether &7is &eDisabled!" to player
+
+on craft of bookshelves:
+	if {features.book} is not set:
+		cancel the event
+		message "{@P} &eBookshelves &7are &eDisabled!" to player
+
+on death of player:
+	if {features.head} is true:
+		drop victim's skull at location of victim
+
+on shoot:
+	"%projectile%" is "thrown potion"
+	if {features.splash} is not set:
+		cancel the event
+		send "{@P} &eSplash Potion &7are &eDisabled!" to shooter
+on craft:
+	if {features.strength} is not set:
+		event-item is blaze powder
+		cancel the event
+		message "{@P} &eStrength Potions &7are &eDisabled!" to player
+on portal:
+	if {features.nether} is not set:
+		cancel the event
+		message "{@P} &eNether &7is &eDisabled!" to player
+on leaves decay:
+	chance of {feature::apple}%:
+		place 1 apple at event-block
+
+on break of leaves:
+	if {features.shear} is true:
+		chance of {feature::apple}*2%:
+			place 1 apple at event-block
+on break of gravel:
+	chance of {feature::flint}%:
+		place 1 flint at event-block
+on mine of quartz ore:
+	if {features.quartz} is true:
+		cancel the event
+		set the event-block to air
+		set {_xp} to a random integer between 1 and 3
+		loop {_xp} times:
+			drop 1 experience at event-block
+		drop 1 quartz at event-block
+on place of lava:
+	if {features.camping} is not set:
+		event-block is lava
+		loop blocks in radius 4:
+			loop-block is a portal
+			cancel the event
+			message "{@P} &ePortal Trapping &7is &eDisabled!" to player
+			stop loop
+on craft of brewing stand:
+	if {features.potion} is not set:
+		cancel the event
+		message "{@P} &ePotions &7are &eDisabled!" to player
+
+on rightclick on a horse holding sugar, wheat, apple, golden apple, hay block or golden carrot:
+	if {features.hh} is not set:
+		cancel the event
+		message "{@P} &eHorse Healing &7is &eDisabled!" to player
+		stop trigger
+
+on rightclick on chest:
+	if {features.hr} is not set:
+		loop all items in inventory of event-block:
+			if loop-item's id is 417, 418 or 419:
+				set loop-item to air
+
+on break of chest:
+	if {features.hr} is not set:
+		loop all items in inventory of event-block:
+			if loop-item's id is 417, 418 or 419:
+				set loop-item to air
+on place of crafting table:
+	register new shapeless recipe for 2 goldingots using air, air, air, air, 147, air, air, air, air
+
+every 75 ticks:
+	set {_s} to now
+	wait 75 ticks
+	set {_d} to difference between {_s} and now
+	set {_g} to ("%{_d}%" parsed as text)
+	replace all " seconds" in {_g} with ""
+	set {_l} to ("%{_g}%" parsed as number)
+	set {tps} to (75/{_l})
+	if {tps} is greater than 20:
+		set {tps} to 20
+
+command /tps:
+	trigger:
+		set {_tps} to ({tps})
+		if {_tps} is less than 12:
+			send "{@P} &7Current TPS: &c%{_tps}%"
+		else if {_tps} is less than 15:
+			send "{@P} &7Current TPS: &6%{_tps}%"
+		else if {_tps} is less than 18:
+			send "{@P} &7Current TPS: &e%{_tps}%"
+		else if {_tps} is less than 19:
+			send "{@P} &7Current TPS: &2%{_tps}%"
+		else if {_tps} is more than or equal to 19:
+			send "{@P} &7Current TPS: &a%{_tps}%"
+command /heal [<offlineplayer>]:
+	usage: /heal [<player>]
+	permission: skript.host
+	trigger:
+		if arg-1 is not set:
+			heal the command sender
+			invoke "updateTab" from command sender
+			send "{@P} You healed yourself!"
+			loop all players:
+				loop-player is an op:
+					send "{@P} &e%command sender%&7 healed &ehimself!" to loop-player
+		if arg-1 is set:
+			if arg-1 is "*" or "all" or "**":
+				heal all players
+				loop all players:
+					invoke "updateTab" from loop-player
+				message "{@P} You healed all players!"
+			else:
+				if arg-1 is not online:
+					send "{@P} &7You need to specify a online player!"
+					stop
+				heal arg-1
+				send "{@P} &eHealed &7by &e%command sender%!" to arg-1
+				loop all players:
+					loop-player is an op:
+						loop-player is not command sender
+						loop-player is not arg-1
+						send "{@P} &e%command sender% healed &e%arg-1%!" to loop-player
+				invoke "updateTab" from arg-1
+				send "{@P} &7You healed &e%arg-1%!"
+
+command /ci [<offlineplayer>]:
+	usage: /ci [<player>]
+	permission: skript.host
+	trigger:
+		if arg-1 is not set:
+			clear command sender's inventory
+			send "{@P} &7Inventory Cleared!"
+			loop all players:
+				loop-player is an op:
+					send "{@P} &e%command sender%&7 cleared their &einventory!" to loop-player
+		if arg-1 is set:
+			if arg-1 is "*" or "all" or "**":
+				loop all players:
+					clear loop-player's inventory
+				message "{@P} You cleared all player's inventories!"
+			else:
+				if arg-1 is not online:
+					send "{@P} &7You need to specify a online player!"
+					stop
+				clear arg-1's inventory
+				loop all players:
+					loop-player is an op:
+						loop-player is not command sender
+						loop-player is not arg-1
+						send "{@P} &e%command sender% cleared &e%arg-1%'s inventory!" to loop-player
+				send "{@P} &7You cleared &e%arg-1%'s inventory!"
+command /feed [<offlineplayer>]:
+	usage: /ci [<player>]
+	permission: skript.host
+	trigger:
+		if arg-1 is not set:
+			set the command sender's food level to 10
+			send "{@P} &7Fed to full Hunger!"
+			loop all players:
+				loop-player is an op:
+					send "{@P} &e%command sender%&7 fed &ethemselves!" to loop-player
+		if arg-1 is set:
+			if arg-1 is "*" or "all" or "**":
+				loop all players:
+					set the loop-players's food level to 10
+				message "{@P} &7You fed all players!"
+			else:
+				if arg-1 is not online:
+					send "{@P} &7You need to specify a online player!"
+					stop
+				set arg-1's food level to 10
+				loop all players:
+					loop-player is an op:
+						loop-player is not command sender
+						loop-player is not arg-1
+						send "{@P} &e%command sender% fed &e%arg-1%!" to loop-player
+				send "{@P} &7You fed &e%arg-1%!"
+command /rates [<text>] [<text>]:
+	permission: skript.host
+	trigger:
+		if arg 1 is "apple":
+			close player's inventory
+			wait 2 ticks
+			open chest with 1 row named "&2Rates" to player
+			format slot 4 of player with apple named "&7Apple Rates" with lore "&6» &e%{feature::apple}%" to be unstealable
+			format slot 3 of player with red wool named "&c-1%%" to run "sudo %player% rates appleminus1"
+			format slot 5 of player with lime wool named "&e+1%%" to run "sudo %player% rates appleplus1"
+			format slot 2 of player with red wool named "&c-0.5%%" to run "sudo %player% rates appleminus5"
+			format slot 6 of player with lime wool named "&e+0.5%%" to run "sudo %player% rates appleplus5"
+			format slot 1 of player with red wool named "&c-5%%" to run "sudo %player% rates appleminus15"
+			format slot 7 of player with lime wool named "&e+5%%" to run "sudo %player% rates appleplus15"
+		if arg 1 is "appleminus1":
+			subtract 1 from {feature::apple}
+			message "{@P} &7Apple Rates set to &e%{feature::apple}%%%" to command sender
+		if arg 1 is "appleminus5":
+			subtract 0.5 from {feature::apple}
+			message "{@P} &7Apple Rates set to &e%{feature::apple}%%%" to command sender
+		if arg 1 is "appleminus15":
+			subtract 5 from {feature::apple}
+			message "{@P} &7Apple Rates set to &e%{feature::apple}%%%" to command sender
+		if arg 1 is "appleplus1":
+			add 1 to {feature::apple}
+			message "{@P} &7Apple Rates set to &e%{feature::apple}%%%" to command sender
+		if arg 1 is "appleplus5":
+			add 0.5 to {feature::apple}
+			message "{@P} &7Apple Rates set to &e%{feature::apple}%%%" to command sender
+		if arg 1 is "appleplus15":
+			add 5 to {feature::apple}
+			message "{@P} &7Apple Rates set to &e%{feature::apple}%%%" to command sender
+		if arg 1 is "flint":
+			close player's inventory
+			wait 2 ticks
+			open chest with 1 row named "&2Rates" to player
+			format slot 4 of player with flint named "&7Flint Rates" with lore "&6» &e%{feature::flint}%" to be unstealable
+			format slot 3 of player with red wool named "&c-1%%" to run "sudo %player% rates flintminus1"
+			format slot 5 of player with lime wool named "&e+1%%" to run "sudo %player% rates flintplus1"
+			format slot 2 of player with red wool named "&c-0.5%%" to run "sudo %player% rates flintminus5"
+			format slot 6 of player with lime wool named "&e+0.5%%" to run "sudo %player% rates flintplus5"
+			format slot 1 of player with red wool named "&c-5%%" to run "sudo %player% rates flintminus15"
+			format slot 7 of player with lime wool named "&e+5%%" to run "sudo %player% rates flintplus15"
+		if arg 1 is "flintminus1":
+			subtract 1 from {feature::flint}
+			message "{@P} &7Flint Rates set to &e%{feature::flint}%%%" to command sender
+		if arg 1 is "flintminus5":
+			subtract 0.5 from {feature::flint}
+			message "{@P} &7Flint Rates set to &e%{feature::flint}%%%" to command sender
+		if arg 1 is "flintminus15":
+			subtract 5 from {feature::flint}
+			message "{@P} &7Flint Rates set to &e%{feature::flint}%%%" to command sender
+		if arg 1 is "flintplus1":
+			add 1 to {feature::flint}
+			message "{@P} &7Flint Rates set to &e%{feature::flint}%%%" to command sender
+		if arg 1 is "flintplus5":
+			add 0.5 to {feature::flint}
+			message "{@P} &7Flint Rates set to &e%{feature::flint}%%%" to command sender
+		if arg 1 is "flintplus15":
+			add 5 to {feature::flint}
+			message "{@P} &7Flint Rates set to &e%{feature::flint}%%%" to command sender
+					
+
+command /pheo [<text>]:
+	permission: skript.host
+	trigger:
+		if arg 1 is set:
+			loop all players:
+				player command "/playsound random.pop %loop-player% ~ ~ ~ 10 1 1"
+			broadcast "{@P} &e&l%arg-1%"
+on hunger meter change:
+	if player is in "Pheo":
+		cancel the event
+	
+on spawn of horse:
+	if {features.horse} is not set:
+		spawn a cow
+		cancel the event
+on spawn of donkey:
+	if {features.horse} is not set:
+		spawn a cow
+		cancel the event
+on spawn of mule:
+	if {features.horse} is not set:
+		spawn a cow
+		cancel the event
+on spawn of rabbit:
+	spawn a chicken
+	cancel the event
+on spawn of baby rabbit:
+	spawn a chicken
+	cancel the event
+on break of glowstone:
+	player is not in "Pheo":
+		cancel the event
+		message "{@P} &7Teir 2 is disabled!"
+on death of ghast:
+	clear the drops
+	place 1 gold ingot at ghast
+
+command /staff [<text>]:
+	trigger:
+		close player's inventory
+		wait 2 ticks
+		open chest with 4 rows named "&8» &eStaff List &8«" to player
+		set {_p} to "Keegle" parsed as offlineplayer
+		format slot 0 of player with skull of {_p} named "&7Zakkeagle" with lore "&8» &4&lOwner" to be unstealable
+		set {_p1} to "Spongey" parsed as offlineplayer
+		format slot 1 of player with skull of {_p1} named "&7Spongey" with lore "&8» &4Admin" to be unstealable
+		set {_p2} to "doyouevenbanter_" parsed as offlineplayer
+		format slot 2 of player with skull of {_p2} named "&7doyouevenbanter_" with lore "&8» &4Admin" to be unstealable
+		set {_p3} to "Wolfaye" parsed as offlineplayer
+		format slot 3 of player with skull of {_p3} named "&7Wolfaye" with lore "&8» &4Admin" to be unstealable
+		set {_p4} to "Dahii" parsed as offlineplayer
+		format slot 4 of player with skull of {_p4} named "&7Dahii" with lore "&8» &4Admin" to be unstealable
+		set {_p5} to "AndrewCraft512" parsed as offlineplayer
+		format slot 5 of player with skull of {_p5} named "&7Andrewcraft512" with lore "&8» &4Admin" to be unstealable
+		set {_p6} to "Codwhy" parsed as offlineplayer
+		format slot 6 of player with skull of {_p6} named "&7Codwhy" with lore "&8» &cStaff" to be unstealable
+		set {_p7} to "xKasss" parsed as offlineplayer
+		format slot 7 of player with skull of {_p7} named "&7xKasss" with lore "&8» &cStaff" to be unstealable
+		set {_p8} to "_Yohann" parsed as offlineplayer
+		format slot 8 of player with skull of {_p8} named "&7_Yohann" with lore "&8» &cStaff" to be unstealable
+		set {_p9} to "HodoGameSid" parsed as offlineplayer
+		format slot 9 of player with skull of {_p9} named "&7HodoGameSid" with lore "&8» &cStaff" to be unstealable
+		set {_p10} to "vishs" parsed as offlineplayer
+		format slot 10 of player with skull of {_p10} named "&7Vishs" with lore "&8» &cStaff" to be unstealable
+		set {_p11} to "YellowVitt" parsed as offlineplayer
+		format slot 11 of player with skull of {_p11} named "&7YellowVitt" with lore "&8» &cStaff" to be unstealable
+		set {_p12} to "Fensua" parsed as offlineplayer
+		format slot 12 of player with skull of {_p12} named "&7Fensua" with lore "&8» &cStaff" to be unstealable
+		set {_p13} to "Old_Man_Chris" parsed as offlineplayer
+		format slot 13 of player with skull of {_p13} named "&7Old_Man_Chris" with lore "&8» &cStaff" to be unstealable
+		set {_p14} to "MajorWoof" parsed as offlineplayer
+		format slot 14 of player with skull of {_p14} named "&7MajorWoof" with lore "&8» &cStaff" to be unstealable
+		set {_p15} to "PsyMC" parsed as offlineplayer
+		format slot 15 of player with skull of {_p15} named "&7PsyMC" with lore "&8» &cStaff" to be unstealable
+		set {_p16} to "4EyedSlime" parsed as offlineplayer
+		format slot 16 of player with skull of {_p16} named "&74EyedSlime" with lore "&8» &cStaff" to be unstealable
+		set {_p17} to "SeabassXd" parsed as offlineplayer
+		format slot 17 of player with skull of {_p17} named "&7SeabassXD" with lore "&8» &cStaff" to be unstealable
+		set {_p18} to "ItsColinn" parsed as offlineplayer
+		format slot 18 of player with skull of {_p18} named "&7ItsColinn" with lore "&8» &cStaff" to be unstealable
+		set {_p19} to "Austronomical" parsed as offlineplayer
+		format slot 19 of player with skull of {_p19} named "&7Austronomical" with lore "&8» &bSpec" to be unstealable
+		set {_p20} to "zac083" parsed as offlineplayer
+		format slot 20 of player with skull of {_p20} named "&7zac083" with lore "&8» &bSpec" to be unstealable
+		set {_p21} to "zCent" parsed as offlineplayer
+		format slot 21 of player with skull of {_p21} named "&7zCent" with lore "&8» &bSpec" to be unstealable
+		set {_p22} to "Thimburrr" parsed as offlineplayer
+		format slot 22 of player with skull of {_p22} named "&7Thimburrr" with lore "&8» &bSpec" to be unstealable
+		set {_p23} to "smilinkylan" parsed as offlineplayer
+		format slot 23 of player with skull of {_p23} named "&7smilinkylan" with lore "&8» &bSpec" to be unstealable
+		set {_p24} to "SiahStone" parsed as offlineplayer
+		format slot 24 of player with skull of {_p24} named "&7SiahStone" with lore "&8» &bSpec" to be unstealable
+		set {_p25} to "Ryfri" parsed as offlineplayer
+		format slot 25 of player with skull of {_p25} named "&7Ryfri" with lore "&8» &bSpec" to be unstealable
+		set {_p26} to "Potsie" parsed as offlineplayer
+		format slot 26 of player with skull of {_p26} named "&7Potsie" with lore "&8» &bSpec" to be unstealable
+		set {_p27} to "Phoraxe" parsed as offlineplayer
+		format slot 27 of player with skull of {_p27} named "&7Phoraxe" with lore "&8» &bSpec" to be unstealable
+		set {_p28} to "JmcLFA" parsed as offlineplayer
+		format slot 28 of player with skull of {_p28} named "&7JmcLFA" with lore "&8» &bSpec" to be unstealable
+		set {_p29} to "xGreen" parsed as offlineplayer
+		format slot 29 of player with skull of {_p29} named "&7xGreen" with lore "&8» &bSpec" to be unstealable
+		set {_p30} to "Colbay" parsed as offlineplayer
+		format slot 30 of player with skull of {_p30} named "&7Colbay" with lore "&8» &bSpec" to be unstealable
+		set {_p31} to "Broseph" parsed as offlineplayer
+		format slot 31 of player with skull of {_p31} named "&7Brosev" with lore "&8» &bSpec" to be unstealable
+		
+command /donators [<text>]:
+	trigger:
+		close player's inventory
+		wait 2 ticks
+		open chest with 3 rows named "&8» &eDonators &8«" to player
+		set {_p} to "PsyMC" parsed as offlineplayer
+		format slot 0 of player with skull of {_p} named "&7PsyMC" with lore "&8» &e$4.00" to be unstealable
+		set {_p1} to "Tyranos_" parsed as offlineplayer
+		format slot 1 of player with skull of {_p1} named "&7Tyranos_" with lore "&8» &e$10.00" to be unstealable
+		set {_p2} to "Maxaa" parsed as offlineplayer
+		format slot 2 of player with skull of {_p2} named "&7Maxaa" with lore "&8» &e$2.00" to be unstealable
+		set {_p3} to "Kelawesome" parsed as offlineplayer
+		format slot 3 of player with skull of {_p3} named "&7Kelawesome" with lore "&8» &e$5.00" to be unstealable

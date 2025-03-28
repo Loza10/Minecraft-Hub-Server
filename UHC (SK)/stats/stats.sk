@@ -1,0 +1,428 @@
+options:
+	P : &7[&cPhoenix&7]
+
+command /statchange [<text>] [<offlineplayer>] [<int>] [<text>]:
+	permission: skript.op
+	trigger:
+		if arg 1 is "remove":
+			if arg 2 is set:
+				if arg 3 is set:
+					if arg 4 is "diamond":
+						remove arg 3 from {Mined.Diamond::%arg-2%}
+						message "{@P} &7You have removed &e%arg-3% Diamonds &7from &e%arg-2%'s &7stats!" to command sender
+					else if arg 4 is "gold":
+						remove arg 3 from {Mined.Gold::%arg-2%}
+						message "{@P} &7You have removed &e%arg-3% Gold &7from &e%arg-2%'s &7stats!" to command sender
+					else if arg 4 is "shot":
+						remove arg 3 from {Mined.Arrow::%arg-2%}
+						message "{@P} &7You have removed &e%arg-3% Arrow Shots &7from &e%arg-2%'s &7stats!" to command sender
+					else if arg 4 is "hit":
+						remove arg 3 from {Mined.Hit::%arg-2%}
+						message "{@P} &7You have removed &e%arg-3% Arrow Hits &7from &e%arg-2%'s &7stats!" to command sender
+					else if arg 4 is "kill":
+						remove arg 3 from {Mined.Kill::%arg-2%}
+						message "{@P} &7You have removed &e%arg-3% Player Kills &7from &e%arg-2%'s &7stats!" to command sender
+					else if arg 4 is "death":
+						remove arg 3 from {Mined.Death::%arg-2%}
+						message "{@P} &7You have removed &e%arg-3% Deaths &7from &e%arg-2%'s &7stats!" to command sender
+		if arg 1 is "reset":
+			if arg 2 is set:
+				delete {Mined.Diamond::%arg-2%}
+				delete {Mined.Gold::%arg-2%}
+				delete {Mined.Arrow::%arg-2%}
+				delete {Mined.Hit::%arg-2%}
+				delete {Mined.Kill::%arg-2%}
+				delete {Mined.Death::%arg-2%}
+				delete {Mined.Games::%arg-2%}
+				delete {Mined.Gapple::%arg-2%}
+				delete {Mined.Long::%arg-2%}
+				delete {Rawr.Diamond::%arg-2%}
+				delete {Rawr.Gold::%arg-2%}
+				delete {Rawr.Arrow::%arg-2%}
+				delete {Rawr.Hit::%arg-2%}
+				delete {Rawr.Kill::%arg-2%}
+				delete {Rawr.Death::%arg-2%}
+				delete {Rawr.Games::%arg-2%}
+				delete {Rawr.Gapple::%arg-2%}
+				delete {Rawr.Long::%arg-2%}
+				message "{@P} &7You have reset the stats for &e%arg-2%" to command sender
+		if arg 1 is not set:
+			if arg 2 is not set:
+				if arg 3 is not set:
+					if arg 4 is not set:
+						message "{@P} &7Correct Usage: &c/statchange [remove] [player] [amount] [shot/diamond/gold/hit/kill/death]" to command sender
+
+
+
+command /gameplay [<text>] [<text>]:
+	permission: skript.op
+	trigger:
+		if arg 1 is "add":
+			if arg 2 is set:
+				add 1 to {Mined.Games::%arg-2%}
+		if arg 1 is "remove":
+			if arg 2 is set:
+				remove 1 from {Mined.Games::%arg-2%}
+command /statchecker [<text>]:
+	permission: skript.op
+	trigger:
+		if arg 1 is "enable":
+			if {stc} is not set:
+				set {stc} to true
+				message "{@P} &7Stats now update!" to player
+			else:
+				{stc} is true:
+					message "{@P} &bStats already update" to player
+		if arg 1 is "disable":
+			if {stc} is true:
+				delete {stc}
+				message "{@P} &7Stats no longer update!" to player
+			else:
+				{stc} is not set:
+					message "{@P} &cStats are already off" to player
+		if arg 1 is "reset":
+			delete {Mined.Diamond.Top::*}
+			delete {Mined.Diamond::*}
+			delete {Mined.Gold.Top::*}
+			delete {Mined.Gold::*}
+			delete {Mined.Arrow.Top::*}
+			delete {Mined.Arrow::*}
+			delete {Mined.Hit.Top::*}
+			delete {Mined.Hit::*}
+			delete {Mined.Kill.Top::*}
+			delete {Mined.Kill::*}
+			delete {Mined.Death.Top::*}
+			delete {Mined.Death::*}
+			delete {Mined.Win.Top::*}
+			delete {Mined.Win::*}
+			delete {Mined.Gapple.Top::*}
+			delete {Mined.Games.Top::*}
+			delete {Mined.Long.Top::*}
+			delete {Rawr.Diamond::*}
+			delete {Rawr.Gold::*}
+			delete {Rawr.Arrow::*}
+			delete {Rawr.Hit::*}
+			delete {Rawr.Kill::*}
+			delete {Rawr.Death::*}
+			delete {Mined.Games::*}
+			delete {Rawr.Games::*}
+			delete {Mined.Gapple::*}
+			delete {Rawr.Gapple::*}
+			delete {Mined.Long::*}
+			delete {Rawr.Long::*}
+			message "{@P} &cStats &7have been &creset" to command sender
+		if arg 1 is "ls":
+			set {Mined.Long::*} to 0
+			set {Rawr.Long::*} to 0
+command /statsupdate [<offlineplayer>] [<offlineplayer>]:
+	permission: skript.op
+	trigger:
+		if arg 1 is set:
+			if arg 2 is set:
+				add {Mined.Diamond::%arg-1%} to {Mined.Diamond::%arg-2%}
+				add {Mined.Gold::%arg-1%} to {Mined.Gold::%arg-2%}
+				add {Mined.Arrow::%arg-1%} to {Mined.Arrow::%arg-2%}
+				add {Mined.Hit::%arg-1%} to {Mined.Hit::%arg-2%}
+				add {Mined.Kill::%arg-1%} to {Mined.Kill::%arg-2%}
+				add {Mined.Death::%arg-1%} to {Mined.Death::%arg-2%}
+				add {Mined.Win::%arg-1%} to {Mined.Win::%arg-2%}
+				add {Mined.Games::%arg-1%} to {Mined.Games::%arg-2%}
+				add {Mined.Gapple::%arg-1%} to {Mined.Gapple::%arg-2%}
+				add {Mined.Long::%arg-1%} to {Mined.Long::%arg-2%}
+				message "{@P} &e%arg-1%'s &7stats have been added to &e%arg-2%'s &7stats" to command sender
+		if arg 1 is not set:
+			if arg 2 is not set:
+				message "{@P} &e/statsupdate <oldign> <newign>"
+
+command /stats [<offlineplayer>]:
+	trigger:
+		if arg 1 is not set:
+			if {start.timer} is not set:
+				set {Rawr.Diamond::%command sender%} to {Mined.Diamond::%command sender%}
+				set {Rawr.Gold::%command sender%} to {Mined.Gold::%command sender%}
+				set {Rawr.Arrow::%command sender%} to {Mined.Arrow::%command sender%}
+				set {Rawr.Hit::%command sender%} to {Mined.Hit::%command sender%}
+				set {Rawr.Kill::%command sender%} to {Mined.Kill::%command sender%}
+				set {Rawr.Games::%command sender%} to {Mined.Games::%command sender%}
+				set {Rawr.Gapple::%command sender%} to {Mined.Gapple::%command sender%}
+				set {Rawr.Long::%command sender%} to {Mined.Long::%command sender%}
+			open chest with 1 row named "&8» &eYour Stats &8«" to player
+			wait 1 tick
+			format slot 4 of player with a diamond sword named "&6PvP Stats&8:" with lore " &7Kills &8» &e%{Rawr.Kill::%command sender%}% || &7Deaths &8» &e%{Rawr.Death::%command sender%}% || &7KDR &8» &e%{Rawr.Kill::%command sender%}/{Mined.Death::%command sender%}% || &7Wins &8» &e%{Mined.Win::%command sender%}% || &7Bow Accuracy &8» &e%{Rawr.Hit::%command sender%}/{Rawr.Arrow::%command sender%}%%%" to be unstealable
+			format slot 3 of player with a gold ore named "&6Mining Stats&8:" with lore " &7Gold Mined &8» &e%{Rawr.Gold::%command sender%}% || &7Diamonds Mined &8» &e%{Rawr.Diamond::%command sender%}% || &7Average Diamonds &8» &e%{Rawr.Diamond::%command sender%}/{Rawr.Games::%command sender%}% || &7Average Gold &8» &e%{Rawr.Gold::%command sender%}/{Rawr.Games::%command sender%}% " to be unstealable
+			format slot 5 of player with a nether star named "&6Misc Stats&8:" with lore " &7Arrows Shot &8» &e%{Rawr.Arrow::%command sender%}% || &7Arrows Hit &8» &e%{Rawr.Hit::%command sender%}% || &7Games Played &8» &e%{Rawr.Games::%command sender%}% || &7Golden Apples Eaten &8» &e%{Rawr.Gapple::%command sender%}% || &7Longest Shot &8» &e%{Mined.Long::%command sender%}%" to be unstealable
+			format slot 8 of player with a arrow named "&6Top Stats&8" with lore "&8» &7Click to go to Top Stats!" to run "sudo %player% top"
+		if arg 1 is set:
+			if {start.timer} is not set:
+				set {Rawr.Diamond::%arg-1%} to {Mined.Diamond::%arg-1%}
+				set {Rawr.Gold::%arg-1%} to {Mined.Gold::%arg-1%}
+				set {Rawr.Arrow::%arg-1%} to {Mined.Arrow::%arg-1%}
+				set {Rawr.Hit::%arg-1%} to {Mined.Hit::%arg-1%}
+				set {Rawr.Kill::%arg-1%} to {Mined.Kill::%arg-1%}
+				set {Rawr.Games::%arg-1%} to {Mined.Games::%arg-1%}
+				set {Rawr.Gapple::%arg-1%} to {Mined.Gapple::%arg-1%}
+			open chest with 1 row named "&7» &e%arg-1%'s Stats &7«" to player
+			wait 1 tick
+			format slot 4 of player with a diamond sword named "&6PvP Stats&8:" with lore " &7Kills &8» &e%{Rawr.Kill::%arg-1%}% || &7Deaths &8» &e%{Rawr.Death::%arg-1%}% || &7KDR &8» &e%{Rawr.Kill::%arg-1%}/{Mined.Death::%arg-1%}% || &7Wins &8» &e%{Mined.Win::%arg-1%}% || &7Bow Accuracy &8» &e%{Rawr.Hit::%arg-1%}/{Rawr.Arrow::%arg-1%}%%%" to be unstealable
+			format slot 3 of player with a gold ore named "&6Mining Stats&8:" with lore " &7Gold Mined &8» &e%{Rawr.Gold::%arg-1%}% || &7Diamonds Mined &8» &e%{Rawr.Diamond::%arg-1%}% || &7Average Diamonds &8» &e%{Rawr.Diamond::%arg-1%}/{Rawr.Games::%arg-1%}% || &7Average Gold &8» &e%{Rawr.Gold::%arg-1%}/{Rawr.Games::%arg-1%}% " to be unstealable
+			format slot 5 of player with a nether star named "&6Misc Stats&8:" with lore " &7Arrows Shot &8» &e%{Rawr.Arrow::%arg-1%}% || &7Arrows Hit &8» &e%{Rawr.Hit::%arg-1%}% || &7Games Played &8» &e%{Rawr.Games::%arg-1%}% || &7Golden Apples Eaten &8» &e%{Rawr.Gapple::%arg-1%}% || &7Longest Shot &8» &e%{Mined.Long::%arg-1%}%" to be unstealable
+			format slot 8 of player with a arrow named "&6Top Stats&8" with lore "&8» &7Click to go to Top Stats!" to run "sudo %player% top"
+command /win [<text>] [<offlineplayer>]:
+	permission: skript.op
+	trigger:
+		if arg 1 is "add":
+			if arg 2 is set:
+				add 1 to {Mined.Win::%arg-2%}
+				message "{@P} &b1 Win &7has been &badded &7to &b%arg-2%" to command sender
+		if arg 1 is "remove":
+			if arg 2 is set:
+				if {Mined.Win::%arg-2%} is greater than 0:
+					remove 1 from {Mined.Win::%arg-2%}
+					message "{@P} &c1 Win &7has been &cremoved &7from &c%arg-2%" to command sender
+				else:
+					if {Mined.Win::%arg-2%} is less than 1:
+						message "{@P} &cA Player cannot have negative wins!" to command sender
+
+command /top [<text>]:
+	trigger:
+		close player's inventory
+		wait 2 ticks
+		message "{@P} Loading leaderboards..." 
+		set {Mined.Diamond.Top::*} to sorted {Rawr.Diamond::*} from highest to lowest with output "&7@index &8» &e@value Diamonds"
+		set {x1} to 1
+		set {x2} to 2
+		set {x3} to 3
+		set {x4} to 4
+		set {x5} to 5
+		wait 1 tick
+		set {v1} to "%{Mined.Diamond.Top::%{x1}%}%"
+		replace all ".0" in {v1} with ""
+		set {v2} to "%{Mined.Diamond.Top::%{x2}%}%"
+		replace all ".0" in {v2} with ""	
+		set {v3} to "%{Mined.Diamond.Top::%{x3}%}%"
+		replace all ".0" in {v2} with ""
+		set {v4} to "%{Mined.Diamond.Top::%{x4}%}%"
+		replace all ".0" in {v4} with ""
+		set {v5} to "%{Mined.Diamond.Top::%{x5}%}%"
+		replace all ".0" in {v5} with ""
+		wait 3 seconds
+		set {Mined.Gold.Top::*} to sorted {Rawr.Gold::*} from highest to lowest with output "&7@index &8» &e@value Gold"
+		set {c1} to 1
+		set {c2} to 2
+		set {c3} to 3
+		set {c4} to 4
+		set {c5} to 5
+		set {s1} to "%{Mined.Gold.Top::%{c1}%}%"
+		replace all ".0" in {s1} with ""
+		set {s2} to "%{Mined.Gold.Top::%{c2}%}%"
+		replace all ".0" in {s2} with ""
+		set {s3} to "%{Mined.Gold.Top::%{c3}%}%"
+		replace all ".0" in {s3} with ""
+		set {s4} to "%{Mined.Gold.Top::%{c4}%}%"
+		replace all ".0" in {s4} with ""
+		set {s5} to "%{Mined.Gold.Top::%{c5}%}%"
+		replace all ".0" in {s5} with ""
+		wait 3 seconds
+		set {Mined.Arrow.Top::*} to sorted {Rawr.Arrow::*} from highest to lowest with output "&7@index &8» &e@value Arrows Shot"
+		set {a1} to 1
+		set {a2} to 2
+		set {a3} to 3
+		set {a4} to 4
+		set {a5} to 5
+		set {d1} to "%{Mined.Arrow.Top::%{a1}%}%"
+		replace all ".0" in {d1} with ""
+		set {d2} to "%{Mined.Arrow.Top::%{a2}%}%"
+		replace all ".0" in {d2} with ""
+		set {d3} to "%{Mined.Arrow.Top::%{a3}%}%"
+		replace all ".0" in {d3} with ""
+		set {d4} to "%{Mined.Arrow.Top::%{a4}%}%"
+		replace all ".0" in {d4} with ""
+		set {d5} to "%{Mined.Arrow.Top::%{a5}%}%"
+		replace all ".0" in {d5} with ""
+		wait 3 seconds
+		set {Mined.Hit.Top::*} to sorted {Rawr.Hit::*} from highest to lowest with output "&7@index &8» &e@value Arrows Hit"
+		set {h1} to 1
+		set {h2} to 2
+		set {h3} to 3
+		set {h4} to 4
+		set {h5} to 5
+		set {k1} to "%{Mined.Hit.Top::%{h1}%}%"
+		replace all ".0" in {k1} with ""
+		set {k2} to "%{Mined.Hit.Top::%{h2}%}%"
+		replace all ".0" in {k2} with ""
+		set {k3} to "%{Mined.Hit.Top::%{h3}%}%"
+		replace all ".0" in {k3} with ""
+		set {k4} to "%{Mined.Hit.Top::%{h4}%}%"
+		replace all ".0" in {k4} with ""
+		set {k5} to "%{Mined.Hit.Top::%{h5}%}%"
+		replace all ".0" in {k5} with ""
+		wait 3 seconds
+		set {Mined.Kill.Top::*} to sorted {Rawr.Kill::*} from highest to lowest with output "&7@index &8» &e@value Kills"
+		set {z1} to 1
+		set {z2} to 2
+		set {z3} to 3
+		set {z4} to 4
+		set {z5} to 5
+		set {y1} to "%{Mined.Kill.Top::%{z1}%}%"
+		replace all ".0" in {y1} with ""
+		set {y2} to "%{Mined.Kill.Top::%{z2}%}%"
+		replace all ".0" in {y2} with ""
+		set {y3} to "%{Mined.Kill.Top::%{z3}%}%"
+		replace all ".0" in {y3} with ""
+		set {y4} to "%{Mined.Kill.Top::%{z4}%}%"
+		replace all ".0" in {y4} with ""
+		set {y5} to "%{Mined.Kill.Top::%{z5}%}%"
+		replace all ".0" in {y5} with ""
+		wait 3 seconds
+		set {Mined.Death.Top::*} to sorted {Mined.Death::*} from highest to lowest with output "&7@index &8» &e@value Deaths"
+		set {g1} to 1
+		set {g2} to 2
+		set {g3} to 3
+		set {g4} to 4
+		set {g5} to 5
+		set {o1} to "%{Mined.Death.Top::%{g1}%}%"
+		replace all ".0" in {o1} with ""
+		set {o2} to "%{Mined.Death.Top::%{g2}%}%"
+		replace all ".0" in {o2} with ""
+		set {o3} to "%{Mined.Death.Top::%{g3}%}%"
+		replace all ".0" in {o3} with ""
+		set {o4} to "%{Mined.Death.Top::%{g4}%}%"
+		replace all ".0" in {o4} with ""
+		set {o5} to "%{Mined.Death.Top::%{g5}%}%"
+		replace all ".0" in {o5} with ""
+		wait 3 seconds
+		set {Mined.Win.Top::*} to sorted {Mined.Win::*} from highest to lowest with output "&7@index &8» &e@value Wins"
+		set {j1} to 1
+		set {j2} to 2
+		set {j3} to 3
+		set {j4} to 4
+		set {j5} to 5
+		set {p1} to "%{Mined.Win.Top::%{j1}%}%"
+		replace all ".0" in {p1} with ""
+		set {p2} to "%{Mined.Win.Top::%{j2}%}%"
+		replace all ".0" in {p2} with ""
+		set {p3} to "%{Mined.Win.Top::%{j3}%}%"
+		replace all ".0" in {p3} with ""
+		set {p4} to "%{Mined.Win.Top::%{j4}%}%"
+		replace all ".0" in {p4} with ""
+		set {p5} to "%{Mined.Win.Top::%{j5}%}%"
+		replace all ".0" in {p5} with ""
+		wait 3 seconds
+		set {Mined.Games.Top::*} to sorted {Mined.Games::*} from highest to lowest with output "&7@index &8» &e@value Games Played"
+		set {jj1} to 1
+		set {jj2} to 2
+		set {jj3} to 3
+		set {jj4} to 4
+		set {jj5} to 5
+		set {pp1} to "%{Mined.Games.Top::%{jj1}%}%"
+		replace all ".0" in {pp1} with ""
+		set {pp2} to "%{Mined.Games.Top::%{jj2}%}%"
+		replace all ".0" in {pp2} with ""
+		set {pp3} to "%{Mined.Games.Top::%{jj3}%}%"
+		replace all ".0" in {pp3} with ""
+		set {pp4} to "%{Mined.Games.Top::%{jj4}%}%"
+		replace all ".0" in {pp4} with ""
+		set {pp5} to "%{Mined.Games.Top::%{jj5}%}%"
+		replace all ".0" in {pp5} with ""
+		wait 3 seconds
+		set {Mined.Gapple.Top::*} to sorted {Mined.Gapple::*} from highest to lowest with output "&7@index &8» &e@value Gapples"
+		set {jjj1} to 1
+		set {jjj2} to 2
+		set {jjj3} to 3
+		set {jjj4} to 4
+		set {jjj5} to 5
+		set {ppp1} to "%{Mined.Gapple.Top::%{jjj1}%}%"
+		replace all ".0" in {ppp1} with ""
+		set {ppp2} to "%{Mined.Gapple.Top::%{jjj2}%}%"
+		replace all ".0" in {ppp2} with ""
+		set {ppp3} to "%{Mined.Gapple.Top::%{jjj3}%}%"
+		replace all ".0" in {ppp3} with ""
+		set {ppp4} to "%{Mined.Gapple.Top::%{jjj4}%}%"
+		replace all ".0" in {ppp4} with ""
+		set {ppp5} to "%{Mined.Gapple.Top::%{jjj5}%}%"
+		replace all ".0" in {ppp5} with ""
+		wait 3 seconds
+		set {Mined.Long.Top::*} to sorted {Mined.Long::*} from highest to lowest with output "&7@index &8» &e@value Blocks"
+		set {gg1} to 1
+		set {gg2} to 2
+		set {gg3} to 3
+		set {gg4} to 4
+		set {gg5} to 5
+		set {oo1} to "%{Mined.Long.Top::%{gg1}%}%"
+		replace all ".0" in {oo1} with ""
+		set {oo2} to "%{Mined.Long.Top::%{gg2}%}%"
+		replace all ".0" in {oo2} with ""
+		set {oo3} to "%{Mined.Long.Top::%{gg3}%}%"
+		replace all ".0" in {oo3} with ""
+		set {oo4} to "%{Mined.Long.Top::%{gg4}%}%"
+		replace all ".0" in {oo4} with ""
+		set {oo5} to "%{Mined.Long.Top::%{gg5}%}%"
+		replace all ".0" in {oo5} with ""
+		wait 1 tick
+		open chest with 1 row named "&7» &eTop Stats&7«" to player
+		format slot 0 of player with a diamond named "&7» &6Diamonds Mined &7«" with lore "&8» %{v1}% ||&8» %{v2}% ||&8» %{v3}% ||&8» %{v4}% ||&8» %{v5}% || ||&8» &7%command sender% &8» &e%{Mined.Diamond::%command sender%}%" to be unstealable
+		format slot 1 of player with a gold ingot named "&7» &6Gold Mined &7«" with lore "&8» %{s1}% ||&8» %{s2}% ||&8» %{s3}% ||&8» %{s4}% ||&8» %{s5}% || ||&8» &7%command sender% &8» &e%{Mined.Gold::%command sender%}%" to be unstealable
+		format slot 2 of player with a string named "&7» &6Arrows Shot &7«" with lore "&8» %{d1}% ||&8» %{d2}% ||&8» %{d3}% ||&8» %{d4}% ||&8» %{d5}% || ||&8» &7%command sender% &8» &e%{Mined.Arrow::%command sender%}%" to be unstealable
+		format slot 3 of player with a arrow named "&7» &6Arrows Hit &7«" with lore "&8» %{k1}% ||&8» %{k2}% ||&8» %{k3}% ||&8» %{k4}% ||&8» %{k5}% || ||&8» &7%command sender% &8» &e%{Mined.Hit::%command sender%}%" to be unstealable
+		format slot 4 of player with a diamond sword named "&7» &6Player Kills &7«" with lore "&8» %{y1}% ||&8» %{y2}% ||&8» %{y3}% ||&8» %{y4}% ||&8» %{y5}% || ||&8» &7%command sender% &8» &e%{Mined.Kill::%command sender%}%" to be unstealable
+		format slot 5 of player with a 397:1 named "&7» &6Total Deaths &7«" with lore "&8» %{o1}% ||&8» %{o2}% ||&8» %{o3}% ||&8» %{o4}% ||&8» %{o5}% || ||&8» &7%command sender% &8» &e%{Mined.Death::%command sender%}%" to be unstealable
+		format slot 6 of player with a nether star named "&7» &6Total Wins &7«" with lore "&8» %{p1}% ||&8» %{p2}% ||&8» %{p3}% ||&8» %{p4}% ||&8» %{p5}% || ||&8» &7%command sender% &8» &e%{Mined.Win::%command sender%}%" to be unstealable
+		format slot 7 of player with a paper named "&7» &6Games Played &7«" with lore "&8» %{pp1}% ||&8» %{pp2}% ||&8» %{pp3}% ||&8» %{pp4}% ||&8» %{pp5}% || ||&8» &7%command sender% &8» &e%{Mined.Games::%command sender%}%" to be unstealable
+		format slot 8 of player with a golden apple named "&7» &6Golden Apples Eaten &7«" with lore "&8» %{ppp1}% ||&8» %{ppp2}% ||&8» %{ppp3}% ||&8» %{ppp4}% ||&8» %{ppp5}% || ||&8» &7%command sender% &8» &e%{Mined.Gapple::%command sender%}%" to be unstealable
+
+command /statsall:
+	permission: skript.op
+	trigger:
+		loop all players:
+			make loop-player execute command "/stats"
+		message "{@P} &7Everyone has opened their stat page!"
+
+on death of player:
+	wait 2 ticks
+	set {Rawr.Diamond::%victim%} to {Mined.Diamond::%victim%}
+	set {Rawr.Gold::%victim%} to {Mined.Gold::%victim%}
+	set {Rawr.Arrow::%victim%} to {Mined.Arrow::%victim%}
+	set {Rawr.Hit::%victim%} to {Mined.Hit::%victim%}
+	set {Rawr.Kill::%victim%} to {Mined.Kill::%victim%}
+	set {Rawr.Death::%victim%} to {Mined.Death::%victim%}
+	set {Rawr.Games::%victim%} to {Mined.Games::%victim%}
+
+on mine of diamond ore:
+	if {stc} is true:
+		add 1 to {Mined.Diamond::%player%}
+on mine of gold ore:
+	if {stc} is true:
+		add 1 to {Mined.Gold::%player%}
+on projectile shoot:
+	if {stc} is true:
+		projectile is an arrow:
+			add 1 to {Mined.Arrow::%shooter%}
+on damage of player:
+	if {stc} is true:
+		attacker is a player:
+			victim is a player:
+				damage was caused by projectile:
+					projectile is an arrow:
+						add 1 to {Mined.Hit::%attacker%}
+on death of player:
+	if {stc} is true:
+		attacker is a player:
+			victim is a player:
+				add 1 to {Mined.Kill::%attacker%}
+on death of player:
+	if {stc} is true:
+		add 1 to {Mined.Death::%victim%}
+
+on consume of golden apple:
+	if {stc} is true:
+		add 1 to {Mined.Gapple::%player%}
+
+on damage of player:
+	if {stc} is true:
+		damage was caused by projectile:
+			if attacker is a player:
+				if victim is a player:
+					set {_lodist} to the rounded distance between the victim and the attacker
+					if {_lodist} is greater than {Mined.Long::%attacker%}:
+						set {Mined.Long::%attacker%} to 0
+						add {_lodist} to {Mined.Long::%attacker%}

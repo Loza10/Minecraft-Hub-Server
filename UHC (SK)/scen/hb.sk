@@ -1,0 +1,35 @@
+options:
+	P: &7[&cPhoenix&7]
+
+command /hb [<text>]:
+	permission: skript.op
+	trigger:
+		if arg 1 is "enable" or "on":
+			if {hb} is not set:
+				set {hb} to true
+				broadcast "{@P} &eHastey Boys &7is now &eenabled"
+			else:
+				{hb} is true:
+					message "{@P} &eHastey Boys is already enabled" to command sender
+		if arg 1 is "disable" or "off":
+			if {hb} is true:
+				delete {hb}
+				broadcast "{@P} &cHastey Boys &7is now &cdisabled"
+			else:
+				{hb} is not set:
+					message "{@P} &cHastey Boys is already disabled" to command sender
+
+command /hbe:
+	trigger:
+		if {hb} is true:
+			loop all items in player's inventory:
+				loop-item is axe or pickaxe or shovel
+				enchant loop-item with efficiency 3
+			message "{@P} &7You items have been enchanted" to command sender
+
+
+on inventory click:
+	if {hb} is true:
+		if clicked item is axe or pickaxe or shovel:
+			if clicked inventory is not player's inventory:
+				enchant clicked item with efficiency 3

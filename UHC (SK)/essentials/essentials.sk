@@ -1,0 +1,346 @@
+﻿options:
+	P: &7[&cPhoenix&7]
+
+command /gmc [<player>]:
+	permission: skript.op
+	trigger:
+		if arg 1 is not set:
+			set player's gamemode to creative 
+			message "{@P} You have set your gamemode to&8: &eCreative"
+		if arg 1 is set:
+			set arg-1's gamemode to creative
+			message "{@P} &e%command sender% &7has set your gamemode to&8: &eCreative" to arg-1
+command /gms [<player>]:
+	permission: skript.op
+	trigger:
+		if arg 1 is not set:
+			set player's gamemode to survival
+			message "{@P} You have set your gamemode to&8: &eSurvival"
+		if arg 1 is set:
+			set arg-1's gamemode to survival
+			message "{@P} &e%command sender% &7has set your gamemode to&8: &eSurvival" to arg-1
+command /gmsp [<player>]:
+	permission: skript.op
+	trigger:
+		if arg 1 is not set:
+			set player's gamemode to spectator
+			message "{@P} You have set your gamemode to&8: &eSpectator"
+		if arg 1 is set:
+			set arg-1's gamemode to spectator
+			message "{@P} &e%command sender% &7has set your gamemode to&8: &eSpectator" to arg 1
+command /gma [<player>]:
+	permission: skript.op
+	trigger:
+		if arg 1 is not set:
+			set player's gamemode to adventure
+			message "{@P} You have set your gamemode to&8: &eAdventure"
+		if arg 1 is set:
+			set arg-1's gamemode to adventure
+			message "{@P} &e%command sender% &7has set your gamemode to&8: &eAdventure" to arg-1
+command /gamemode <int>:
+	permission: skript.op
+	trigger:
+		if arg 1 is set:
+			set {gmupdate} to arg 1
+			if {gmupdate} is 0:
+				set player's gamemode to survival
+				message "{@P} You have set your gamemode to&8: &eSurvival"
+			if {gmupdate} is 1:
+				set player's gamemode to Creative
+				message "{@P} You have set your gamemode to&8: &eCreative"
+			if {gmupdate} is 2:
+				set player's gamemode to adventure
+				message "{@P} You have set your gamemode to&8: &eAdventure"
+			if {gmupdate} is 3:
+				set player's gamemode to Spectator
+				message "{@P} You have set your gamemode to&8: &eSpectator"
+			if {gmupdate} is greater than 3:
+				message "{@P} There is no Gamemode greater than 3!"
+
+command /setspawn:
+	permission: skript.op
+	trigger:
+		set {_spx} to command sender's x-coordinate
+		set {_spy} to command sender's y-coordinate
+		set {_spz} to command sender's z-coordinate
+		set {_spworld} to command sender's world
+		set {spawnLoc} to (the location at {_spx}, {_spy}, {_spz} of the world {_spworld})
+		message "{@P} Spawn location set at &e%{_spx}%&8, &e%{_spy}%&8, &e%{_spz}%"
+
+on player respawn:
+	wait 1 tick
+	console command "/spawn %player%"
+
+command /spawn [<player>]:
+	permission: skript.op
+	trigger:
+		if arg 1 is not set:
+			teleport command sender to {spawnLoc}
+		if arg 1 is set:
+			teleport arg 1 to {spawnLoc}
+
+command /suicide:
+	permission: skript.op
+	trigger:
+		kill the command sender
+		message "{@P} You have killed yourself" to command sender
+
+command /warp [<text>] [<text>]:
+	permission: skript.op 
+	trigger:
+		if arg-1 is not set:
+			sender command "/warp list"
+			send "&7/warp <warp> <player>" 
+			send "&7/warp <add:del:list> <warp>"
+			command "/playsound random.pop %player% ~ ~ ~ 1 0.5 1"
+		else if arg-1 is "add" or "del" or "delete" or "set" or "remove" or "list":
+			if arg-1 is "add" or "set":
+				if arg-2 is set:
+					if {warps::%arg-2%} is set:
+						delete {warps::%arg-2%}
+					send "{@P} &7Added &e%arg-2%&7 to warps!" 
+					command "/playsound random.pop %player% ~ ~ ~ 1 0.5 1"
+					set {warps::%arg-2%} to location of (block at (sender))
+				else:
+					send "{@P} &7You need to specify a name for the warp!" 
+					command "/playsound random.break %sender% ~ ~ ~ 1 0.5 1"
+			else if arg-1 is "del" or "delete" or "remove":
+				if arg-2 is set:
+					if {warps::%arg-2%} is not set:
+						send "{@P} &7That warp is not set!" 
+						command "/playsound random.break %sender% ~ ~ ~ 1 0.5 1"
+						stop
+					send "{@P} &7Deleted &e%arg-2%&7 from warps!" 
+					command "/playsound random.pop %player% ~ ~ ~ 1 0.5 1"
+					delete {warps::%arg-2%}
+				else:
+					send "{@P} &7You need to specify what warp to delete!" 
+					command "/playsound random.break %sender% ~ ~ ~ 1 0.5 1"
+			else if arg-1 is "list":
+				loop {warps::*}:
+					"%loop-index%" does not contain "smcap" or "smteam" or "smauction"
+					add loop-index to {_warps::*}
+				send "{@P} &7Warps List:" 
+				send "&e%{_warps::*}%" 
+				command "/playsound random.pop %player% ~ ~ ~ 1 0.5 1"
+		else:
+			if arg-2 is set:
+				set {_player} to (arg-2 parsed as offlineplayer)
+				teleport {_player} to {warps::%arg-1%}
+			else:
+				if arg-2 is not set:
+					teleport command sender to {warps::%arg-1%}
+command /xp [<int>] [<player>]:
+	permission: skript.op
+	aliases: /setlevel
+	trigger:
+		if arg 1 is not set:
+			message "{@P} &7Correct Usage:"
+			message "{@P} &e/xp <level> <player(leave blank for everyone)>"
+		if arg 1 is set:
+			if arg 2 is not set:
+				set level of all players to arg-1
+				set level progress of all players to 0
+				message "{@P} You set everyone's level to &e%arg-1%"
+		if arg 1 is set:
+			if arg 2 is set:
+				set level of arg-2 to arg-1
+				set level progress of arg-2 to 0
+				message "{@P} You set %arg-2%'s level to &e%arg-1%"
+command /giveall [<item>] [<integer>]:
+	permission: skript.op
+	trigger:
+		if arg 1 is not set:
+			if arg 2 is not set:
+				message "{@P} Correct Usage:"
+				message "{@P} &e/giveall <item> <amount>"
+		if arg 1 is set:
+			if arg 2 is set:
+				if arg-2 is more than 1:
+					set {_amt} to arg-2
+				else:
+					set {_amt} to 1
+				loop all players:
+					loop {_amt} times:
+						if loop-player has space for (1 of (arg-1)):
+							give loop-player (1 of (arg-1))
+						else:
+							drop (1 of (arg-1)) at (location 0.5 above loop-player)
+				broadcast "{@P} &e%command sender% &7gave all players &e%{_amt}% %arg-1%'s"
+
+command /give [<player>] [<item>] [<integer>]:
+	permission: skript.op
+	trigger:
+		if arg 1 is not set:
+			if arg 2 is not set:
+				if arg 3 is not set:
+					message "{@P} Correct Usage:"
+					message "{@P} &e/give <player> <item> <amount>"
+		if arg 1 is set:
+			if arg 2 is set:
+				if arg 3 is set:
+					if arg-3 is more than 1:
+						set {_amtt} to arg-3
+					else:
+						set {_amtt} to 1
+					loop {_amtt} times:
+						if arg-1 has space for (1 of (arg-2)):
+							give arg-1 (1 of (arg-2))
+						else:
+							drop (1 of (arg-2)) at (location 0.5 above arg-1)
+					message "{@P} &e%command sender% &7gave you &e%{_amtt}% %arg-2%'s" to arg-1
+					message "{@P} &7You gave &e%arg-1% %{_amtt}% %arg-2%'s" to command sender
+		if arg 1 is not set:
+			if arg 2 is set:
+				if arg 3 is set:
+					delete {_gp}
+					set {_gp} to command sender
+					if arg-3 is more than 1:
+						set {_amtt} to arg-3
+					else:
+						set {_amtt} to 1
+					loop {_amtt} times:
+						if {_gp} has space for (1 of (arg-2)):
+							give {_gp} (1 of (arg-2))
+						else:
+							drop (1 of (arg-2)) at (location 0.5 above {_gp})
+					message "{@P} &7You gave yourself &e%{_amtt}% %arg-2%'s" to command sender
+
+command /msg [<player>] [<text>]:
+	aliases: /message
+	trigger:
+		if arg 1 is not set:
+			if arg 2 is not set:
+				message "{@P} Correct Usage:"
+				message "{@P} &e/msg <player> <message>"
+		if arg 1 is set:
+			if arg 2 is set:
+				delete {lastreply::%command sender%}
+				delete {lastreply::%arg-1%}
+				if {staff::%arg-1%} is true:
+					message "&8[&eme &7» &8[&cStaff&8] &c%arg-1%&8] &7%arg-2%" to command sender
+				if {owner::%arg-1%} is true:
+					message "&8[&eme &7» &8[&4Owner&8] &4%arg-1%&8] &7%arg-2%" to command sender
+				if {owner::%arg-1%} is not set:
+					if {staff::%arg-1%} is not set:
+						message "&8[&eme &7» &e%arg-1%&8] &7%arg-2%" to command sender
+				if {staff::%command sender%} is true:
+					message "&8[&cStaff&8] &c%command sender% &7» &eme&8] &7%arg-2%" to arg-1
+				if {owner::%command sender%} is true:
+					message "&8[&4Owner&8] &4%command sender% &7» &eme&8] &7%arg-2%" to arg-1
+				if {owner::%command sender%} is not set:
+					if {staff::%command sender%} is not set:
+						message "&8[&e%command sender% &7» &eme&8] &7%arg-2%" to arg-1
+				set {lastreply::%command sender%} to arg 1
+				set {lastreply::%arg-1%} to command sender
+
+command /tell [<player>] [<text>]:
+	aliases: /w
+	trigger:
+		if arg 1 is not set:
+			if arg 2 is not set:
+				message "{@P} Correct Usage:"
+				message "{@P} &e/msg <player> <message>"
+		if arg 1 is set:
+			if arg 2 is set:
+				delete {lastreply::%command sender%}
+				delete {lastreply::%arg-1%}
+				if {staff::%arg-1%} is true:
+					message "&8[&eme &7» &8[&cStaff&8] &c%arg-1%&8] &7%arg-2%" to command sender
+				if {owner::%arg-1%} is true:
+					message "&8[&eme &7» &8[&4Owner&8] &4%arg-1%&8] &7%arg-2%" to command sender
+				if {owner::%arg-1%} is not set:
+					if {staff::%arg-1%} is not set:
+						message "&8[&eme &7» &e%arg-1%&8] &7%arg-2%" to command sender
+				if {staff::%command sender%} is true:
+					message "&8[&cStaff&8] &c%command sender% &7» &eme&8] &7%arg-2%" to arg-1
+				if {owner::%command sender%} is true:
+					message "&8[&4Owner&8] &4%command sender% &7» &eme&8] &7%arg-2%" to arg-1
+				if {owner::%command sender%} is not set:
+					if {staff::%command sender%} is not set:
+						message "&8[&e%command sender% &7» &eme&8] &7%arg-2%" to arg-1
+				set {lastreply::%command sender%} to arg 1
+				set {lastreply::%arg-1%} to command sender
+
+
+command /r [<text>]:
+	aliases: /reply
+	trigger:
+		if arg 1 is not set:
+			message "{@P} Correct Usage:"
+			message "{@P} &e/msg <message>"
+		if arg 1 is set:
+			if {lastreply::%command sender%} is set:
+				if {staff::%{lastreply::%command sender%}%} is true:
+					message "&8[&eme &7» &8[&cStaff&8] &c%{lastreply::%command sender%}%&8] &7%arg-1%" to command sender
+				if {owner::%{lastreply::%command sender%}%} is true:
+					message "&8[&eme &7» &8[&4Owner&8] &4%{lastreply::%command sender%}%&8] &7%arg-1%" to command sender
+				if {owner::%{lastreply::%command sender%}%} is not set:
+					if {staff::%{lastreply::%command sender%}%} is not set:
+						message "&8[&eme &7» &e%{lastreply::%command sender%}%&8] &7%arg-1%" to command sender
+				if {staff::%command sender%} is true:
+					message "&8[&cStaff&8] &c%command sender% &7» &eme&8] &7%arg-1%" to {lastreply::%command sender%}
+				if {owner::%command sender%} is true:
+					message "&8[&4Owner&8] &4%command sender% &7» &eme&8] &7%arg-1%" to {lastreply::%command sender%}
+				if {owner::%command sender%} is not set:
+					if {staff::%command sender%} is not set:
+						message "&8[&e%command sender% &7» &eme&8] &7%arg-1%" to {lastreply::%command sender%}
+			else:
+				if {lastreply::%command sender%} is not set:
+					message "{@P} You have no one to reply to!"
+
+command /list:
+	trigger:
+		delete {onlineo::*}
+		delete {onlinen::*}
+		delete {onlines::*}
+		wait 1 tick
+		loop all players:
+			if {staff::%loop-player%} is true:
+				add loop-player to {onlines::*}
+			if {owner::%loop-player%} is true:
+				add loop-player to {onlineo::*}
+			if {owner::%loop-player%} is not set:
+				if {staff::%loop-player%} is not set:
+					add loop-player to {onlinen::*}
+		message "{@P} Players Online:"
+		if {onlineo::*} is set:
+			message "{@P} Owners: &4%{onlineo::*}%"
+		if {onlines::*} is set:
+			message "{@P} Staff: &c%{onlines::*}%"
+		if {onlinen::*} is set:
+			message "{@P} Default: &8%{onlinen::*}%"
+			
+
+command /tppos [<player>] [<int>] [<int>] [<int>]:
+	permission: skript.op
+	trigger:
+		if arg 1 is not set:
+			if arg 2 is not set:
+				if arg 3 is not set:
+					if arg 4 is not set:
+						message "{@P} Correct Usage:"
+						message "{@P} &e/tppos <player(leave blank for yourself)> <x> <y> <z>"
+		if arg 1 is not set:
+			if arg 2 is set:
+				if arg 3 is set:
+					if arg 4 is set:
+						set {_tpx} to arg 2
+						set {_tpy} to arg 3
+						set {_tpz} to arg 4
+						set {_tpworld} to command sender's world
+						set {tppos} to (the location at {_tpx}, {_tpy}, {_tpz} of the world {_tpworld})
+						teleport command sender to {tppos}
+						message "{@P} You have been teleported to &e%{tppos}%"
+		if arg 1 is set:
+			if arg 2 is set:
+				if arg 3 is set:
+					if arg 4 is set:
+						set {_tpx} to arg 2
+						set {_tpy} to arg 3
+						set {_tpz} to arg 4
+						set {_tpworld} to arg-1's world
+						set {tppos} to (the location at {_tpx}, {_tpy}, {_tpz} of the world {_tpworld})
+						teleport arg-1 to {tppos}
+						message "{@P} You have been teleported to &e%{tppos}%" to arg-1
+

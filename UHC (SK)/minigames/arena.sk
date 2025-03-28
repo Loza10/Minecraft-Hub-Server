@@ -1,0 +1,328 @@
+options:
+	P : &7[&cPhoenix&7]
+
+function hotbarUpdate(p: player):
+	loop integers from 0 to 50:
+		set {hotbar::slot::%loop-int%::%{_p}%} to {_p}'s slot loop-int
+ 
+function hotbarRestore(p: player):
+	loop integers from 0 to 50:
+		set slot loop-int of {_p} to {hotbar::slot::%loop-int%::%{_p}%}
+
+command /pvparena [<text>]:
+	permission: skript.op
+	trigger:
+		if arg 1 is "enable":
+			if {pvparena} is not set:
+				set {pvparena} to true
+				broadcast "{@P} &7Arena: &eEnabled"
+			else:
+				if {pvparena} is true:
+					message "{@P} &7Arena: &eAlready Enabled"
+		if arg 1 is "disable":
+			if {pvparena} is true:
+				delete {pvparena}
+				message "{@P} &7Arena: &cDisabled"
+				delete {killstreak::*}
+				loop all players:
+					console command "/spawn %loop-player%"
+					reveal loop-player to all players
+					delete {inhb::%loop-player%}
+					clear the inventory of the loop-player
+					heal the loop-player by 10 hearts
+					set the loop-player's food level to 10
+					loop {PvP.Player.%loop-player%.BlockLocations::*}:
+						set (block at (loop-value-2)) to air
+					wait 2 ticks
+					set slot 0 of loop-player to iron sword of unbreaking 1 named "&8» &eArena &8«"
+					set slot 4 of loop-player to book named "&8» &eStats &8«"
+					set slot 7 of loop-player to golden apple named "&8» &eConfig &8«"
+					set slot 8 of loop-player to nether star named "&8» &eDonations &8«"
+			else:
+				if {pvparena} is not set:
+					message "{@P} &7Arena: &cAlready Disabled"
+command /areset:
+	trigger:
+		loop all players:
+			delete {invenp::%loop-player%}
+			delete {hmove.%loop-player%}
+command /ainfo:
+	trigger:
+		message "{@P} &7Arena Commands:"
+		message "{@P} &e/hotbar"
+		message "{@P} &e/aauto enable/disable &7- Auto join Arena when you die!"
+		message "{@P} &e/aleave &7- Leave the Arena!"
+
+command /a:
+	trigger:
+		if {pvparena} is true:
+			console command "/sca Arena 150 %command sender% 50 0 0"
+			wait 2 ticks
+			clear the inventory of the player
+			heal the player by 10 hearts
+			set the player's food level to 10
+			if {invenp::%player%} is not set:
+				equip player with an iron chestplate
+				equip player with an iron leggings
+				equip player with an iron helmet 
+				equip player with an iron boots
+				give player an iron sword
+				give player a bow
+				give player 1 water bucket
+				give player 1 diamond pickaxe of efficiency 1
+				give player 1 iron shovel of efficiency 2
+				give player 64 baked potatoes
+				give player 2 golden apples
+				give player 64 cobblestone
+				give player 1 fishing rod
+				set slot 17 of player's inventory to 64 arrows
+				set slot 16 of player's inventory to 64 arrows
+				set slot 15 of player's inventory to 1 iron axe of efficiency 2
+			else:
+				if {invenp::%player%} is true:
+					player command "/ainventory load"
+			wait 1 tick
+			message "{@P} &7Use &e/ainfo &7for all other useful &ecommands" to player
+		else:
+			{pvparena} is not set:
+				message "{@P} &7Arena is &cdisabled" to player
+command /aleave:
+	trigger:
+		if {hmove.%player%} is not set:
+			if {pvparena} is true:
+				player is in "Arena":
+					set {hmove.%player%} to true
+					message "{@P} &7Leaving arena, don't move" to player
+					wait 3 seconds
+					if {hmove.%player%} is true:
+						console command "/spawn %player%"
+						clear the inventory of the player
+						heal the player by 10 hearts
+						set the player's food level to 10
+						delete {hmove.%player%}
+						delete {killstreak::%player%}
+						wait 2 ticks
+						if {start.timer} is not set:
+							set slot 0 of player to iron sword of unbreaking 1 named "&8» &eArena &8«"
+							set slot 4 of player to book named "&8» &eStats &8«"
+							set slot 7 of player to golden apple named "&8» &eConfig &8«"
+							set slot 8 of player to nether star named "&8» &eDonations &8«"
+command /aauto [<text>]:
+	trigger:
+		if arg 1 is "enable":
+			if {autoarena::%player%} is not set:
+				set {autoarena::%player%} to true
+				message "{@P} &7Auto Join: &eEnabled"
+			else:
+				if {autoarena::%player%} is true:
+					message "{@P} &7Auto Join: &eAlready Enabled"
+		if arg 1 is "disable":
+			if {autoarena::%player%} is true:
+				delete {autoarena::%player%}
+				message "{@P} &7Auto Join: &cDisabled"
+			else:
+				if {autoarena::%player%} is not set:
+					message "{@P} &7Auto Join: &cAlready Disabled"
+command /hotbar [<text>]:
+	trigger:
+		if arg 1 is not set:
+			if {pvparena} is true:
+				if {inhb::%player%} is not set:
+					console command "/warp hot %player%"
+					clear the player's inventory
+					if {invenp::%player%} is not set:
+						equip player with an iron chestplate
+						equip player with an iron leggings
+						equip player with an iron helmet 
+						equip player with an iron boots
+						give player an iron sword
+						give player a bow
+						give player 1 water bucket
+						give player 1 diamond pickaxe of efficiency 1
+						give player 1 iron shovel of efficiency 2
+						give player 64 baked potatoes
+						give player 2 golden apples
+						give player 64 cobblestone
+						give player 1 fishing rod
+						set slot 17 of player's inventory to 64 arrows
+						set slot 16 of player's inventory to 64 arrows
+						set slot 15 of player's inventory to 1 iron axe of efficiency 2
+					else:
+						if {invenp::%player%} is true:
+							player command "/ainventory load"
+					message "{@P} &7You may now &ecustomize &7your &eHotbar!"
+					message "{@P} &7Once you're done do &e/hotbar save&7!"
+					message "{@P} &7You may leave by doing &e/hotbar cancel&7!"
+					set {inhb::%player%} to true
+					console command "/van %sender%"
+				else:
+					if {inhb::%player%} is true:
+						message "{@P} &7You are already in the Hotbar Customzier"
+				
+					
+		if arg 1 is "save":
+			if {pvparena} is true:
+				if {inhb::%player%} is true:
+					player command "/ainventory save"
+					clear the player's inventory
+					delete {inhb::%player%}
+					console command "/spawn %player%"
+					console command "/rea %player%"
+					set {invenp::%player%} to true
+					wait 2 ticks
+					set slot 0 of player to iron sword of unbreaking 1 named "&8» &eArena &8«"
+					set slot 4 of player to book named "&8» &eStats &8«"
+					set slot 7 of player to golden apple named "&8» &eConfig &8«"
+					set slot 8 of player to nether star named "&8» &eDonations &8«"
+				else:
+					if {inhb::%player%} is not set:
+						message "{@P} &7You are not in the &eHotbar Customzier"
+		if arg 1 is "cancel":
+			if {pvparena} is true:
+				if {inhb::%sender%} is true:
+					clear the player's inventory
+					delete {inhb::%sender%}
+					console command "/spawn %sender%"
+					message "{@P} &7You have left the &eHotbar Customizer"
+					console command "/rea %sender%"
+					wait 2 ticks
+					set slot 0 of player to iron sword of unbreaking 1 named "&8» &eArena &8«"
+					set slot 4 of player to book named "&8» &eStats &8«"
+					set slot 7 of player to golden apple named "&8» &eConfig &8«"
+					set slot 8 of player to nether star named "&8» &eDonations &8«"
+				else:
+					if {inhb::%sender%} is not set:
+						message "{@P} &7You are not in the &eHotbar Customzier"
+command /ainventory [<text>]:
+	trigger:
+		if arg-1 is "save":
+			if {pvparena} is true:
+				hotbarUpdate(player)
+				message "{@P} &7Your &eInventory &7has been &eSaved"
+		if arg-1 is "load":
+			if {pvparena} is true:
+				hotbarRestore(player)
+on place:
+	{pvparena} is true
+	event-world is "Arena"
+	if gamemode of player is survival:
+		if y-coordinate of event-block is more than 120:
+			cancel the event
+			message "{@P} You may not tower higher!"
+		else:
+			set {PvP.Player.HasPlacedBlocks::%player%} to true
+			add (location of event-block) to {PvP.Player.%player%.BlockLocations::*}
+			wait 1 tick
+			give player 1 cobblestone	
+
+on hunger bar change:
+	player is in "Arena":
+		cancel the event
+on command "/hotbar":
+	player is in "Arena":
+		cancel the event
+		message "{@P} &7You may &cNOT &7change your &cHotbar &7in the &cArena!"
+on command "/a":
+	player is in "Arena":
+		cancel the event
+		message "{@P} &7You are already in the &eArena"
+on command "/a":
+	if {inhb::%player%} is true:
+		cancel the event
+		message "{@P} &7You can't join arena during &eHotbar Customization!"
+
+on projectile hit:
+	if {pvparena} is true:
+		projectile is an arrow:
+			wait 2 ticks
+			delete the arrow
+on death of a player:
+	victim is in "Arena":
+		set the death message to "" 
+		clear drops
+		add 1 to {killstreak::%attacker%}
+		message "{@P} &7You have Killed &e%victim%! (%health of attacker*10%%%)" to attacker
+		message "{@P} &7You have been Killed by &e%attacker%! (%health of attacker*10%%%)" to victim
+		give attacker 1 golden apple
+		give attacker 32 arrows
+		apply regeneration 3 to attacker for 5 seconds
+		apply absorption to attacker for 30 seconds
+		message "{@P} You are on a killsteak of &e%{killstreak::%attacker%}%" to attacker
+		if {killstreak::%attacker%} is 5 or 10 or 15 or 20 or 25 or 30 or 35 or 40:
+			broadcast "{@P} &e%attacker% &7is on a killsteak of &e%{killstreak::%attacker%}%&7!"
+		if {killstreak::%victim%} is greater than 4:
+			broadcast "{@P} &e%attacker% &7has shut down &e%victim%'s &7killsteak of &e%{killstreak::%victim%}%&7!"
+		delete {killstreak::%victim%}
+		set {_TickTime} to now
+		loop {PvP.Player.%victim%.BlockLocations::*}:
+			set (block at (loop-value)) to air
+			if {_TickTime} was more than 0.05 seconds ago:
+				wait 1 tick
+				set {_TickTime} to now
+		delete {PvP.Player.%victim%.BlockLocations::*}
+		delete {PvP.Player.HasPlacedBlocks::%victim%}
+on disconnect:
+	if {pvparena} is true:
+		player is in "Arena"
+		kill the player
+on block break:
+	if {pvparena} is true:
+		event-block is not cobblestone or water:
+			player is in "Arena":
+				cancel the event
+on any movement:
+	if {hmove.%player%} is true:
+		if {pvparena} is true:
+			message "{@P} &7Leaving arena cancelled"
+			wait 1 tick
+			delete {hmove.%player%}
+on death of player:
+	if {pvparena} is true:
+		if {autoarena::%victim%} is true:
+			wait 5 ticks
+			player command "/a"
+on death:
+	if {pvparena} is true:
+		attacker is a player
+		victim is a player
+		if damage was caused by projectile:
+			loop items in attacker's inventory:
+				if loop-item is a bow of power 0:
+					enchant loop-item with power 1
+					send "{@P} &7Your Bow has been upgraded to &ePower 1" to the attacker
+				else if loop-item is a bow of power 1:
+					enchant loop-item with power 2
+					send "{@P} &7Your Bow has been upgraded to &ePower 2" to the attacker
+				else if loop-item is a bow of power 2:
+					enchant loop-item with power 3
+					send "{@P} &7Your Bow has been upgraded to &ePower 3" to the attacker
+				else if loop-item is a bow of power 3:
+					enchant loop-item with power 4
+					send "{@P} &7Your Bow has been upgraded to &ePower 4" to the attacker
+				else if loop-item is a bow of power 4:
+					enchant loop-item with power 5
+					send "{@P} &7Your Bow has been upgraded to &ePower 5" to the attacker
+				else if loop-item is a bow of power 5:
+					send "{@P} &7Your Bow is at it's maximum level!" to the attacker
+		else if damage was caused by attack:
+			loop items in attacker's inventory:
+				if loop-item is a sword of sharpness 0:
+					enchant loop-item with sharpness 1
+					send "{@P} &7Your Sword has been upgraded to &eSharpness 1" to the attacker
+				else if loop-item is a sword of sharpness 1:
+					enchant loop-item with sharpness 2
+					send "{@P} &7Your Sword has been upgraded to &eSharpness 2" to the attacker
+				else if loop-item is a sword of sharpness 2:
+					enchant loop-item with sharpness 3
+					send "{@P} &7Your Sword has been upgraded to &eSharpness 3" to the attacker
+				else if loop-item is a sword of sharpness 3:
+					enchant loop-item with sharpness 4
+					send "{@P} &7Your Sword has been upgraded to &eSharpness 4" to the attacker
+				else if loop-item is a sword of sharpness 4:
+					enchant loop-item with sharpness 5
+					send "{@P} &7Your Sword has been upgraded to &eSharpness 5" to the attacker
+				else if loop-item is a sword of sharpness 5:
+					send "{@P} &7Your Sword is at it's maximum level!" to the attacker
+on world change:
+	if {pvparena} is true:	
+		delete {killstreak::%player%}

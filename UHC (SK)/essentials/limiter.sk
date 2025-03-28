@@ -1,0 +1,20 @@
+﻿﻿on chunk generate:
+	set {_ChunkLocation} to location at {_XCoord}, 255, {_ZCoord} of the world {uhc::world}
+	set {_ChunkCorner1} to location at block at 15, 256, 15 in event-chunk
+	set {_ChunkCorner2} to location at block at 0, 0, 0 in event-chunk
+	loop all blocks within {_ChunkCorner1} to {_ChunkCorner2}:
+		if loop-block is a diamond ore:
+			random integer between 0 and 100 is between 88 and 100
+			loop all blocks in radius 3 of loop-block-1:
+				if loop-block-2 is a diamond ore:
+					set loop-block-2 to stone
+		else if loop-block is a gold ore:
+			random integer between 0 and 100 is between 96 and 100
+			loop all blocks in radius 3 of loop-block-1:
+				if loop-block-2 is a gold ore:
+					set loop-block-2 to stone
+		else if loop-block is a redstone ore:
+			random integer between 0 and 100 is between 97 and 100
+			loop all blocks in radius 3 of loop-block-1:
+				if loop-block-2 is a redstone ore:
+					set loop-block-2 to stone

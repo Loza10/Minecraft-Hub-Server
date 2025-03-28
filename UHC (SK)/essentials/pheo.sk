@@ -1,0 +1,1111 @@
+options:
+	P: &7[&cPhoenix&7]
+
+command /uhcstart [<int>] [<int>]:
+	permission: skript.host
+	trigger:
+		if arg 1 is set:
+			if arg 2 is set:
+				player command "/clearchat"
+				delete {phoepvp}
+				delete {rem1}
+				delete {rem2}
+				delete {mu1}
+				delete {mu2}
+				delete {mu3}
+				console command "/mudig enable"
+				console command "/autobreak disable"
+				broadcast "{@P} &7The Game will be &eStarting &7in &e25 seconds!"
+				console command "/timer 25 &eGame Starting &7»&c"
+				wait 5 seconds
+				broadcast "{@P} &7This Game is being &eHosted &7by &e%{game::host}%"
+				console command "/scoreboard teams add deathp"
+				wait 1 tick
+				console command "/scoreboard teams option deathp color dark_gray"
+				wait 1 tick
+				console command "/italic deathp"
+				wait 1 tick
+				console command "/strikethrough deathp"
+				wait 3 seconds
+				broadcast "{@P} &7If you have any questions use &e/uhc &7or &e/scen &7before using helpop!"
+				wait 3 seconds
+				broadcast "{@P} &7If you have questions about the UBL rules do &e/ublrules"
+				wait 3 seconds
+				broadcast "{@P} &eSpamming &7or &ebeing rude &7to other players will result in a &emute!"
+				wait 3 seconds
+				broadcast "{@P} &7Also Remember that it's a Game, Have Fun!"
+				wait 5 seconds
+				console command "/ci *"
+				console command "/heal *"
+				console command "/feed *"
+				player command "/time set day"
+				loop all players:
+					give 2 steak to loop-player
+					console command "/title %loop-player% reset"
+				wait 1 second
+				loop all players:
+					console command "/title %loop-player% reset"
+					message "{@P} &7Starting in: &e3" to loop-player
+					console command "/title %loop-player% subtitle &7Starting in"
+					console command "/title %loop-player% title &e3"
+					player command "/playsound random.pop %loop-player% ~ ~ ~ 10 1 1"
+				wait 1 second
+				loop all players:
+					console command "/title %loop-player% reset"
+					message "{@P} &7Starting in: &e2" to loop-player
+					console command "/title %loop-player% subtitle &7Starting in"
+					console command "/title %loop-player% title &e2"
+					player command "/playsound random.pop %loop-player% ~ ~ ~ 10 1 1"
+				wait 1 second
+				loop all players:
+					console command "/title %loop-player% reset"
+					message "{@P} &7Starting in: &e1" to loop-player
+					console command "/title %loop-player% subtitle &7Starting in"
+					console command "/title %loop-player% title &e1"
+					player command "/playsound random.pop %loop-player% ~ ~ ~ 10 1 1"
+				wait 1 second
+				console command "/freeze"
+				loop all players:
+					console command "/title %loop-player% reset"
+					message "{@P} &7Starting in: &cGO" to loop-player
+					console command "/title %loop-player% title &aGO"
+					player command "/playsound random.orb %loop-player% ~ ~ ~ 10 1 1"
+					console command "/xp 0 %loop-player%"
+				wait 2 seconds
+				loop all players:
+					console command "/title %loop-player% reset"	
+				player command "/kb on"
+				wait 2 ticks
+				set {pvptime} to arg 1*60
+				wait 1 tick
+				set {mutime} to arg 2*60
+				wait 1 tick
+				set {start.timer} to true
+				set {pvpstart} to true
+				set {mustart} to true
+				console command "/timer cancel"
+				console command "/timer 30 &eFinal Heal &7»&c"
+				broadcast "&8--------------------------"
+				broadcast "{@P} &ePvP &7is in &e%{pvptime}/60% &7minutes"
+				broadcast "{@P} &eMeetup &7is in &e%{mutime}/60% &7minutes"
+				broadcast "{@P} &eFinal Heal &7is in &e30 seconds"
+				broadcast "&8--------------------------"
+				broadcast "{@P} &e/uhc &7for more info about the game!"
+				broadcast "{@P} &e/scen &7for the list of scenarios!"
+				wait 27 seconds
+				loop all players:
+					console command "/playsound random.pop %loop-player% ~ ~ ~ 10 1 1"
+					message "{@P} &7Final Heal: &e3" to loop-player
+				wait 1 second
+				loop all players:
+					console command "/playsound random.pop %loop-player% ~ ~ ~ 10 1 1"
+					message "{@P} &7Final Heal: &e2" to loop-player
+				wait 1 second
+				loop all players:
+					console command "/playsound random.pop %loop-player% ~ ~ ~ 10 1 1"
+					message "{@P} &7Final Heal: &e1" to loop-player
+				wait 1 second
+				player command "/heal *"
+				loop all players:
+					console command "/playsound random.orb %loop-player% ~ ~ ~ 10 1 1"
+					message "{@P} &cFinal Heal &7has been given &cDO NOT &7ask for another one" to loop-player
+				wait 5 ticks
+				console command "/mobs on"
+				console command "/chat on"
+				console command "/timer cancel"
+				console command "/timer %{pvptime}% &ePvP &7»&c"
+				player command "/statchecker enable"
+				if {eggs} is true:
+					loop all players:
+						give loop-player 16 eggs
+				if {scen.pve} is true:
+					console command "/bestpve start"
+				if {scen.swap} is true:
+					console command "/playerswap enable"
+				if {scen.assault} is true:
+					console command "/ab set"
+				if {scen.gen} is true:
+					console command "/genie start"
+				loop all players:
+					if {spec::%loop-player%} is not set:
+						loop-player is not command sender:
+							player command "/gameplay add %loop-player%"
+		else:
+			arg 1 is not set:
+				arg 2 is not set:
+					message "{@P} &7Correct Usage: &c/uhcstart <pvptime> <mutime(doesn't include pvp time on it)>" to player
+
+on death of player:
+	if {start.timer} is true:
+		console command "/team kick %victim%"
+		wait 2 ticks
+		console command "/scoreboard teams join deathp %victim%"
+		console command "/team removeempty"
+		wait 2 ticks
+		if (size of {Teams::*}) is 1:
+			loop {Teams::*}:
+				if {TeamColor::%loop-value%::Reference} is set:
+					set {_saveteammembers} to "%{Team.%loop-value%::*}%"
+					broadcast "&8&m-----------------------------"
+					broadcast "{@P} &7Congratulations:"
+					broadcast ""
+					broadcast "%{TeamColor::%loop-value%::Reference}%%{_saveteammembers}%"
+					broadcast ""
+					broadcast "{@P} &7On Winning &e%{game::host}%'s &7UHC"
+					broadcast "&8&m-----------------------------"
+					console command "/statchecker disable"
+
+command /playersolos:
+	permission: skript.op
+	trigger:
+		loop all players:
+			if {spec::%loop-player%} is not set:
+				if {Teams.InTeam::%loop-player%} is not set:
+					console command "/team create"
+					console command "/team set %loop-player% %{findteamnumber}%"
+command /uhcstop:
+	permission: skript.host
+	trigger:
+		if {start.timer} is true:
+			delete {mutime}
+			delete {pvptime}
+			delete {start.timer}
+			delete {pvpstart}
+			delete {mustart}
+			delete {chatp::*}
+			broadcast "{@P} &7Timer cleared"
+			console command "/kb off"
+			console command "/simsmu enable"
+			console command "/specreset"
+			console command "/deathkick disable"
+			console command "/pvp on"
+			console command "/pregame reset"
+			console command "/statchecker disable"
+			console command "/mudig enable"
+			console command "/autobreak disable"
+			console command "/warning reset"
+			console command "/scoreboard teams remove deathp"
+			console command "/superheroes reset"
+			console command "/ab reset"
+			console command "/bestpve stop"
+			console command "/sh disable"
+			console command "/playerswap disable"
+			console command "/sbreset"
+			console command "/autowl reset"
+			console command "/genie reset"
+			delete {minned.gold::*}
+			delete {minned.dia::*}
+			delete {minned.iron::*}
+		else:
+			{start.timer} is not set:
+				message "{@P} &7There is no timer running" to player
+
+every second:
+	if {start.timer} is true:
+		if {mutime} is less than 1:
+			if {mustart} is true:
+				loop all players:
+					console command "/playsound mob.wither.death %loop-player% ~ ~ ~ 10 1 1"
+				broadcast "{@P} &7It's time for &eMeetup"
+				console command "/mobs disable"
+				broadcast "{@P} &7The border will start shrinking soon!"
+				if {scen.sh} is true:
+					console command "/sh enable"
+				console command "/mudig disable"
+				delete {mustart}
+every second:
+	if {start.timer} is true:
+		if {mutime} is 1800 or 1798:
+			if {mu1} is not set:
+				broadcast "&8&m-----------------------------"
+				broadcast "{@P} Meetup will be in 30 minutes!"
+				broadcast "&8&m-----------------------------"
+				set {mu1} to true
+				loop all players:
+					console command "/playsound random.orb %loop-player% ~ ~ ~ 10 1 1"
+every second:
+	if {start.timer} is true:
+		if {mutime} is 900 or 898:
+			if {mu2} is not set:
+				broadcast "&8&m-----------------------------"
+				broadcast "{@P} Meetup will be in 15 minutes!"
+				broadcast "&8&m-----------------------------"
+				set {mu2} to true
+				loop all players:
+					console command "/playsound random.orb %loop-player% ~ ~ ~ 10 1 1"
+every second:
+	if {start.timer} is true:
+		if {mutime} is 300 or 298:
+			if {mu3} is not set:
+				broadcast "&8&m-----------------------------"
+				broadcast "{@P} Meetup will be in 5 minutes!"
+				broadcast "{@P} Get ready to head to 0,0!"
+				broadcast "&8&m-----------------------------"
+				set {mu3} to true
+				loop all players:
+					console command "/playsound random.orb %loop-player% ~ ~ ~ 10 1 1"
+
+every second:
+	if {start.timer} is true:
+		if {pvptime} is less than 1:
+			if {pvpstart} is true:
+				loop all players:
+					console command "/playsound mob.wolf.howl %loop-player% ~ ~ ~ 10 1 1"
+				broadcast "&8-----------------------------"
+				console command "/pvp enable"
+				broadcast "{@P} Good luck and have fun"
+				broadcast "&8-----------------------------"
+				console command "/timer cancel"
+				wait 15 ticks
+				console command "/timer %{mutime}% &eMeetup &7»&c"
+				delete {pvpstart}
+every second:
+	if {start.timer} is true:
+		if {pvptime} is 300:
+			if {rem1} is not set:
+				broadcast "&8-----------------------------"
+				broadcast "{@P} PvP will be on in 5 minutes!"
+				broadcast "{@P} Helpop if you are being stalked!"
+				broadcast "&8-----------------------------"
+				set {rem1} to true
+				loop all players:
+					console command "/playsound random.orb %loop-player% ~ ~ ~ 10 1 1"
+every second:
+	if {start.timer} is true:
+		if {pvptime} is 60:
+			if {rem2} is not set:
+				broadcast "&8-----------------------------"
+				broadcast "{@P} PvP will be on in 1 minute"
+				broadcast "{@P} Helpop if you are being stalked!"
+				broadcast "&8-----------------------------"
+				set {rem2} to true
+				loop all players:
+					console command "/playsound random.orb %loop-player% ~ ~ ~ 10 1 1"
+
+every second:
+	if {start.timer} is true:
+		remove 1 from {pvptime}
+		remove 1 from {mutime}
+
+command /maxplayers [<integer>]:
+	permission: skript.host
+	trigger:
+		if arg-1 is not set:
+			message "{@P} &7Maximum players is &e%{maxplayers}%&7."
+		else:
+			delete {maxplayers}
+			wait 2 ticks
+			set {maxplayers} to arg 1
+			message "{@P} &7Maximum players set to &e%arg-1%&7."
+			console command "/myslots %{maxplayers}%"
+
+command /kb [<text>]:
+	permission: skript.host
+	trigger:
+		if arg 1 is "on" or "enable":
+			command "/scoreboard objectives add uhc playerKillCount &7[&cPhoenix&7] &8» &7&o%{game::host}%"
+			command "/scoreboard objectives setdisplay sidebar uhc"
+			wait 1 tick
+			delete {kbplayers}
+			wait 1 tick
+			loop all players:
+				add 1 to {kbplayers}
+			wait 1 tick
+			command "/scoreboard players add &c&l&oPlayers uhc %{kbplayers}%"
+			message "{@P} &7Killboard has been &eadded&7!" to command sender
+		if arg 1 is "off" or "disable":
+			command "/scoreboard objectives remove uhc"
+			message "{@P} &7Killboard has been &cremoved&7!" to command sender
+			delete {kbplayers}
+every 5 seconds:
+	if {start.timer} is true:
+		set {kbplayers} to 0
+		command "/scoreboard players reset &c&l&oPlayers uhc"
+		loop all players:
+			add 1 to {kbplayers}
+		command "/scoreboard players add &c&l&oPlayers uhc %{kbplayers}%"
+on death:
+    victim is a player:
+        attacker is a player:
+            stop trigger
+        else:
+            execute console command "scoreboard players add &e&l&oPvE uhc 1"
+
+on disconnect:
+	wait 1 tick
+	remove 1 from {kbplayers}
+	wait 1 tick
+	command "/scoreboard players set &c&l&oPlayers uhc %{kbplayers}%"
+on join:
+	wait 1 tick
+	add 1 to {kbplayers}
+	wait 1 tick
+	command "/scoreboard players set &c&l&oPlayers uhc %{kbplayers}%"
+
+command /pvp [<text>]:
+	permission: skript.host
+	trigger:
+		if arg 1 is "enable" or "on":
+			set {phoepvp} to true
+			broadcast "{@P} PvP: &eEnabled!"
+		if arg 1 is "disable" or "off":
+			delete {phoepvp}
+			broadcast "{@P} PvP: &cDisabled!"
+every 10 minutes:
+	if {start.timer} is true:
+		set {randombc} to random integer between 1 and 4
+		if {randombc} is 1:
+			broadcast "&cTip &8» &e/uhc &7for more info about the game!"
+			broadcast "&8» &e/scen &7for the list of scenarios!"
+		if {randombc} is 2:
+			broadcast "&cTip &8» &7Join our discord for updates and info!" 
+			broadcast "&ehttps://discord.gg/RPC3sqd"
+		if {randombc} is 3:
+			broadcast "&cTip &8» &7Follow our twitter to know when we host!"
+			broadcast "&8» &ehttps://twitter.com/PheonixUHC"
+		if {randombc} is 4:
+			broadcast "&cTip &8» &7Don't forget to thank the host!"
+		
+	
+command /h [<player>]:
+	aliases: /health
+	trigger:
+		if arg-1 is not set:
+			message "{@P} &7You are at &e%round(health of command sender*10)%&7%%"
+		if arg-1 is set:
+			message "{@P} &e%arg-1% &7is at &e%round(health of arg 1*10)%&7%%"
+
+
+command /gameupdate:
+	permission: skript.host
+	trigger:
+		set {gamenum} to 26
+		broadcast "{@P} %{gamenum}% games have been hosted!"
+		
+command /nether [<text>] [<text>]:
+	permission: skript.host
+	trigger:
+		if arg 1 is set:
+			if arg 2 is set:
+				message "{@P} &7Creating Nether World..."
+				wait 5 ticks
+				player command "/mw create %arg-1% Nether"
+				player command "/mw load %arg-1%"
+				wait 3 seconds
+				player command "/mw goto %arg-1%"
+				player command "/gamerule sendCommandFeedback false"
+				player command "/worldborder set 2000"
+				message "{@P} &7Linking Worlds &e%arg-1% &7» &e%arg-2%"
+				wait 1 second
+				console command "/mw link %arg-1% %arg-2%"
+				console command "/mw link %arg-2% %arg-1%"
+				message "{@P} &7Linking Complete!"
+		if arg 1 is not set:
+			if arg 2 is not set:
+				message "{@P} &7Correct Usage:"
+				message "{@P} &e/nether <netherworld> <uhcworld> &7» Put your world for ""uhcworld"""
+
+command /rank [<text>] [<offlineplayer>]:
+	permission: skript.host
+	trigger:
+		if arg 1 is not set:
+			message "{@P} &7Correct Usage:"
+			message "{@P} &e/rank owner <player>"	
+			message "{@P} &e/rank staff <player>"
+			message "{@P} &e/rank spec <player>"
+			message "{@P} &e/rank remove <player>"
+			message "{@P} &e/rank reset"
+		if arg 1 is "owner":
+			if arg 2 is set:
+				set {owner::%arg-2%} to true
+				message "{@P} &7You now have &4Owner &7prefix!" to arg 2
+		if arg 1 is "staff":
+			if arg 2 is set:
+				set {staff::%arg-2%} to true
+				message "{@P} &7You now have &cStaff &7prefix!" to arg 2
+		if arg 1 is "spec":
+			if arg 2 is set:
+				set {ses::%arg-2%} to true
+				message "{@P} &7You now have &cSpec &7prefix!" to arg 2
+		if arg 1 is "remove":
+			if arg 2 is set:
+				delete {staff::%arg-2%}
+				delete {owner::%arg-2%}
+				message "{@P} &7Your prefix has been &cremoved" to arg 2
+		if arg 1 is "reset":
+			delete {staff::*}
+			delete {owner::*}
+			delete {ses::*}
+			message "{@P} &7You have &cremoved everyone's &7prefix!" to command sender
+
+command /donationrank [<offlineplayer>]:
+	permission: skript.host
+	trigger:
+		if arg 1 is not set:
+			if {dono::%command sender%} is not set:
+				set {dono::%command sender%} to true
+				message "{@P} Donation recieved!" to command sender
+			else:
+				if {dono::%command sender%} is true:
+					delete {dono::%command sender%}
+					message "{@P} Icon removed!" to command sender
+		if arg 1 is set:
+			if {dono::%arg-1%} is not set:
+				set {dono::%arg-1%} to true
+				message "{@P} Donation recieved!" to arg-1
+				message "{@P} Icon given to &e%arg-1%" to command sender
+			else:
+				if {dono::%arg-1%} is true:
+					delete {dono::%arg-1%}
+					message "{@P} Icon removed!" to arg-1
+					message "{@P} Icon removed from &e%arg-1%" to command sender
+command /deathkick [<text>]:
+	permission: skript.host
+	trigger:
+		if arg 1 is "enable" or "on":
+			set {deathk} to true
+			broadcast "{@P} Deathkick: &eEnabled!"
+		if arg 1 is "disable" or "off":
+			delete {deathk}
+			broadcast "{@P} Deathkick: &cDisabled!"
+on death of player:
+	if {deathk} is true:
+		victim does not have permission "skript.op":
+			console command "/wl remove %victim%"
+			send "{@P} &7You have &e45 seconds &7to say your goodbyes!" to victim
+			send "{@P} &7Please be mindful when typing in chat." to victim
+			wait 45 seconds
+			kick victim due to "&7» Thanks for playing! «%nl% &7» Follow our Twitter &e@PheonixUHC &7for games and updates! «"
+		else:
+			victim has permission "skript.op":
+				message "{@P} &7Do &e/spec &7to enable spec mode!"
+
+command /muteall [<text>]:
+	permission: skript.host
+	trigger:
+		if arg 1 is "enable" or "on":
+			set {mute} to true
+			broadcast "{@P} &7Chat has been turned off!"
+			loop all players:
+				console command "/playsound random.orb %loop-player% ~ ~ ~ 10 1 1"
+		if arg 1 is "disable" or "off":
+			delete {mute}
+			broadcast "{@P} &7Chat has been turned on!"
+			loop all players:
+				console command "/playsound random.orb %loop-player% ~ ~ ~ 10 1 1"
+command /chat [<text>]:
+	permission: skript.host
+	trigger:
+		if arg 1 is "disable" or "off":
+			set {mute} to true
+			broadcast "{@P} &7Chat has been turned off!"
+		if arg 1 is "enable" or "on":
+			delete {mute}
+			broadcast "{@P} &7Chat has been turned on!"
+command /clearchat:
+	permission: skript.host
+	trigger:
+		loop 100 times:
+			broadcast ""
+		broadcast "{@P} &eChat has been cleared&7."
+
+command /pregame [<text>] [<text>] [<text>] [<text>] [<text>]:
+	permission: skript.op
+	trigger:
+		if arg 1 is not set:
+			if arg 2 is not set:
+				if arg 3 is not set:
+					if arg 4 is not set:
+						if arg 5 is not set:
+							message "{@P} &e/pregame <hostname> <teamsize> <gamelength> <matchpost> <time(UTC)>" to command sender
+							message "{@P} &e/pregame reset" to command sender
+		if arg 1 is set:
+			if arg 2 is set:
+				if arg 3 is set:
+					if arg 4 is set:
+						if arg 5 is set:
+							add 1 to {gamenum}
+							set {game::host} to arg 1
+							set {game::teamsize} to arg 2
+							set {game::length} to arg 3
+							set {game::post} to arg 4
+							set {game::time} to arg 5
+							console command "/autowl reset"
+							wait 1 tick
+							console command "/prepgame"
+							message "{@P} &7Host: &e%arg-1%&7, Teamsize: &e%arg-2%&7, Gamelength: &e%arg-3%&7, Matchpost: &e%arg-4%&7, Time: &e%arg-5% UTC" to command sender
+							execute console command "/motd remove 1"
+							execute console command "/motd add &eFollow us on Twitter!&7 -» &c@PheonixUHC &7«-%nl%&7» Matches: &e%{game::time}% UTC&7!"
+							tweet "Phoenix's %{gamenum}% %nl% » Host: %{game::host}% %nl% » Teamsize: %{game::teamsize}% %nl% » Open Time: %{game::time}% UTC %nl% » Matchpost: %{game::post}%"
+							player command "/autowl %arg-5%"
+		if arg 1 is "reset":
+			delete {game::host}
+			delete {game::teamsize}
+			delete {game::length}
+			delete {game::post}
+			delete {game::time}
+			message "{@P} &7Pregame Config has been reset!"
+			execute console command "/motd remove 1"
+			execute console command "/motd add &eFollow us on Twitter!&7 -» &c@PheonixUHC &7«-%nl%&7» Matches: &eNo Upcoming Matches&7!"
+on chat:
+	if {staff::%player%} is true:
+		cancel the event
+		wait 1 tick
+		broadcast "&7[&cStaff&7] &c%player% &f» %message%"
+	if {owner::%player%} is true:
+		cancel the event
+		wait 1 tick
+		broadcast "&7[&4Owner&7] &4%player% &f» %message%"
+	if {dono::%player%} is true:
+		cancel the event
+		wait 1 tick
+		if {Teams.InTeam::%player%} is not set:
+			broadcast "&7[&c$&7] &f%player% &8» &7%message%"
+		else:
+			if {Teams.InTeam::%player%} is set:
+				broadcast "&7[&c$&7] %{TeamColor::%{Teams.InTeam::%player%}%::ColorReference}%%player% &8» &7%message%"
+on chat:
+	if {owner::%player%} is not set:
+		if {staff::%player%} is not set:
+			if {dono::%player%} is not set:
+				if {mute} is not set:
+					if {chatp::%player%} is not set:
+						if {Teams.InTeam::%player%} is not set:
+							cancel the event
+							wait 1 tick
+							broadcast "&f%player% &8» &7%message%"
+							set {chatp::%player%} to true
+							wait 1 second
+							delete {chatp::%player%}
+						else:
+							if {Teams.InTeam::%player%} is set:
+								cancel the event
+								wait 1 tick
+								broadcast "%{TeamColor::%{Teams.InTeam::%player%}%::ColorReference}%%player% &8» &7%message%"
+								set {chatp::%player%} to true
+								wait 1 second
+								delete {chatp::%player%}
+								
+on chat:
+	if {owner::%player%} is not set:
+		if {staff::%player%} is not set:
+			if {mute} is true:
+				cancel the event
+				message "{@P} &7The chat is currently disabled!" to player
+on chat:
+	if {owner::%player%} is not set:
+		if {staff::%player%} is not set:
+			if {dono::%player%} is not set:
+				if {chatp::%player%} is true:
+					cancel the event
+					message "&cSpam Protection, wait 1 second!" to player			
+on damage:
+	victim is a player:
+		attacker is a player:
+			if {phoepvp} is not set:
+				cancel the event
+				message "{@P} PvP: &cDisabled!" to attacker
+on damage of player:
+	damage was caused by projectile:
+		if {phoepvp} is true:
+			wait 2 ticks
+			message "{@P} &e%victim% &7is on &e%health of victim*10%&7%%" to attacker
+
+on damage:
+	victim is in "Pheo":
+		cancel the event
+
+on walking on 126:
+	player is in "Pheo":
+		loop 3 times:
+			wait 2 ticks
+			push the player upwards at speed 0.4
+			wait 3 ticks
+			show 15 "Cloud" particles at location of player for player offset by 0.4, 0.7, 0.4
+on weather change to rain or thunder:
+	cancel event
+
+command /freeze:
+	permission: skript.host
+	trigger:
+		if {freeze} is true:
+			delete {freeze}
+			wait 1 tick
+			delete {freezed::*}
+			message "{@P} &7All players are now &eunfrozen&7!"
+			remove slowness from all players
+			remove mining fatigue from all players
+			remove jump boost from all players
+			remove resistance from all players
+			remove blindness from all players
+			remove invisibility from all players
+
+		else:
+			message "{@P} &7All players are now &efrozen&7!"
+			set {freeze} to true
+			loop all players:
+				loop-player has permission "skript.op":
+					apply resistance 10 to loop-player for 1 day
+					apply invisibility 10 to loop-player for 1 day
+				else:
+					apply slowness 100 to loop-player for 1 day
+					apply mining fatigue 10 to loop-player for 1 day
+					apply jump boost 200 to loop-player for 1 day
+					apply resistance 10 to loop-player for 1 day
+					apply blindness 10 to loop-player for 1 day
+					apply invisibility 10 to loop-player for 1 day
+					set {freezed::%loop-player%} to true
+
+on join:
+	{freeze} is not set
+	{freezed::%player%} is true
+	delete {Freezed::%player%}
+	remove slowness from the player
+	remove mining fatigue from the player
+	remove jump boost from the player
+	remove resistance from the player
+	remove blindness from the player
+	remove invisibility from the player
+
+on join:
+	{freeze} is true
+	{freezed::%player%} is not set
+	player does not have permission "skript.op"
+	apply slowness 100 to player for 1 day
+	apply mining fatigue 10 to player for 1 day
+	apply jump boost 200 to player for 1 day
+	apply resistance 10 to player for 1 day
+	apply blindness 10 to player for 1 day
+	apply invisibility 10 to player for 1 day
+	set {freezed::%player%} to true
+
+on teleport:
+	{freeze} is true
+	{freezed::%player%} is true
+	remove slowness from the player
+	remove mining fatigue from the player
+	remove jump boost from the player
+	remove resistance from the player
+	remove blindness from the player
+	remove invisibility from the player
+	wait 1 tick
+	apply slowness 100 to player for 1 day
+	apply mining fatigue 10 to player for 1 day
+	apply jump boost 200 to player for 1 day
+	apply resistance 10 to player for 1 day
+	apply blindness 10 to player for 1 day
+	apply invisibility 10 to player for 1 day
+
+command /ac [<text>]:
+	permission: skript.op
+	trigger:
+		if arg 1 is set:
+			loop all players:
+				loop-player has permission "skript.op":
+					message "&8[&4Admin Chat&8] &c%command sender%&f » &7%arg-1%" to loop-player
+
+command /warn [<player>]:
+	permission: skript.op
+	trigger:
+		if arg 1 is set:
+			open chest with 1 row named "{@P} &7Warn Reason" to player
+			format slot 0 of command sender with a diamond named "&7Stalking" with lore "&e» %arg-1% (%{warn.stalk::%arg-1%}%)" to close then run "sudo %player% warning %arg-1% stalking"
+			format slot 1 of command sender with a leather boots named "&7Running (Meetup)" with lore "&e» %arg-1% (%{warn.run::%arg-1%}%)" to close then run "sudo %player% warning %arg-1% run"
+			format slot 2 of command sender with a feather named "&7Camping (Meetup)" with lore "&e» %arg-1% (%{warn.camp::%arg-1%}%)" to close then run "sudo %player% warning %arg-1% camp"
+			format slot 3 of command sender with a wood pickaxe named "&7Surface (Meetup)" with lore "&e» %arg-1% (%{warn.surf::%arg-1%}%)" to close then run "sudo %player% warning %arg-1% surf"
+command /warning [<text>] [<text>]:
+	permission: skript.op
+	trigger:
+		if arg 1 is set:
+			if arg 2 is "stalking":
+				add 1 to {warn.stalk::%arg-1%}
+				broadcast "&c%arg-1% has been Warned by %command sender% for: Stalking (Offense: %{warn.stalk::%arg-1%}%)"
+		if arg 1 is set:
+			if arg 2 is "run":
+				add 1 to {warn.run::%arg-1%}
+				broadcast "&c%arg-1% has been Warned by %command sender% for: Running from Meetup (Offense: %{warn.run::%arg-1%}%)"
+		if arg 1 is set:
+			if arg 2 is "camp":
+				add 1 to {warn.camp::%arg-1%}
+				broadcast "&c%arg-1% has been Warned by %command sender% for: Camping/Stalling Meetup (Offense: %{warn.camp::%arg-1%}%)"
+		if arg 1 is set:
+			if arg 2 is "surf":
+				add 1 to {warn.surf::%arg-1%}
+				broadcast "&c%arg-1% has been Warned by %command sender% for: Head to Surface (Offense: %{warn.surf::%arg-1%}%)"
+		if arg 1 is "reset":
+			delete {warn.stalk::*}
+			delete {warn.run::*}
+			delete {warn.camp::*}
+			delete {warn.surf::*}
+			message "{@P} &eWarning's &7list &eReset"
+command /autobreak [<text>]:
+	trigger:
+		if arg 1 is "enable":
+			if {abreak} is not set:
+				set {abreak} to true
+				broadcast "{@P} &eBlocks &7now &edecay &7when placed"
+			else:
+				if {abreak} is true:
+					message "{@P} &cBlock already decay" to command sender
+		if arg 1 is "disable":
+			if {abreak} is true:
+				delete {abreak}
+				broadcast "{@P} &eBlocks &7no longer &edecay &7when placed"
+			else:
+				if {abreak} is not set:
+					message "{@P} &cBlocks already don't decay" to command sender
+		if arg 1 is not set:
+			message "{@P} &7Correct Usage: &e/autobreak enable/disable" to command sender
+on block place:
+	if {abreak} is true:
+		wait 2 seconds
+		set {_block} to targeted block
+		loop 10 times:
+			show block break stage loop-number at {_block}
+			wait 20 ticks
+		break {_block}
+		loop all players in radius 5 of event-block:
+			console command "/playsound dig.stone %loop-player% ~ ~ ~ 10 1 1"
+command /sb [<int>] [<int>]:
+	permission: skript.op
+	trigger:
+		if arg 1 is set:
+			if arg 2 is set:
+				if {sb} is not set:
+					set {sb} to true
+					set {tblocks} to arg 1*60
+					set {rblocks} to arg 2*2
+					set {blockstart} to true
+					wait 5 ticks
+					player command "/worldborder set %{rblocks}% %{tblocks}%"
+					broadcast "{@P} &7The Border is now shrinking to &e%{rblocks}/2%x%{rblocks}/2% &7over &e%{tblocks}/60% minutes!"
+					player command "/timer %{tblocks}% &eBorder Shrink &7»&c"
+				else:
+					{sb} is true:
+						message "{@P} &7There is &ealready &7an &eongoing shrink" to command sender
+		if arg 1 is not set:
+			if arg 2 is not set:
+				message "{@P} &7Correct Usage: &e/sb [minutes] [radius]" to command sender
+command /sbreset:
+	permission: skript.op
+	trigger:
+		delete {blockstart}
+		delete {sb}
+		delete {tblocks}
+		delete {rblocks}
+		message "{@P} Border Shrink reset!"
+every second:
+	if {sb} is true:
+		if {start.timer} is true:
+			remove 1 from {tblocks}
+every second:
+	if {sb} is true:
+		if {tblocks} is less than 1:
+			broadcast "{@P} &7The &eborder &7is now &edone shrinking"
+			wait 8 ticks
+			delete {blockstart}
+			delete {sb}
+			loop all players:
+				console command "/playsound note.bass %loop-player% ~ ~ ~ 10 1 1"
+
+command /mudig [<text>]:
+	permission: skript.op
+	trigger:
+		if arg 1 is "enable":
+			if {mudig} is true:
+				delete {mudig}
+				message "{@P} &eDigging down &7at &eMeetup &7is now allowed" to command sender
+			else:
+				{mudig} is not set:
+					message "{@P} &eDigging down &7at Meetup is &ealready allowed" to command sender
+		if arg 1 is "disable":
+			if {mudig} is not set:
+				set {mudig} to true
+				message "{@P} &cDigging down &7at &cMeetup &7is no longer allowed" to command sender
+			else:
+				{mudig} is true:
+					message "{@P} &cDigging down &7at Meetup is &calready not allowed" to command sender
+on mine of grass or dirt or stone or sand:
+	if {mudig} is true:
+		loop blocks in radius 5 of event-block:
+			if loop-block's y-coordinate is equal to event-block's y-coordinate:
+				block below player is loop-block:
+					cancel the event
+					message "{@P} &7You can't dig down at Meetup!" to player
+
+command /mobs [<text>]:
+	permission: skript.op
+	trigger:
+		if arg-1 is "enable" or "on":
+			set {mob} to true
+			broadcast "{@P} &7Hostile Mobs now spawn"
+			loop all players:
+				console command "/playsound random.orb %loop-player% ~ ~ ~ 10 1 1"
+		if arg-1 is "disable" or "off":
+			set {mob} to false
+			message "{@P} &cHostile Mobs &7now &coff" to command sender
+			player command "/butcher 1000"
+on spawn of enderman:
+	if {mob} is false:
+		cancel the event
+on spawn of spider:
+	if {mob} is false:
+		cancel the event
+on spawn of creeper:
+	if {mob} is false:
+		cancel the event
+on spawn of skeleton:
+	if {mob} is false:
+		cancel the event
+on spawn of zombie:
+	if {mob} is false:
+		cancel the event
+on spawn of cavespider:
+	if {mob} is false:
+		cancel the event
+on spawn of witch:
+	if {mob} is false:
+		cancel the event
+on spawn:
+	if {mob} is false:
+		if event-entity is a slime:
+			cancel the event
+on spawn:
+	if {mob} is false:
+		if event-entity is a bat:
+			cancel the event
+command /ublrules:
+	trigger:
+		message "{@P} &7You must follow these rules to play UHC Reddit Games: &ehttps://goo.gl/mwwrvM"
+
+on death of player:
+	strike lightning effect at the victim
+	wait 3 ticks
+	force respawn victim
+
+on join:
+	if {joins::%player%} is not set:
+		add player to {join::*}
+		add 1 to {lists}
+		set {joins::%player%} to true
+
+command /playerjoin [<text>] [<offlineplayer>]:
+	permission: skript.op
+	trigger:
+		if arg 1 is "amount":
+			broadcast "{@P} &e%{lists}%&7 different players have joined &ePhoenix UHC&7!"
+		if arg 1 is "list":
+			message "&c%{join::*}%" to player
+		if arg 1 is "clear":
+			delete {join::*}
+			delete {lists}
+			delete {joins::*}
+			broadcast "{@P} &cDeleted &ftotal players"
+		if arg 1 is "remove":
+			if arg 2 is set:
+				delete {joins::%arg-2%}
+command /matchpost:
+	trigger:
+		message "{@P} &7You can view the matchpost here: &e%{game::post}%"
+command /twitter:
+	trigger:
+		message "{@P} &7You can check our Twitter here: &e@PheonixUHC"
+command /discord:
+	trigger:
+		message "{@P} &7You can join our public Discord here: &ehttps://discord.gg/RPC3sqd"
+command /staffapp:
+	trigger:
+		message "{@P} &7You can apply for Staff/Spec here: &ehttps://docs.google.com/forms/d/e/1FAIpQLSc9VQvpzyD4VyhbYFBvdYKhkVvr1mB7ORQtugdVsOmJZS2UmA/viewform"
+
+on player join:
+	if {start.timer} is not set:
+		wait 3 ticks
+		message "{@P} &7Welcome to &ePhoenix UHC&7!"
+		message "{@P} &e/a &7to join the arena!"
+		message "{@P} &e/uhc &7and &e/scen &7for more info!"
+		message "{@P} &7Enjoy your stay!"
+
+command /prepgame [<text>]:
+	permission: skript.op
+	trigger:
+		console command "/simsmu disable"
+		console command "/pvp on"
+		console command "/kb off"
+		console command "/mobs off"
+		console command "/deathkick disable"
+		console command "/mudig enable"
+		console command "/autobreak disable"
+		delete {chatp::*}
+		
+
+on command "/me":
+	player is not an op:
+		cancel the event
+on command "/minecraft:me":
+	cancel the event
+
+on command "/worldedit:/calc":
+	cancel the event
+	message "If you use this wrong it can crash the server ;-;" to command sender
+on command "/worldedit:/calculate":
+	cancel the event
+	message "If you use this wrong it can crash the server ;-;" to command sender
+on command "//eval":
+	cancel the event
+	message "If you use this wrong it can crash the server ;-;" to command sender
+on command "//evaluate":
+	cancel the event
+	message "If you use this wrong it can crash the server ;-;" to command sender
+on command "/worldedit:/eval":
+	cancel the event
+	message "If you use this wrong it can crash the server ;-;" to command sender
+on command "/worldedit:/evaluate":
+	cancel the event
+	message "If you use this wrong it can crash the server ;-;" to command sender
+on command "//solve":
+	cancel the event
+	message "If you use this wrong it can crash the server ;-;" to command sender
+on command "/worldedit:/solve":
+	cancel the event
+	message "If you use this wrong it can crash the server ;-;" to command sender
+on command "//calculate":
+	cancel the event
+	message "If you use this wrong it can crash the server ;-;" to command sender
+on command "//calc":
+	cancel the event
+	message "If you use this wrong it can crash the server ;-;" to command sender
+
+command /stone [<text>]:
+	trigger:
+		if arg 1 is "enable":
+			if {stone.%command sender%} is not set:
+				set {stone.%command sender%} to true
+				message "{@P} &71.8 Stone no longer drops cobblestone" to command sender
+			else:
+				if {stone.%command sender%} is true:
+					message "{@P} &e1.8 Blocks already don't drop Cobblestone" to command sender
+		if arg 1 is "disable":
+			if {stone.%command sender%} is true:
+				delete {stone.%command sender%}
+				message "{@P} &71.8 Stone now drops cobblestone" to command sender
+			else:
+				if {stone.%command sender%} is not set:
+					message "{@P} &e1.8 Blocks already drop Cobblestone" to command sender
+		if arg 1 is not set:
+			message "{@P} &7Correct Usage:" to command sender
+			message "{@P} &8» &e/stone enable/disable &8» &7Toggle 1.8 blocks dropping" to command sender
+command /fullbright:
+	trigger:
+		if {fullbright::%command sender%} is not set:
+			set {fullbright::%command sender%} to true
+			apply night vision 10 to command sender for 999 days
+			message "{@P} &7Fullbright has been &eactivated&7!" to command sender
+		else:
+			if {fullbright::%command sender%} is true:
+				delete {fullbright::%command sender%}
+				remove night vision from the player
+				message "{@P} &7Fullbright has been &cdeactivated&7!" to command sender
+on join:
+	wait 2 ticks
+	if {fullbright::%player%} is true:
+		delete {fullbright::%player%}
+		remove night vision from the player
+		message "{@P} &7Fullbright has been &cdeactivated&7!" to player
+on mine of 1:5:		
+	if {stone.%player%} is not set:
+		cancel the event
+		set block to air
+		place 1 cobblestone at event-block
+on mine of 1:3:
+	if {stone.%player%} is not set:
+		cancel the event
+		set block to air
+		place 1 cobblestone at event-block
+on mine of 1:1:
+	if {stone.%player%} is not set:
+		cancel the event
+		set block to air
+		place 1 cobblestone at event-block
+on command "/bc" or "/broadcast":
+	cancel the event
+	message "{@P} &7USE /pheo INSTEAD PLEASE!!!!!!!!!!!!!!!!!!!!"
+
+command /cleartrees [<int>]:
+	permission: skript.op
+	trigger:
+		if arg 1 is not set:
+			message "{@P} Correct Usage:"
+			message "{@P} &e/cleartrees <radius>"
+		if arg 1 is set:
+			loop all blocks in radius arg 1:
+				if loop-block is log or leaves or 162 or 161:
+					set loop-block to air
+			message "{@P} Trees have been cleared!"
+
+
+command /van [<player>]:
+	permission: skript.host
+	trigger:
+		if arg 1 is not set:
+			loop all players:
+				loop-player does not have permission "skript.spec":
+					hide command sender from loop-players
+			message "{@P} You have been vanished!" to command sender
+		if arg 1 is set:
+			loop all players:
+				loop-player does not have permission "skript.spec":
+					hide arg-1 from loop-players
+			message "{@P} You have been vanished!" to arg-1
+command /rea [<player>]:
+	permission: skript.host
+	trigger:
+		if arg 1 is not set:
+			loop all players:
+				loop-player does not have permission "skript.spec":
+					reveal command sender to loop-players
+			message "{@P} You have been unvanished!" to command sender
+		if arg 1 is set:
+			loop all players:
+				loop-player does not have permission "skript.spec":
+					reveal arg-1 to loop-players
+			message "{@P} You have been unvanished!" to arg-1
+command /vanish [<player>]:
+	permission: skript.host
+	trigger:
+		if arg 1 is not set:
+			loop all players:
+				loop-player does not have permission "skript.spec":
+					hide command sender from loop-players
+			message "{@P} You have been vanished!" to command sender
+		if arg 1 is set:
+			loop all players:
+				loop-player does not have permission "skript.spec":
+					hide arg-1 from loop-players
+			message "{@P} You have been vanished!" to arg-1
+command /reappear [<player>]:
+	permission: skript.host
+	trigger:
+		if arg 1 is not set:
+			loop all players:
+				loop-player does not have permission "skript.spec":
+					reveal command sender to loop-players
+			message "{@P} You have been unvanished!" to command sender
+		if arg 1 is set:
+			loop all players:
+				loop-player does not have permission "skript.spec":
+					reveal arg-1 to loop-players
+			message "{@P} You have been unvanished!" to arg-1
+command /ms [<player>]:
+	trigger:
+		if arg 1 is not set:
+			message "{@P} Your Ping &8» &e%command sender's ping%"
+		if arg 1 is set:
+			message "{@P} %arg-1%'s Ping &8» &e%arg-1's ping%"
+command /ping [<player>]:
+	trigger:
+		if arg 1 is not set:
+			message "{@P} Your Ping &8» &e%command sender's ping%"
+		if arg 1 is set:
+			message "{@P} %arg-1%'s Ping &8» &e%arg-1's ping%"
+
+

@@ -1,0 +1,73 @@
+options:
+	P : &7[&6AtWar&7]&7
+
+command /rrtimer [<text>]:
+	permission: skript.op
+	trigger:
+		if arg 1 is "start":
+			player command "/butcher 10000"
+			player command "/butcher 10000"
+			player command "/butcher 10000"
+			player command "/time set day"
+			set {episode} to 0
+			broadcast "{@P} Game Starting in: &e3"
+			loop all players:
+				player command "/playsound note.pling %loop-player%"
+			wait 1 second
+			broadcast "{@P} Game Starting in: &c2"
+			loop all players:
+				player command "/playsound note.pling %loop-player%"
+			wait 1 second
+			broadcast "{@P} Game Starting in: &61"
+			loop all players:
+				player command "/playsound note.pling %loop-player%"
+			wait 1 second
+			loop all players:
+				player command "/playsound note.bass %loop-player%"
+				clear the inventory of the loop-player
+				heal the loop-player by 10 hearts
+				set the loop-player's food level to 10
+			broadcast "{@P} At War has Begun! Good Luck all!"
+			player command "/freeze"
+			add 1 to {episode}
+			set {timer.run} to true
+			broadcast "{@P} Episode &e%{episode}% &7has now started!"
+			console command "/timer 1200 &eEpisode %{episode}% &7»&c"
+			player command "/butcher 10000"
+		if arg 1 is "stop":
+			delete {timer.run}
+			set {episode} to 0
+			broadcast "{@P} Episode timer has been &cstopped"
+every 20 minutes:
+	if {timer.run} is true:
+		add 1 to {episode}
+		wait 1 tick
+		broadcast "{@P} Episode &c%{episode} - 1% has ended!"
+		broadcast "{@P} Episode &e%{episode}% has started!"
+		console command "/timer cancel"
+		console command "/timer 1200 &eEpisode %{episode}% &7»&c"
+		loop all players:
+			console command "/playsound random.pop %loop-player% ~ ~ ~ 10 1 1"
+		if {episode} is 2:
+			console command "/pvp on"
+		if {episode} is 6:
+			broadcast "{@P} Meetup is NOW!"
+			broadcast "{@P} Start heading to 0,0"
+command /awkb <text>:
+    permission: skript.host
+    trigger:
+        if arg 1 is "off":
+            make player execute "/scoreboard objectives remove Kills"
+        if arg 1 is "on":
+            set {_title} to subtext of "&7[&6At War&7]" from 1 to 32
+            make player execute "/scoreboard objectives add AWKills playerKillCount %{_title}%"
+            make player execute "/scoreboard objectives setdisplay sidebar AWKills"
+            broadcast "{@P} &e%{_title}% &7killboard &eadded"
+
+on death of player:
+	strike lightning effect at the victim
+
+command /eptimer:
+	trigger:
+		message "{@P} We are currently on episode &e%{episode}%"
+	

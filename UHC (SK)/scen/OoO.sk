@@ -1,0 +1,260 @@
+﻿options:
+	P: &7[&cPhoenix&7]
+
+command /splitteams [<text>] [<int>]:
+	permission: skript.op
+	trigger:
+		if arg 1 is "set":
+			if arg 2 is set:
+				loop 5 times:
+					delete {inmoon.%loop-value%::*}
+					delete {moonum.%loop-value%::*}
+				broadcast "{@P} Dividing Teams...."
+				set {_teamsplit} to 0
+				loop {Teams::*}:
+					set {splitt.%loop-value%::*} to {Team.%loop-value%::*}
+					set {_splitloop} to arg-2
+				loop {_splitloop} times:
+					add 1 to {_teamsplit}
+					set {moonam} to 0
+					delete {_moonman}
+					loop 4 times:
+						add 1 to {moonam}
+						set {_moonman} to (random element out of {splitt.%{_teamsplit}%::*})
+						set {inmoon.%{moonam}%::%{_moonman}%} to true
+						remove {_moonman} from {splitt.%{_teamsplit}%::*}
+						add {_moonman} to {moonum.%{moonam}%::*}
+				broadcast "{@P} Teams have been divided!"
+		if arg 1 is "list":
+			message "{@P} Player Worlds:"
+			message "{@P} IO &8» &e%{moonum.1::*}%"
+			message "{@P} Europa &8» &e%{moonum.2::*}%"
+			message "{@P} Callisto &8» &e%{moonum.3::*}%"
+			message "{@P} Ganymede &8» &e%{moonum.4::*}%"
+		if arg 1 is "apply":
+			loop all players:
+				if {inmoon.1::%loop-player%} is true:
+					apply fire resistance 1 to loop-player for 999 days
+					apply jump boost 2 to loop-player for 999 days
+				if {inmoon.2::%loop-player%} is true:
+					apply haste 3 to loop-player for 999 days
+					apply jump boost 2 to loop-player for 999 days
+					apply water breathing to loop-player for 999 days
+				if {inmoon.3::%loop-player%} is true:
+					apply jump boost 2 to loop-player for 999 days
+				if {inmoon.4::%loop-player%} is true:
+					apply haste 3 to loop-player for 999 days
+					apply jump boost 2 to loop-player for 999 days
+					apply water breathing to loop-player for 999 days
+		if arg 1 is "scatter":
+			if arg 2 is set:
+				set {_scaloop} to arg-2
+				if {_scaloop} is 1:
+					loop all players:
+						if {inmoon.1::%loop-player%} is true:
+							wait 3 ticks
+							console command "/sca I0 990 %loop-player% 75 0 0"
+					broadcast "{@P} Scatter for &eIO &7finished!"
+				if {_scaloop} is 2:
+					loop all players:
+						if {inmoon.2::%loop-player%} is true:
+							wait 3 ticks
+							console command "/sca Euro 990 %loop-player% 75 0 0"
+					broadcast "{@P} Scatter for &eEuropa &7finished!"
+				if {_scaloop} is 3:
+					loop all players:
+						if {inmoon.3::%loop-player%} is true:
+							wait 3 ticks
+							console command "/sca Call 990 %loop-player% 75 0 0"
+					broadcast "{@P} Scatter for &eCallisto &7finished!"
+				if {_scaloop} is 4:
+					loop all players:
+						if {inmoon.4::%loop-player%} is true:
+							wait 3 ticks
+							console command "/sca Gany 990 %loop-player% 75 0 0"
+					broadcast "{@P} Scatter for &eGanymede &7finished!"
+			
+
+command /replacestone [<int>]:
+	permission: skript.op
+	trigger:
+		loop all blocks in radius arg-2:
+			loop-block is stone:
+				loop-block's y-coordinate is below 53:
+					loop-block's y-coordinate is above 20:
+						set loop-block to water
+
+command /replaceice [<int>]:
+	permission: skript.op
+	trigger:
+		loop all blocks in radius arg-2:
+			if loop-block is dirt:
+				set loop-block to hardenedclay
+		loop all blocks in radius arg-2:
+			loop-block is stone or cobblestone or stone:5:
+				loop-block's y-coordinate is above 50:
+					set {_gen4} to a random integer between 0 and 100 
+					if {_gen4} is between 0 and 30:
+						set loop-block to ice
+					else:
+						if {_gen4} is between 31 and 70:
+							set loop-block to packedice
+						else:
+							if {_gen4} is between 71 and 100:
+								set loop-block to 95:3
+command /fastsmelting <text>:
+	permission: skript.op
+	trigger:
+		if arg-1 is "on" or "enable":
+			set {fastsmelt} to true
+			broadcast "{@P} &7Fast Smelting&8: &eEnabled"
+		if arg-1 is "off" or "disable":
+			delete {fastsmelt}
+			broadcast "{@P} &7Fast Smelting&8: &cDisabled"
+
+on fuel burn:
+	if {fastsmelt} is true:
+		if tag "CookTime" of nbt of event-block is 0:
+			add "{CookTime:180s}" to nbt of event-block
+		wait 1 tick
+		set {_burnTime} to tag "BurnTime" of nbt of event-block
+		set {_burnTime} to {_burnTime} / 10
+		add "{BurnTime:%{_burnTime}%s}" to nbt of event-block
+
+on smelt:
+	if {fastsmelt} is true:
+		add "{CookTime:180s}" to nbt of event-block
+
+
+
+command /bloodcycle [<text>]:
+	permission: skript.op
+	trigger:
+		if arg 1 is "start":
+			set {bloodtimer} to true
+			broadcast "{@P} Bloodcycle has begun!"
+			wait 2 ticks
+			console command "/bloodcycle cycle"
+		if arg 1 is "stop":
+			delete {bloodtimer}
+			broadcast "{@P} Bloodcycle has stopped!"
+		if arg 1 is "cycle":
+			set {bloodore} to random integer between 1 and 7
+			if {bloodore} is 1:
+				broadcast "{@P} Mining &8Iron &7will now damage you!"
+				loop all players:
+					console command "/playsound random.orb %loop-player% ~ ~ ~ 10 1 1"
+			if {bloodore} is 2:
+				broadcast "{@P} Mining &0Coal &7will now damage you!"
+				loop all players:
+					console command "/playsound random.orb %loop-player% ~ ~ ~ 10 1 1"
+			if {bloodore} is 3:
+				broadcast "{@P} Mining &bDiamond &7will now damage you!"
+				loop all players:
+					console command "/playsound random.orb %loop-player% ~ ~ ~ 10 1 1"
+			if {bloodore} is 4:
+				broadcast "{@P} Mining &6Gold &7will now damage you!"
+				loop all players:
+					console command "/playsound random.orb %loop-player% ~ ~ ~ 10 1 1"
+			if {bloodore} is 5:
+				broadcast "{@P} Mining &cRedstone &7will now damage you!"
+				loop all players:
+					console command "/playsound random.orb %loop-player% ~ ~ ~ 10 1 1"
+			if {bloodore} is 6:
+				broadcast "{@P} Mining &1Lapis &7will now damage you!"
+				loop all players:
+					console command "/playsound random.orb %loop-player% ~ ~ ~ 10 1 1"
+			if {bloodore} is 7:
+				broadcast "{@P} Mining &2Emerald &7will now damage you!"
+				loop all players:
+					console command "/playsound random.orb %loop-player% ~ ~ ~ 10 1 1"
+every 10 minutes:
+	if {bloodtimer} is true:
+		console command "/bloodcycle cycle"
+
+on mine of iron ore:
+	if {bloodore} is 1:
+		chance of 15%:
+			damage player by 0.5 hearts
+
+on mine of coal ore:
+	if {bloodore} is 2:
+		chance of 15%:
+			damage player by 0.5 hearts
+on mine of diamond ore:
+	if {bloodore} is 3:
+		chance of 75%:
+			damage player by 0.5 hearts
+on mine of gold ore:
+	if {bloodore} is 4:
+		chance of 50%:
+			damage player by 0.5 hearts
+on mine of redstone ore:
+	if {bloodore} is 5:
+		chance of 35%:
+			damage player by 0.5 hearts
+on mine of lapis ore:
+	if {bloodore} is 6:
+		chance of 30%:
+			damage player by 0.5 hearts
+on mine of emerald ore:
+	if {bloodore} is 7:
+		chance of 40%:
+			damage player by 0.5 hearts
+
+command /captain [<text>] [<text>]:
+	permission: skript.op
+	trigger:
+		if arg 1 is "reset":
+			delete {capos::*}
+			delete {choosing::*}
+			delete {iscap::*}
+			delete {ischosen::*}
+			message "{@P} Captains reset!"
+		if arg 1 is "list":
+			message "{@P} Captains:"
+			message "{@P} &e%{capos::*}%"
+		if arg 1 is "set":
+			if arg 2 is set:
+				set {iscap::%arg-2%} to true
+				add arg 2 to {capos::*}
+				broadcast "{@P} &e%arg-2% &7is now a captain!"
+				console command "/ct %arg-2%"
+		if arg 1 is not "set" or "reset" or "list":
+			if {choosing::%arg-1%} is not set:
+				set {choosing::%arg-1%} to true
+				broadcast "{@P} &e%arg-1% &7is now choosing!"
+				broadcast "{@P} &e/choose <player>"
+
+command /choose [<text>]:
+	trigger:
+		if arg 1 is set:
+			if {choosing::%command sender%} is true:
+				if {iscap::%arg-1%} is not set:
+					if {ischosen::%arg-1%} is not set:
+						console command "/team set %arg-1% %command sender%"
+						broadcast "{@P} &e%command sender% &7has chosen &e%arg-1%"
+						delete {choosing::%command sender%}
+						set {ischosen::%arg-1%} to true
+
+command /oooitems [<player>]:
+	permission: skript.op
+	trigger:
+		if arg 1 is not set:
+			loop all players:
+				give loop-player 48 oak logs
+				give loop-player 9 338
+				give loop-player 5 apples
+			broadcast "{@P} Items &7have been &egiven"
+		if arg 1 is set:
+			give arg-1 48 oak logs
+			give arg-1 9 338
+			give arg-1 5 apples
+			message "{@P} &7You have been &egiven &7your items"
+
+1: IO
+2: Europa
+3: Callisto
+4: Ganymede
+5: Amalthea (final tp)
+				

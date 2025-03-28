@@ -1,0 +1,85 @@
+﻿options:
+	P: &7[&cPhoenix&7]
+
+on join:
+	if {start.timer} is not set:
+		player is in "Pheo":
+			set slot 0 of player to iron sword of unbreaking 1 named "&8» &eArena &8«"
+			set slot 4 of player to book named "&8» &eStats &8«"
+			set slot 7 of player to golden apple named "&8» &eConfig &8«"
+			set slot 8 of player to nether star named "&8» &eDonations &8«"
+	if {start.timer} is true:
+		remove iron sword of unbreaking 1 named "&8» &eArena &8«" from player's inventory
+		remove book named "&8» &eStats &8«" from player's inventory
+		remove golden apple named "&8» &eConfig &8«" from player's inventory
+		remove nether star named "&8» &eDonations &8«" from player's inventory
+	if {start.timer} is not set:
+		wait 2 ticks
+		player is in "world":
+			heal the player
+			feed the player
+			clear the player's inventory
+			console command "/spawn %player%"
+			set slot 0 of player to iron sword of unbreaking 1 named "&8» &eArena &8«"
+			set slot 4 of player to book named "&8» &eStats &8«"
+			set slot 7 of player to golden apple named "&8» &eConfig &8«"
+			set slot 8 of player to nether star named "&8» &eDonations &8«"
+on drop:
+	if {start.timer} is not set:
+		player is in "Pheo":
+			cancel the event
+
+on inventory click:
+	if {start.timer} is not set:
+		player is in "Pheo":
+			player does not have permission "skript.op":
+				cancel the event
+
+on inventory drag:
+	if {start.timer} is not set:
+		player is in "Pheo":
+			player does not have permission "skript.op":
+				cancel the event
+
+on rightclick holding nether star:
+	if {start.timer} is not set:
+		player is in "Pheo":
+			cancel the event
+			message "&8» &ehttps://phoenixuhc.buycraft.net/ (Not required!)"
+on rightclick holding book:
+	if {start.timer} is not set:
+		player is in "Pheo":
+			cancel the event
+			make player execute command "/stats"
+
+on rightclick holding golden apple:
+	if {start.timer} is not set:
+		player is in "Pheo":
+			cancel the event
+			make player execute command "/uhc"
+
+on rightclick holding iron sword:
+	if {start.timer} is not set:
+		player is in "Pheo":
+			make player execute command "/a"
+on world change:
+	if {start.timer} is not set:
+		player does not have permission "skript.op":
+			wait 2 ticks
+			clear player's inventory
+			wait 2 ticks
+			if player is in "Pheo":
+				set slot 0 of player to iron sword of unbreaking 1 named "&8» &eArena &8«"
+				set slot 4 of player to book named "&8» &eStats &8«"
+				set slot 7 of player to golden apple named "&8» &eConfig &8«"
+				set slot 8 of player to nether star named "&8» &eDonations &8«"
+on consume of golden apple:
+	if {start.timer} is not set:
+		player is in "Pheo":
+			cancel the event
+on respawn:
+	if {start.timer} is not set:
+		set slot 0 of player to iron sword of unbreaking 1 named "&8» &eArena &8«"
+		set slot 4 of player to book named "&8» &eStats &8«"
+		set slot 7 of player to golden apple named "&8» &eConfig &8«"
+		set slot 8 of player to nether star named "&8» &eDonations &8«"

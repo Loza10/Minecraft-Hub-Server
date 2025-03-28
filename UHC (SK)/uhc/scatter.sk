@@ -1,0 +1,286 @@
+options:
+	P: &7[&cPhoenix&7]
+	SpecVariable: Spectator #ex: {Spectator::%command sender%}
+	MainColour: &e
+	SubColour: &7
+	ChunkTicks: 20
+	ScaTicks: 2
+
+command /sca [<world>] [<int>] [<text>] [<int>] [<int=0>] [<int=0>]:
+	aliases: /scatterall, /scatterteam, /scatterteams
+	permission: camscatter.scatter
+	trigger:
+		if arg-1 is not set:
+			send "{@P} {@MainColour}/sca &r<{@SubColour}world&r> <{@SubColour}radius&r> <{@SubColour}team&r:{@SubColour}*&r:{@SubColour}player&r> [{@SubColour}mindist&r] [{@SubColour}x&r] [{@SubColour}z&r]"
+			stop
+		if arg-2 is not set:
+			send "{@P} {@MainColour}/sca &r<{@SubColour}world&r> <{@SubColour}radius&r> <{@SubColour}team&r:{@SubColour}*&r:{@SubColour}player&r> [{@SubColour}mindist&r] [{@SubColour}x&r] [{@SubColour}z&r]"
+			stop
+		if arg-3 is not set:
+			send "{@P} {@MainColour}/sca &r<{@SubColour}world&r> <{@SubColour}radius&r> <{@SubColour}team&r:{@SubColour}*&r:{@SubColour}player&r> [{@SubColour}mindist&r] [{@SubColour}x&r] [{@SubColour}z&r]"
+			stop
+		set {_X} to arg-5
+		set {_Z} to arg-6
+		delete {uhcworld}
+		set {uhcworld} to arg-1
+		if arg-3 is "*" or "**" or "all" or "s" or "solo" or "solos":
+			console command "/ci *"
+			if command sender is console:
+				stop
+			set {_ToScatter::*} to (all players)
+			loop all players:
+				{{@SpecVariable}::%loop-player%} is true
+				remove loop-player from {_ToScatter::*}
+			set {_Size} to (size of {_ToScatter::*})
+			if arg-4 is set:
+				if arg-4 is equal to 0:
+					set {_Mindist} to (((arg-2 * 2) - 250)/{_Size})*3.5
+				else:
+					set {_Mindist} to arg-4
+			else:
+				set {_Mindist} to (((arg-2 * 2) - 250)/{_Size})*3.5
+			message "{@P} {@SubColour}Scattering {@MainColour}%{_Size}%{@SubColour} players. Radius: {@MainColour}%arg-2%{@SubColour} and MinDist: {@MainColour}%{_Mindist}%" to all ops		
+			loop ({_Size}) times:
+				loop 1000 times:
+					if (loop-number-2) is 1000:
+						message "{@P} {@SubColour}&oCouldn't scatter {@MainColour}&o%({_Size})-(loop-number-1)%&r&0/&r{@MainColour}&o%{_Size}%&r{@SubColour}! &oLower your minimum distance!" to all ops
+						stop
+					set {_Location.Good} to true
+					set {_Location.Sky} to (the location at (random integer between ({_X}-arg-2) and ({_X}+arg-2)), 255, (random integer between ({_Z}-arg-2) and ({_Z}+arg-2)) of the world (arg-1))
+					loop ((loop-number-1)-1) times:
+						(distance between {_Location.Sky} and {_GoodLocation.Sky::%loop-number-3%}) is less than ({_Mindist})
+						delete {_Location.Good}
+					if {_Location.Good} is true:
+						set {_Location.GroundLevel} to {_Location.Sky}
+						while (block at {_Location.GroundLevel}) is air:
+							if (y-coordinate of ({_Location.GroundLevel})) is less than 4:
+								delete {_Location.Good}
+								stop loop
+							set {_Location.GroundLevel} to (location 1 below ({_Location.GroundLevel}))
+						if {_Location.Good} is true:
+							if (block at {_Location.GroundLevel}) is lava, water or cactus:
+								delete {_Location.Good}
+							else:
+								set {_GoodLocation.Sky::%loop-number-1%} to ({_Location.Sky})
+								set {_GoodLocation.GroundLevel::%loop-number-1%} to (location 3 above {_Location.GroundLevel})
+								stop loop
+			broadcast "{@P} {@SubColour}Locations found, starting to load chunks!"
+			broadcast "{@P} {@SubColour}Please be patient while it loads chunks"
+			set {Scatter.DontUnloadChunks} to true
+			execute console command "/cinvis on"
+			wait 1 second
+			loop {_Size} times:
+				if command sender is not online:
+					broadcast "{@P} {@MainColour}Stopping Scatter! {@SubColour}Chunkloading player logged out."
+					stop   
+				teleport command sender to {_GoodLocation.GroundLevel::%loop-number%}
+				message "{@P} {@SubColour}Loading Chunkset {@SubColour}[{@MainColour}%loop-number%&0/{@MainColour}%{_Size}%{@SubColour}]"
+				show action bar from "{@P} {@SubColour}Loading Chunkset {@SubColour}[{@MainColour}%loop-number%&0/{@MainColour}%{_Size}%{@SubColour}]" to all players
+				console command "/ab all {@P} {@SubColour}Loading Chunkset {@SubColour}[{@MainColour}%loop-number%&0/{@MainColour}%{_Size}%{@SubColour}]"
+				wait 8 ticks
+			broadcast "{@P} {@MainColour}Locations loaded. {@SubColour}Now scattering."
+			loop {ToScatter::*}:
+				set {Scatter.Scattering::%loop-value%} to true
+			wait 2 second
+			set {_Scattered} to 0
+			loop {_ToScatter::*}:
+				add 1 to {_Scattered}
+				if (loop-value) is not online:
+					set {SchedueldScatter::%loop-value%} to ({_GoodLocation.GroundLevel::%{_Scattered}%})
+				else:
+					teleport loop-value to ({_GoodLocation.GroundLevel::%{_Scattered}%})
+				broadcast "{@P} {@SubColour}- {@MainColour}%loop-value%"
+				wait {@ScaTicks} ticks
+			broadcast "{@P} {@SubColour}Scatter has now {@MainColour}finished{@SubColour}!"
+			delete {Scatter.Scattering::*}
+			wait 2 second
+			execute console command "/cinvis off"
+			delete {Scatter.DontUnloadChunks}
+		else if arg-3 is "teams" or "t" or "team":
+			console command "/ci *"
+			if command sender is console:
+				stop
+			loop {Teams::*}:
+				{Team.%loop-value%::*} is set
+				increase {_Count} by 1
+				add {_Count} to {_TeamsToScatter::*}
+				set {_TeamScatter.%{_Count}%::*} to ({Team.%loop-value%::*})
+			loop all players:
+				{Teams.InTeam::%loop-player%} is not set
+				{{@SpecVariable}::%loop-player%} is not set
+				add loop-player to {_Solos::*}
+			set {_Size} to ((size of {Teams::*})+(size of {_Solos::*}))
+			if arg-4 is set:
+				if arg-4 is equal to 0:
+					set {_Mindist} to (((arg-2 * 2) - 250)/{_Size})*3.5
+				else:
+					set {_Mindist} to arg-4
+			else:
+				set {_Mindist} to (((arg-2 * 2) - 250)/{_Size})*3.5
+			message "{@P} {@SubColour}Scattering {@MainColour}%size of {Teams::*}%{@SubColour} teams & {@MainColour}%size of {_Solos::*}%{@SubColour} solos. Radius: {@MainColour}%arg-2%{@SubColour} & MinDist: {@MainColour}%{_Mindist}%" to all ops
+			loop ({_Size}) times:
+				loop 1000 times:
+					if (loop-number-2) is 1000:
+						message "{@P} {@SubColour}&oCouldn't scatter {@MainColour}&o%({_Size})-(loop-number-1)%&r&0/&r{@MainColour}&o%{_Size}%&r{@SubColour}! &oLower your minimum distance!" to all ops
+						stop
+					set {_Location.Good} to true
+					set {_Location.Sky} to (the location at (random integer between ({_X}-arg-2) and ({_X}+arg-2)), 255, (random integer between ({_Z}-arg-2) and ({_Z}+arg-2)) of the world (arg-1))
+					loop ((loop-number-1)-1) times:
+						(distance between {_Location.Sky} and {_GoodLocation.Sky::%loop-number-3%}) is less than ({_Mindist})
+						delete {_Location.Good}
+					if {_Location.Good} is true:
+						set {_Location.GroundLevel} to {_Location.Sky}
+						while (block at {_Location.GroundLevel}) is air:
+							if (y-coordinate of ({_Location.GroundLevel})) is less than 4:
+								delete {_Location.Good}
+								stop loop
+							set {_Location.GroundLevel} to (location 1 below ({_Location.GroundLevel}))
+						if {_Location.Good} is true:
+							if (block at {_Location.GroundLevel}) is lava, water or cactus:
+								delete {_Location.Good}
+							else:
+								set {_GoodLocation.Sky::%loop-number-1%} to ({_Location.Sky})
+								set {_GoodLocation.GroundLevel::%loop-number-1%} to (location 3 above {_Location.GroundLevel})
+								stop loop
+			broadcast "{@P} {@SubColour}Locations found, starting to load chunks!"
+			set {Scatter.DontUnloadChunks} to true
+			execute console command "/cinvis on"
+			wait 1 second
+			loop {_Size} times:
+				if command sender is not online:
+					broadcast "{@P} {@MainColour}Stopping Scatter! {@SubColour}Chunkloading player logged out."
+					stop
+				teleport command sender to {_GoodLocation.GroundLevel::%loop-number%}
+				message "{@P} {@SubColour}Loading Chunkset {@SubColour}[{@MainColour}%loop-number%&0/{@MainColour}%{_Size}%{@SubColour}]"
+				show action bar from "{@P} {@SubColour}Loading Chunkset {@SubColour}[{@MainColour}%loop-number%&0/{@MainColour}%{_Size}%{@SubColour}]" to all players
+				console command "/ab all {@P} {@SubColour}Loading Chunkset {@SubColour}[{@MainColour}%loop-number%&0/{@MainColour}%{_Size}%{@SubColour}]"
+				wait 8 ticks
+			broadcast "{@P} {@MainColour}Locations loaded. {@SubColour}Now scattering."
+			loop all players:
+				set {Scatter.Scattering::%loop-player%} to true
+			wait 3 second
+			set {_TeamSize} to (size of {_Scatter.Teams::*})
+			set {_SoloSize} to (size of {_Solos::*})
+			loop {_TeamsToScatter::*}:
+				add 1 to {_PositionCount}
+				add 1 to {_TeamCount}
+				broadcast "{@P} {@SubColour}&lTeam {@MainColour}&l%{_TeamCount}%{@SubColour}&l:"
+				loop {_TeamScatter.%loop-value%::*}:
+					set {_Player} to ("%loop-value-2%" parsed as offlineplayer)
+					if {_Player} is not online:
+						set {SchedueldScatter::%{_Player}%} to ({_GoodLocation.GroundLevel::%{_PositionCount}%})
+					else:
+						teleport {_Player} to ({_GoodLocation.GroundLevel::%{_PositionCount}%})
+					broadcast "{@P} {@SubColour}- {@MainColour}%{_Player}%"
+					wait {@ScaTicks} ticks
+			if {_Solos::*} is set:
+				broadcast "{@P} {@SubColour}&lSolos:"
+				loop {_Solos::*}:
+					add 1 to {_PositionCount}
+					add 1 to {_SoloCount}
+					set {_Player} to ("%loop-value%" parsed as offlineplayer)
+					if {_Player} is not online:
+						set {SchedueldScatter::%{_Player}%} to ({_GoodLocation.GroundLevel::%{_PositionCount}%})
+					else:
+						teleport {_Player} to ({_GoodLocation.GroundLevel::%{_PositionCount}%})
+					broadcast "{@P} {@SubColour}- {@MainColour}%{_Player}%"
+					wait {@ScaTicks} ticks
+			broadcast "{@P} {@SubColour}Scatter has now {@MainColour}finished{@SubColour}!"
+			delete {Scatter.Scattering::*}
+			wait 2 second
+			execute console command "/cinvis off"
+			delete {Scatter.DontUnloadChunks}
+		else if ("%arg-3%" parsed as offlineplayer) is online:
+			loop 2002 times:
+				if (loop-number-2) is 2002:
+					broadcast "{@P} {@SubColour}Couldn't scatter {@MainColour}%arg-3%{@SubColour}!"
+					stop
+				set {_Location.Good} to true
+				set {_Location.Sky} to (the location at (random integer between ({_X}-arg-2) and ({_X}+arg-2)), 255, (random integer between ({_Z}-arg-2) and ({_Z}+arg-2)) of the world (arg-1))
+				if {_Location.Good} is true:
+					set {_Location.GroundLevel} to {_Location.Sky}
+					while (block at {_Location.GroundLevel}) is air:
+						if (y-coordinate of ({_Location.GroundLevel})) is less than 4:
+							delete {_Location.Good}
+							stop loop
+						set {_Location.GroundLevel} to (location 1 below ({_Location.GroundLevel}))
+					if {_Location.Good} is true:
+						if (block at {_Location.GroundLevel}) is lava, water or cactus:
+							delete {_Location.Good}
+						else:
+							set {_GoodLocation.Sky} to ({_Location.Sky})
+							set {_GoodLocation.GroundLevel} to (location 3 above {_Location.GroundLevel})
+							stop loop
+			set {Scattering::%arg-3%} to true
+			teleport ("%arg-3%" parsed as offlineplayer) to ({_GoodLocation.GroundLevel})
+			wait 10 ticks
+			delete {Scatter.Scattering::%arg-3%}
+		else:
+			send "{@P} {@MainColour}/sca &r<{@SubColour}world&r> <{@SubColour}radius&r> <{@SubColour}teams&r:{@SubColour}*&r:{@SubColour}player&r> [{@SubColour}mindist&r] [{@SubColour}x&r] [{@SubColour}z&r]"
+
+command /cinvis [<text=toggle>]:
+	permission: camscatter.invis
+	aliases: /vanishall, /visable, /reappearall
+	trigger:
+		if arg-1 is "on" or "enable":
+			set {hhinvis} to true
+			loop all players:
+				{{@SpecVariable}::%loop-player%} is not set
+				execute console command "/van %loop-player%"
+				add loop-player to {hhInvis::*}
+		else if arg-1 is "off" or "disable":
+			delete {hhinvis}
+			loop {hhInvis::*}:
+				{{@SpecVariable}::%loop-value%} is not set
+				execute console command "/rea %loop-value%"
+				remove loop-value from {hhInvis::*}
+		else if arg-1 is "toggle":
+			if {hhinvis} is set:
+				delete {hhinvis}
+				loop {hhInvis::*}:
+					{{@SpecVariable}::%loop-value%} is not set
+					execute console command "/rea %loop-value%"
+					remove loop-value from {hhInvis::*}
+			else:
+				set {hhinvis} to true
+				loop all players:
+					{{@SpecVariable}::%loop-player%} is not set
+					execute console command "/van %loop-player%"
+					add loop-player to {hhInvis::*}
+		else:
+			message "{@P} {@MainColour}/cinvis &r<&aon&r:&coff&r:{@SubColour}toggle&r>"
+
+on join:
+	{hhinvis} is set
+	execute console command "/van %event-player%"
+	add event-player to {hhInvis::*}
+
+on disconnect:
+	{hhInvis::%event-player%} is set
+	execute console command "/rea %event-player%"
+	delete {hhInvis::%event-player%}
+
+on skript load:
+	delete {Scatter.DontUnloadChunks}
+	delete {Scatter.Scattering::*}
+	delete {SchedueldScatter::*}
+
+on skript unload:
+	delete {Scatter.DontUnloadChunks}
+	delete {Scatter.Scattering::*}
+	delete {SchedueldScatter::*}
+
+on login:
+	delete {Scatter.Scattering::%player%}
+	{SchedueldScatter::%player%} is set
+	teleport (player) to ({SchedueldScatter::%player%})
+	delete {SchedueldScatter::%player%}
+	message "{@P} {@MainColour}%player% {@SubColour}has been late scattered!" to all ops
+
+on chunk unload:
+	{Scatter.DontUnloadChunks} is set
+	cancel the event
+
+on damage of a player:
+	{Scatter.Scattering::%victim%} is set
+	cancel the event
